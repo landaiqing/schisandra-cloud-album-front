@@ -4,21 +4,37 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "dev": "vite --mode development --host",
+    "build": "vue-tsc -b && vite build --mode production",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^22.1.0",
+    "ant-design-vue": "^4.2.3",
+    "axios": "^1.7.3",
+    "crypto-js": "^4.2.0",
     "eslint": "9.x",
-    "vue": "^3.4.31"
+    "localforage": "^1.10.0",
+    "pinia": "^2.2.1",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "unplugin-auto-import": "^0.18.2",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-html": "^3.2.2",
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "vue": "^3.4.31",
+    "vue-router": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@vitejs/plugin-vue": "^5.0.5",
     "eslint-plugin-vue": "^9.27.0",
     "globals": "^15.9.0",
+    "sass": "^1.77.8",
     "typescript": "^5.2.2",
     "typescript-eslint": "^8.0.1",
+    "unplugin-vue-components": "^0.27.3",
     "vite": "^5.3.4",
     "vue-tsc": "^2.0.24"
   }
