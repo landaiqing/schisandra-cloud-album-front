@@ -10,7 +10,7 @@ const config: globalConfig = {
 	isEncrypt: true, //支持加密、解密数据处理
 };
 
-const setStorage = (key: string, value: any, expire: number = 24 * 60): boolean => {
+const setStorage = (key: string, value: null | string, expire: number = 24 * 60): boolean => {
 	//设定值
 	if (value === "" || value === null || value === undefined) {
 		//空值重置
@@ -58,7 +58,7 @@ const getStorageFromKey = (key: string) => {
 };
 const getAllStorage = () => {
 	//获取所有值
-	const storageList: any = {};
+	const storageList: any= {};
 	const keys = Object.keys(window[config.type]);
 	keys.forEach((key) => {
 		const value = getStorageFromKey(autoRemovePreFix(key));

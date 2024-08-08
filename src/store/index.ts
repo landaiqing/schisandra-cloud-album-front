@@ -1,7 +1,9 @@
-import {useAuthStore} from '@/store/modules/user.ts'
+import {useAuthStore} from '@/store/modules/userStore.ts';
+import {useThemeStore} from "@/store/modules/themeStore.ts";
 
 export default function useStore() {
     return {
-        user: useAuthStore()
-    }
+        user: useAuthStore(),
+        theme: useThemeStore()
+    };
 }

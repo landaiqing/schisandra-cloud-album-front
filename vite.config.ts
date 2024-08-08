@@ -1,15 +1,15 @@
-import {defineConfig, loadEnv} from 'vite'
-import vue from '@vitejs/plugin-vue'
-import * as path from 'path'
+import {defineConfig, loadEnv} from 'vite';
+import vue from '@vitejs/plugin-vue';
+import * as path from 'path';
 import viteCompression from "vite-plugin-compression";
 import {createHtmlPlugin} from "vite-plugin-html";
 import {nodePolyfills} from "vite-plugin-node-polyfills";
 import Components from 'unplugin-vue-components/vite';
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
-import AutoImport from 'unplugin-auto-import/vite'
+import AutoImport from 'unplugin-auto-import/vite';
 
 export default defineConfig(({mode}: { mode: string }): object => {
-    const env: Record<string, string> = loadEnv(mode, process.cwd())
+    const env: Record<string, string> = loadEnv(mode, process.cwd());
     return {
         resolve: {
             //设置别名
@@ -102,16 +102,13 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 output: {
                     chunkFileNames: 'js/[name]-[hash].js', // 引入文件名的名称
                     entryFileNames: 'js/[name]-[hash].js', // 包的入口文件名称
-                    assetFileNames: '[ext]/[name]-[hash].[ext]' // 资源文件像 字体，图片等
-                }
-            }
-        },
-        output: {
-            // 最小化拆分包
-            manualChunks(id: string) {
-                if (id.includes('node_modules')) {
-                    return id.toString().split('node_modules/')[1].split('/')[0].toString()
-                }
+                    assetFileNames: '[ext]/[name]-[hash].[ext]' ,// 资源文件像 字体，图片等
+                    manualChunks(id: string){
+                        if (id.includes('node_modules')) {
+                            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+                        }
+                    }
+                },
             }
         },
         server: {
@@ -125,5 +122,5 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 },
             },
         },
-    }
-})
+    };
+});

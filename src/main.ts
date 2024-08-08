@@ -1,6 +1,6 @@
 import {createApp} from 'vue'
 import App from './App.vue'
-import '@/assets/styles/variables.scss'
+import '@/assets/styles/scroll-bar.scss'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 //Pinia
 import {createPinia, Pinia} from 'pinia'
