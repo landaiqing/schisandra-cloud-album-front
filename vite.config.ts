@@ -105,7 +105,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
                     assetFileNames: '[ext]/[name]-[hash].[ext]' ,// 资源文件像 字体，图片等
                     manualChunks(id: string){
                         if (id.includes('node_modules')) {
-                            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+                            return "vendor";
                         }
                     }
                 },

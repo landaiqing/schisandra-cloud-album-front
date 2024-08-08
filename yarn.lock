@@ -2,6 +2,18 @@
 # yarn lockfile v1
 
 
+"@alova/adapter-axios@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.npmmirror.com/@alova/adapter-axios/-/adapter-axios-2.0.5.tgz#a6788e124ec74d25846519a15518902b2fa0ae1a"
+  integrity sha512-JTcNdg0d9nFpbwPp2RPAWGyph+HfSUQe3qCC9sg9yATGz1X2Ed0pnug1ovn1defrjWUYm+Iod2MTv1fsym5LHA==
+  dependencies:
+    "@alova/shared" "^1.0.4"
+
+"@alova/shared@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.npmmirror.com/@alova/shared/-/shared-1.0.4.tgz#56176e6f71dbb8b8a8dec49092277c6e0705d55a"
+  integrity sha512-Tq47Wd5q76kPmGLXmPijb0AfsXW2aWR9Pid1KO1nz96BdWiKstx2t/ZLTNaGtQzYyB6M+puunaTTJbusJQPmkQ==
+
 "@ant-design/colors@^6.0.0":
   version "6.0.0"
   resolved "https://registry.npmmirror.com/@ant-design/colors/-/colors-6.0.0.tgz#9b9366257cffcc47db42b9d0203bb592c13c0298"
@@ -438,6 +450,11 @@
   dependencies:
     undici-types "~6.13.0"
 
+"@types/nprogress@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.npmmirror.com/@types/nprogress/-/nprogress-0.2.3.tgz#b2150b054a13622fabcba12cf6f0b54c48b14287"
+  integrity sha512-k7kRA033QNtC+gLc4VPlfnue58CM1iQLgn1IMAU8VPHGOj7oIHPp9UlhedEnD/Gl8evoCjwkZjlBORtZ3JByUA==
+
 "@typescript-eslint/eslint-plugin@8.0.1":
   version "8.0.1"
   resolved "https://registry.npmmirror.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-8.0.1.tgz#5dbd1b498fdea83a16d292322d27d293ce156f94"
@@ -671,6 +688,14 @@ ajv@^6.12.4:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
+
+alova@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.npmmirror.com/alova/-/alova-3.0.5.tgz#876bd7108d5fecf19de1425e59f695f4769933fe"
+  integrity sha512-cOE2nTPOp7sXLhf9cthdh90lT389C1akgJULMytuFeV1loriJr1YbT3LCw3qb/P3N+o/QtJ9WLH2ccr0vJ380A==
+  dependencies:
+    "@alova/shared" "^1.0.4"
+    rate-limiter-flexible "^5.0.3"
 
 ansi-regex@^5.0.1:
   version "5.0.1"
@@ -2304,6 +2329,11 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.npmmirror.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
+nprogress@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npmmirror.com/nprogress/-/nprogress-0.2.0.tgz#cb8f34c53213d895723fcbab907e9422adbcafb1"
+  integrity sha512-I19aIingLgR1fmhftnbWWO3dXc0hSxqHQHQb3H8m+K3TnEn/iSeTZZOyvKXWqQESMwuUVnatlCnZdLBZZt2VSA==
+
 nth-check@^2.0.1, nth-check@^2.1.1:
   version "2.1.1"
   resolved "https://registry.npmmirror.com/nth-check/-/nth-check-2.1.1.tgz#c9eab428effce36cd6b92c924bdb000ef1f1ed1d"
@@ -2605,6 +2635,11 @@ randomfill@^1.0.3:
   dependencies:
     randombytes "^2.0.5"
     safe-buffer "^5.1.0"
+
+rate-limiter-flexible@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.npmmirror.com/rate-limiter-flexible/-/rate-limiter-flexible-5.0.3.tgz#bfbfd7585e09073ebe22d177126116862b1024ae"
+  integrity sha512-lWx2y8NBVlTOLPyqs+6y7dxfEpT6YFqKy3MzWbCy95sTTOhOuxufP2QvRyOHpfXpB9OUJPbVLybw3z3AVAS5fA==
 
 readable-stream@^2.3.8:
   version "2.3.8"

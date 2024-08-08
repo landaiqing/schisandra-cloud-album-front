@@ -43,7 +43,7 @@ export const useThemeStore = defineStore(
     {
         persist: {
             key: 'theme',
-            paths: ['themeName','darkMode',"darkModeComp","themeConfig"],
+            paths: ['themeName','darkMode'],
             storage: handleLocalforage,
             serializer: {
                 deserialize: parse,

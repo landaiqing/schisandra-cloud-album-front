@@ -41,7 +41,7 @@ export const decrypt = (data: string | unknown) => {
 
 export const handleLocalforage = {
     config: async (options?: LocalForageOptions) => localforage.config(options || {}),
-    setItem: (key: string, value: string) => {
+    setItem: (key: string, value: any) => {
         localforage.setItem(key, encrypt(value));
     },
     getItem: (key: string) => {

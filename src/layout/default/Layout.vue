@@ -6,7 +6,10 @@
       },
     }"
   >
-    <router-view>
+    <router-view v-slot="{ Component, route }">
+      <transition name="animation" mode="out-in">
+        <component :is="Component" :key="route.path"/>
+      </transition>
     </router-view>
   </AConfigProvider>
 </template>
