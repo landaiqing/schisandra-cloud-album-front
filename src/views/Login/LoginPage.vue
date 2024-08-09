@@ -1,20 +1,36 @@
 <template>
-  <AButton> alvoa</AButton>
+  <div>
+    <AButton @click="handleClick"> {{ t('login.test') }}</AButton>
+    <AButton @click="changeLang('zh')"> 切换中文</AButton>
+    <AButton @click="changeLang('en')"> 切换英文</AButton>
+
+    <ADatePicker/>
+    <ATimePicker/>
+    {{ data }}
+  </div>
 </template>
 <script setup lang="ts">
-// import {getUserInfo} from "@/api/user";
-// import {useRequest} from "alova/client";
-//
-// const {loading, data, send} = useRequest(getUserInfo, {
-//   immediate: true,
-//   throttle: 3000,
-// });
-// const handleClick = () => {
-//   send();
-//   console.log(loading.value);
-//   console.log(data.value);
-//
-// };
+import {useRequest} from "alova/client";
+import {getUserInfo} from "@/api/user";
+import {useI18n} from "vue-i18n";
+import useStore from "@/store";
+
+const {t, locale} = useI18n();
+const {data, send} = useRequest(getUserInfo, {
+  immediate: false
+});
+const handleClick = () => {
+  send();
+};
+
+
+const lang = useStore().lang;
+
+async function changeLang(language: any) {
+  lang.setLang(language);
+  locale.value = language;
+
+}
 </script>
 <style src="./index.scss" scoped>
 </style>

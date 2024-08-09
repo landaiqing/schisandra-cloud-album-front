@@ -2,8 +2,6 @@ import {defineStore} from 'pinia';
 import {computed, ref} from 'vue';
 import {theme} from 'ant-design-vue';
 import variables from '@/assets/styles/colors.module.scss';
-import {handleLocalforage} from "@/utils/localforage";
-import {parse, stringify} from "zipson/lib";
 
 /**
  * theme 配置 开启持久化
@@ -41,14 +39,11 @@ export const useThemeStore = defineStore(
         return {themeName, themeConfig, darkMode, darkModeComp, setThemeName, toggleDarkMode};
     },
     {
-        persist: {
+        persistedState: {
             key: 'theme',
-            paths: ['themeName','darkMode'],
-            storage: handleLocalforage,
-            serializer: {
-                deserialize: parse,
-                serialize: stringify,
-            },
+            storage: localStorage,
+            includePaths: ["themeName", "darkMode"],
+            overwrite: true,
         }
     }
 );

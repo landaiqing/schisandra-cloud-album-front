@@ -1,17 +1,25 @@
-import {handleLocalforage} from "@/utils/localforage";
+import localforage from "localforage";
+
 
 export const localforageStorageAdapter = {
     set(key: string, value: any) {
-        handleLocalforage.setItem(key, value);
+        localforage.setItem(key, value).then();
     },
     get(key: string) {
-        const data: string = handleLocalforage.getItem(key);
-        return data ? JSON.parse(data) : data;
+        let value;
+        localforage.getItem(key).then((res: any) => {
+            if (res === null || res === undefined) {
+                value = "";
+            } else {
+                value = res;
+            }
+        });
+        return value ? JSON.parse(value) : value;
     },
     remove(key: any) {
-        handleLocalforage.removeItem(key);
+        localforage.removeItem(key).then();
     },
     clear() {
-        handleLocalforage.clear().then();
+        localforage.clear().then();
     }
 };

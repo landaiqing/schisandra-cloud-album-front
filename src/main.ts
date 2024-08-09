@@ -1,15 +1,13 @@
 import {createApp} from 'vue';
 import App from './App.vue';
 import '@/assets/styles/scroll-bar.scss';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
-//Pinia
-import {createPinia, Pinia} from 'pinia';
+import '@/assets/styles/global.scss';
+import i18n from "@/locales/index.ts";
+import {setupStore} from "@/store/pinia.ts";
 import router from "@/router/router.ts";
 
-const pinia: Pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
-
-createApp(App)
-    .use(router)
-    .use(pinia)
-    .mount('#app');
+const app = createApp(App);
+setupStore(app);
+app.use(router);
+app.use(i18n);
+app.mount('#app');

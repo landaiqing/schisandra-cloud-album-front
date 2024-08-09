@@ -1,0 +1,19 @@
+@import "theme";
+
+body {
+    position: relative;
+    transition: background-color 0.3s,
+    color 0.3s;
+    @include useTheme {
+        background-color: getModeVar('bgColor');
+        color: getModeVar('infoColor');
+    }
+}
+
+#nprogress .bar {
+    background: #48c453 !important; //自定义颜色
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px cyan, 0 0 5px cyan !important;
+}

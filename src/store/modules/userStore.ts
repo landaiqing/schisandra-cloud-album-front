@@ -1,8 +1,6 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue';
 import {User} from "@/types/user";
-import {parse, stringify} from "zipson/lib";
-import {handleLocalforage} from "@/utils/localforage";
 
 
 export const useAuthStore = defineStore(
@@ -31,14 +29,11 @@ export const useAuthStore = defineStore(
     },
     {
         // 开启数据持久化
-        persist: {
+        persistedState: {
             key: 'user',
-            paths: ['user'],
-            storage: handleLocalforage,
-            serializer: {
-                deserialize: parse,
-                serialize: stringify,
-            },
+            storage: localStorage,
+            includePaths: ["user"],
+            overwrite: true,
         }
     }
 );

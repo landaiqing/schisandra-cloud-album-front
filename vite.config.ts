@@ -23,7 +23,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 dirs: ['src/components', 'src/views'],
                 resolvers: [
                     AntDesignVueResolver({
-                        importStyle: "css-in-js",
+                        importStyle: false,
                         resolveIcons: true
                     }),
                 ],
@@ -33,7 +33,10 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 imports: ['vue', 'vue-router', 'pinia'],
                 dts: 'auto-import.d.ts',
                 //ant-design-vue
-                resolvers: [AntDesignVueResolver()],
+                resolvers: [AntDesignVueResolver({
+                    importStyle: false,
+                    resolveIcons: true
+                })],
                 eslintrc: {
                     enabled: false // 1、改为true用于生成eslint配置。2、生成后改回false，避免重复生成消耗
                 }
@@ -74,6 +77,9 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 scss: {
                     javascriptEnabled: true,
                 },
+                less: {
+                    javascriptEnabled: true,
+                },
             },
             modules: {
                 // 一般我们可以通过 generateScopedName 属性来对生成的类名进行自定义
@@ -102,8 +108,8 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 output: {
                     chunkFileNames: 'js/[name]-[hash].js', // 引入文件名的名称
                     entryFileNames: 'js/[name]-[hash].js', // 包的入口文件名称
-                    assetFileNames: '[ext]/[name]-[hash].[ext]' ,// 资源文件像 字体，图片等
-                    manualChunks(id: string){
+                    assetFileNames: '[ext]/[name]-[hash].[ext]',// 资源文件像 字体，图片等
+                    manualChunks(id: string) {
                         if (id.includes('node_modules')) {
                             return "vendor";
                         }
