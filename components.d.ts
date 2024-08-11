@@ -33,6 +33,7 @@ declare module 'vue' {
     LockOutlined: typeof import('@ant-design/icons-vue')['LockOutlined']
     LoginFooter: typeof import('./src/views/Login/LoginFooter.vue')['default']
     LoginPage: typeof import('./src/views/Login/LoginPage.vue')['default']
+    NotFound: typeof import('./src/views/404/NotFound.vue')['default']
     QRLogin: typeof import('./src/views/QRLogin/QRLogin.vue')['default']
     QRLoginFooter: typeof import('./src/views/QRLogin/QRLoginFooter.vue')['default']
     RegisterFooter: typeof import('./src/views/Register/RegisterFooter.vue')['default']
@@ -43,6 +44,7 @@ declare module 'vue' {
     TabletOutlined: typeof import('@ant-design/icons-vue')['TabletOutlined']
     TestI18n: typeof import('./src/views/TestI18n.vue')['default']
     TestTheme: typeof import('./src/views/TestTheme.vue')['default']
+    TotoroCom: typeof import('./src/components/Totoro/TotoroCom.vue')['default']
     UserOutlined: typeof import('@ant-design/icons-vue')['UserOutlined']
   }
 }

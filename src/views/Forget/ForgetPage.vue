@@ -25,7 +25,8 @@
               <AFlex :vertical="true">
                 <span class="forget-card-span">{{ t("login.phoneCaptcha") }}</span>
                 <AFlex :vertical="false" align="center" justify="center">
-                  <AInput v-model:value="ResetPasswordForm.captcha" :placeholder=captchaValidate size="large" allow-clear>
+                  <AInput v-model:value="ResetPasswordForm.captcha" :placeholder=captchaValidate size="large"
+                          allow-clear>
                     <template #prefix>
                       <SafetyOutlined/>
                     </template>
@@ -51,7 +52,8 @@
             </AFormItem>
             <AFormItem name="repassword">
               <span class="forget-card-span">{{ t("login.repassword") }}</span>
-              <AInput v-model:value="ResetPasswordForm.repassword" :placeholder=repasswordValidate size="large" allow-clear>
+              <AInput v-model:value="ResetPasswordForm.repassword" :placeholder=repasswordValidate size="large"
+                      allow-clear>
                 <template #prefix>
                   <LockOutlined/>
                 </template>
@@ -60,7 +62,8 @@
             <AFormItem>
               <AButton @click="resetPasswordSubmit" style="width: 100%;" type="primary" size="large">{{
                   t("login.resetPassword")
-                }}</AButton>
+                }}
+              </AButton>
             </AFormItem>
           </AForm>
         </AFlex>
@@ -87,7 +90,7 @@ import {Rule} from "ant-design-vue/lib/form";
 
 const router = useRouter();
 const {t} = useI18n();
-const resetPasswordRef = ref()
+const resetPasswordRef = ref();
 const ResetPasswordForm: UnwrapRef<ResetPassword> = reactive({
   phone: '',
   captcha: '',

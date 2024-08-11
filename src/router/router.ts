@@ -9,14 +9,21 @@ import {message} from "ant-design-vue";
 import {close, start} from '@/utils/nprogress/nprogress.ts';
 import qrlogin from "@/router/modules/qrlogin.ts";
 import resetpass from "@/router/modules/resetpass.ts";
+import notFound from "@/router/modules/notFound.ts";
 
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
     ...qrlogin,
     ...resetpass,
+    ...notFound,
     ...test,
     ...test2,
+    {
+        path: '/:pathMatch(.*)',
+        redirect: '/404',
+        hidden: true
+    }
 ];
 
 const router: Router = createRouter({
