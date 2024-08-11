@@ -20,7 +20,15 @@ export default {
         login: "login",
         register: "register",
         reSendCaptcha: " re-send",
-        passwordRule: "The password must be 6~18 characters and must contain letters, numbers and special symbols!"
+        passwordRule: "The password must be 6~18 characters and must contain letters, numbers and special symbols!",
+        phoneLoginAndRegister: "phone login/register",
+        open: "Please open",
+        scan: "scan the code to login",
+        wechat: "wechat",
+        repassword: "confirm password",
+        repasswordValidate: "please enter the confirmation password",
+        forgetPassword: "forget password",
+        resetPassword: "reset password",
     },
     error: {
         networkError: 'Network error, please try again later',

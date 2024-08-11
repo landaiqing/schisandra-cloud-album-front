@@ -1,7 +1,7 @@
 // zh.ts
 export default {
     login: {
-        title: '五味子云存储',
+        title: '五味子云相册',
         accountLogin: '账号登录',
         account: '账号',
         accountValidate: '请输入手机号/账号/邮箱',
@@ -9,7 +9,7 @@ export default {
         passwordValidate: "请输入密码",
         autoLogin: "自动登录",
         forgotPassword: "忘记密码",
-        loginAndRegister: "登录",
+        loginAndRegister: "登录/注册",
         qrLogin: "扫码登录",
         phoneLogin: "短信登录",
         phone: "手机号",
@@ -20,7 +20,15 @@ export default {
         login: "登录",
         register: "注册",
         reSendCaptcha: "重新发送",
-        passwordRule: "密码要6~18位字符，且必须包含字母、数字和特殊符号！"
+        passwordRule: "密码要6~18位字符，且必须包含字母、数字和特殊符号！",
+        phoneLoginAndRegister: "短信注册/登录",
+        open: "请打开",
+        scan: "扫码登录",
+        wechat: "微信",
+        repassword: "确认密码",
+        repasswordValidate: "请输入确认密码",
+        forgetPassword: "忘记密码",
+        resetPassword: "重置密码",
     },
     error: {
         networkError: '网络连接失败！',

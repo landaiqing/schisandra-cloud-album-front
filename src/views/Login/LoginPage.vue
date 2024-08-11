@@ -20,7 +20,7 @@
                   name="phone">
                 <span class="login-card-span">{{ t("login.phone") }}</span>
                 <AInput v-model:value="phoneLoginForm.phone" class="login-form-input" size="large"
-                        :placeholder=phoneValidate
+                        :placeholder=phoneValidate allow-clear
                 >
                   <template #prefix>
                     <TabletOutlined/>
@@ -33,7 +33,7 @@
                 <AFlex :vertical="true">
                   <span class="login-card-span">{{ t("login.phoneCaptcha") }}</span>
                   <AFlex :vertical="false" align="center" justify="center">
-                    <AInput v-model:value="phoneLoginForm.captcha" size="large" :placeholder=captchaValidate>
+                    <AInput v-model:value="phoneLoginForm.captcha" size="large" :placeholder=captchaValidate allow-clear>
                       <template #prefix>
                         <SafetyOutlined/>
                       </template>
@@ -53,22 +53,16 @@
               <AFormItem>
                 <AFlex :vertical="false" justify="space-between">
                   <ACheckbox>{{ t("login.autoLogin") }}</ACheckbox>
-                  <a>{{ t("login.forgotPassword") }}</a>
                 </AFlex>
 
               </AFormItem>
               <AFormItem>
                 <AButton @click="phoneLoginSubmit" type="primary" size="large" class="login-form-button">
-                  {{ t("login.login") }}
+                  {{ t("login.loginAndRegister") }}
                 </AButton>
               </AFormItem>
             </AForm>
-            <ADivider/>
-            <AFlex :vertical="false" align="center" justify="space-around">
-              <AButton class="login-form-bottom-button" :icon="h(QrcodeOutlined)">{{ t("login.qrLogin") }}</AButton>
-              <AButton class="login-form-bottom-button" :icon="h(QqOutlined)"></AButton>
-              <AButton class="login-form-bottom-button" :icon="h(GithubOutlined)"></AButton>
-            </AFlex>
+            <LoginFooter/>
           </ATabPane>
           <!--    账号登录      -->
           <ATabPane key="accountLogin">
@@ -83,7 +77,7 @@
                   name="account">
                 <span class="login-card-span">{{ t("login.account") }}</span>
                 <AInput v-model:value="accountLoginForm.account" class="login-form-input" size="large"
-                        :placeholder=accountValidate>
+                        :placeholder=accountValidate allow-clear>
                   <template #prefix>
                     <user-outlined/>
                   </template>
@@ -95,7 +89,7 @@
                 <AFlex :vertical="true">
                   <span class="login-card-span">{{ t("login.password") }}</span>
                   <AInputPassword v-model:value="accountLoginForm.password" class="login-form-input" size="large"
-                                  :placeholder=passwordValidate>
+                                  :placeholder=passwordValidate allow-clear>
                     <template #prefix>
                       <SafetyOutlined/>
                     </template>
@@ -105,32 +99,30 @@
               <AFormItem>
                 <AFlex :vertical="false" justify="space-between">
                   <ACheckbox>{{ t("login.autoLogin") }}</ACheckbox>
-                  <a>{{ t("login.forgotPassword") }}</a>
+                  <a @click="()=>{
+                    router.push('/resetpass')
+                  }">{{ t("login.forgotPassword") }}</a>
                 </AFlex>
 
               </AFormItem>
               <AFormItem>
                 <AButton @click="accountLoginSubmit" type="primary" size="large" class="login-form-button">
                   {{
-                    t("login.loginAndRegister")
+                    t("login.login")
                   }}
                 </AButton>
               </AFormItem>
             </AForm>
-            <ADivider/>
-            <AFlex :vertical="false" align="center" justify="space-around">
-              <AButton class="login-form-bottom-button" :icon="h(QrcodeOutlined)">{{ t("login.qrLogin") }}</AButton>
-              <AButton class="login-form-bottom-button" :icon="h(QqOutlined)"></AButton>
-              <AButton class="login-form-bottom-button" :icon="h(GithubOutlined)"></AButton>
-            </AFlex>
+            <LoginFooter/>
           </ATabPane>
-
         </ATabs>
         <ATooltip placement="left">
           <template #title>
             <span>{{ t("login.qrLogin") }}</span>
           </template>
-          <div class="login-right-qrcode"/>
+          <div @click="()=>{
+            router.push('/qrlogin');
+          }" class="login-right-qrcode"/>
         </ATooltip>
       </ACard>
     </div>
@@ -138,14 +130,16 @@
 </template>
 <script setup lang="ts">
 import {Rule} from "ant-design-vue/lib/form";
-import {h, onMounted, reactive, ref, UnwrapRef} from "vue";
+import {onMounted, reactive, ref, UnwrapRef} from "vue";
 import {AccountLogin, PhoneLogin} from "@/types/user";
-import {GithubOutlined, QqOutlined, QrcodeOutlined} from "@ant-design/icons-vue";
 import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
+import LoginFooter from "@/views/Login/LoginFooter.vue";
+import {useRouter} from "vue-router";
 
+const router = useRouter();
 const {t} = useI18n();
-const accountLoginFormRef = ref();
+const accountLoginFormRef = ref<any>();
 const phoneLoginFormRef = ref<any>();
 // 账号登录表单数据
 const accountLoginForm: UnwrapRef<AccountLogin> = reactive({

@@ -7,12 +7,14 @@ import test2 from "@/router/modules/testI18n.ts";
 import useStore from "@/store";
 import {message} from "ant-design-vue";
 import {close, start} from '@/utils/nprogress/nprogress.ts';
-import register from "@/router/modules/register.ts";
+import qrlogin from "@/router/modules/qrlogin.ts";
+import resetpass from "@/router/modules/resetpass.ts";
 
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
-    ...register,
+    ...qrlogin,
+    ...resetpass,
     ...test,
     ...test2,
 ];

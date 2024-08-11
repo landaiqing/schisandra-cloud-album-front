@@ -5,7 +5,7 @@
     width: 100vw;
     height: 100vh;
     /* 加载背景图 */
-    background-image: url("@/assets/images/login-back.png");
+    background-image: url("@/assets/images/background.png");
     /* 背景图垂直、水平均居中 */
     background-position: center center;
     /* 背景图不平铺 */
@@ -81,10 +81,6 @@
 
         .login-form-bottom-button {
             color: #999ba1;
-        }
-
-        .login-form-bottom-button:hover {
-            color: rgba(15, 15, 16, 0.3);
         }
     }
 
