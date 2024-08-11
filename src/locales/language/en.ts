@@ -1,6 +1,40 @@
 // en.ts
 export default {
     login: {
-        test: 'login',
+        title: 'Schisandra Cloud Album',
+        accountLogin: 'account login',
+        account: 'account',
+        accountValidate: "please enter your phone/account/email",
+        password: 'password',
+        passwordValidate: "please enter password",
+        autoLogin: "auto login",
+        forgotPassword: "forgot password",
+        loginAndRegister: "login/Register",
+        qrLogin: "QR login",
+        phoneLogin: "phone login",
+        phone: "phone number",
+        phoneValidate: 'please enter a valid phone number',
+        captchaValidate: 'please enter captcha number',
+        phoneCaptcha: "captcha",
+        sendCaptcha: "send captcha",
+        login: "login",
+        register: "register",
+        reSendCaptcha: " re-send",
+        passwordRule: "The password must be 6~18 characters and must contain letters, numbers and special symbols!"
+    },
+    error: {
+        networkError: 'Network error, please try again later',
+        400: 'request error (400)',
+        401: 'request unauthorized (401)',
+        403: 'request forbidden (403)',
+        404: 'request not found (404)',
+        408: 'request timeout (408)',
+        500: 'server error (500)',
+        501: 'not implemented (501)',
+        502: 'bad gateway (502)',
+        503: 'service unavailable (503)',
+        504: 'gateway timeout (504)',
+        505: 'http version not supported (505)',
+        other: 'connect error',
     }
 };

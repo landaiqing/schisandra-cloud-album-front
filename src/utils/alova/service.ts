@@ -7,7 +7,7 @@ import {AxiosError, AxiosResponse} from "axios";
 import {message} from "ant-design-vue";
 import {localforageStorageAdapter} from "@/utils/alova/adapter/localforageStorageAdapter.ts";
 import {handleCode} from "@/utils/errorCode/errorCodeHandler.ts";
-
+import i18n from "@/locales";
 
 export const service = createAlova({
     timeout: 5000,
@@ -19,7 +19,7 @@ export const service = createAlova({
     cacheFor: {
         GET: {
             mode: 'restore',
-            expire: 60 * 10 * 1000
+            expire: 10 * 1000
         },
     },
     cacheLogger: import.meta.env.VITE_NODE_ENV === 'development',
@@ -29,6 +29,8 @@ export const service = createAlova({
             const user = useStore().user;
             method.config.headers.token = user.getUser()?.token;
         }
+        const lang = useStore().lang;
+        method.config.headers['Accept-Language'] = lang.getLang();
 
     },
     // 响应拦截器
@@ -46,7 +48,7 @@ export const service = createAlova({
                 handleCode(response.status);
             }
             if (!window.navigator.onLine) {
-                message.error("网络连接失败").then();
+                message.error(i18n.global.t('error.networkError')).then();
                 return Promise.reject(error);
             }
         }

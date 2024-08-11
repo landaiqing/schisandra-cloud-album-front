@@ -2,6 +2,7 @@ import {defineStore} from 'pinia';
 import {computed, ref} from 'vue';
 import {theme} from 'ant-design-vue';
 import variables from '@/assets/styles/colors.module.scss';
+import {parse, stringify} from "zipson/lib";
 
 /**
  * theme 配置 开启持久化
@@ -21,6 +22,7 @@ export const useThemeStore = defineStore(
             return {
                 token: {
                     colorPrimary: variables[themeName.value] || '#27ba9b',
+                    borderRadius: 10,
                     colorSuccess: '#1dc779',
                     colorWarning: '#ffb302',
                     colorError: '#cf4444',
@@ -39,11 +41,14 @@ export const useThemeStore = defineStore(
         return {themeName, themeConfig, darkMode, darkModeComp, setThemeName, toggleDarkMode};
     },
     {
-        persistedState: {
+        persist: {
             key: 'theme',
             storage: localStorage,
-            includePaths: ["themeName", "darkMode"],
-            overwrite: true,
+            paths: ["themeName", "darkMode"],
+            serializer: {
+                deserialize: parse,
+                serialize: stringify,
+            },
         }
     }
 );

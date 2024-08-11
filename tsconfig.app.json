@@ -24,9 +24,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
     "baseUrl": "./",
     "types": [
-      "node"
+      "node",
+      "@intlify/unplugin-vue-i18n/messages"
     ],
     "paths": {
       "@": [

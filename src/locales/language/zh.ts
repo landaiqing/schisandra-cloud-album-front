@@ -1,9 +1,41 @@
 // zh.ts
 export default {
-
     login: {
-        test: '登录',
+        title: '五味子云存储',
+        accountLogin: '账号登录',
+        account: '账号',
+        accountValidate: '请输入手机号/账号/邮箱',
+        password: "密码",
+        passwordValidate: "请输入密码",
+        autoLogin: "自动登录",
+        forgotPassword: "忘记密码",
+        loginAndRegister: "登录",
+        qrLogin: "扫码登录",
+        phoneLogin: "短信登录",
+        phone: "手机号",
+        phoneValidate: '请输入正确的手机号',
+        captchaValidate: '请输入验证码',
+        phoneCaptcha: "验证码",
+        sendCaptcha: "发送验证码",
+        login: "登录",
+        register: "注册",
+        reSendCaptcha: "重新发送",
+        passwordRule: "密码要6~18位字符，且必须包含字母、数字和特殊符号！"
+    },
+    error: {
+        networkError: '网络连接失败！',
+        400: '请求错误(400)',
+        401: '未授权，请重新登录(401)',
+        403: '拒绝访问(403)',
+        404: '请求出错(404)',
+        408: '请求超时(408)',
+        500: '服务器错误(500)',
+        501: '服务未实现(501)',
+        502: '网关错误(502)',
+        503: '服务不可用(503)',
+        504: '网关超时(504)',
+        505: 'HTTP版本不受支持(505)',
+        other: '连接出错',
+
     }
-
-
 };

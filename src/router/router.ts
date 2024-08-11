@@ -3,15 +3,18 @@
 import {createRouter, createWebHistory, Router, RouteRecordRaw} from 'vue-router';
 import login from './modules/login';
 import test from "@/router/modules/test.ts";
+import test2 from "@/router/modules/testI18n.ts";
 import useStore from "@/store";
 import {message} from "ant-design-vue";
 import {close, start} from '@/utils/nprogress/nprogress.ts';
+import register from "@/router/modules/register.ts";
 
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
-    ...test
-
+    ...register,
+    ...test,
+    ...test2,
 ];
 
 const router: Router = createRouter({

@@ -4,10 +4,28 @@ body {
     position: relative;
     transition: background-color 0.3s,
     color 0.3s;
+    width: 100vw;
+    height: 100vh;
     @include useTheme {
-        background-color: getModeVar('bgColor');
-        color: getModeVar('infoColor');
+        background-color: getModeVar('bgColor') !important;
+        color: getModeVar('infoColor') !important;
     }
+}
+
+#app {
+    @include useTheme {
+        background-color: getModeVar('bgColor') !important;
+        color: getModeVar('infoColor') !important;
+    }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
 }
 
 #nprogress .bar {

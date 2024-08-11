@@ -17,12 +17,14 @@
       </AButtonGroup>
       <div class="test">test</div>
     </AConfigProvider>
+    <DynamicTitle/>
   </div>
 </template>
 <script setup>
 
 import variables from "@/assets/styles/colors.module.scss";
 import useStore from "@/store/index.ts";
+import DynamicTitle from "@/components/DynamicTitle/DynamicTitle.vue";
 
 
 const app = useStore().theme;

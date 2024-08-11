@@ -1,11 +1,12 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue';
 import pinia from "@/store/pinia.ts";
+import {parse, stringify} from "zipson/lib";
 
 export const langStore = defineStore(
     'lang',
     () => {
-        const lang = ref<string>('');
+        const lang = ref<string>('zh');
 
         function setLang(value: string) {
             lang.value = value;
@@ -23,11 +24,14 @@ export const langStore = defineStore(
     },
     {
         // 开启数据持久化
-        persistedState: {
+        persist: {
             key: 'lang',
             storage: localStorage,
-            includePaths: ["lang"],
-            overwrite: true,
+            paths: ["lang"],
+            serializer: {
+                deserialize: parse,
+                serialize: stringify,
+            },
         }
     }
 );

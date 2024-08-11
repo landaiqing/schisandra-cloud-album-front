@@ -1,11 +1,11 @@
 import {message} from "ant-design-vue";
-
+import i18n from "@/locales";
 export function handleCode(code: number): void {
     switch (code) {
         case 400:
             message
                 .open({
-                    content: "请求错误(400)",
+                    content: i18n.global.t("error.400"),
                     type: "error",
                 })
                 .then();
@@ -13,7 +13,7 @@ export function handleCode(code: number): void {
         case 401:
             message
                 .open({
-                    content: "未授权，请重新登录(401)",
+                    content: i18n.global.t("error.401"),
                     type: "error",
                 })
                 .then();
@@ -21,7 +21,7 @@ export function handleCode(code: number): void {
         case 403:
             message
                 .open({
-                    content: "拒绝访问(403)",
+                    content: i18n.global.t("error.403"),
                     type: "error",
                 })
                 .then();
@@ -29,7 +29,7 @@ export function handleCode(code: number): void {
         case 404:
             message
                 .open({
-                    content: "请求出错(404)",
+                    content: i18n.global.t("error.404"),
                     type: "error",
                 })
                 .then();
@@ -37,7 +37,7 @@ export function handleCode(code: number): void {
         case 408:
             message
                 .open({
-                    content: "请求超时(408)",
+                    content: i18n.global.t("error.408"),
                     type: "error",
                 })
                 .then();
@@ -45,7 +45,7 @@ export function handleCode(code: number): void {
         case 500:
             message
                 .open({
-                    content: "服务器错误(500)",
+                    content: i18n.global.t("error.500"),
                     type: "error",
                 })
                 .then();
@@ -53,7 +53,7 @@ export function handleCode(code: number): void {
         case 501:
             message
                 .open({
-                    content: "服务未实现(501)",
+                    content: i18n.global.t("error.501"),
                     type: "error",
                 })
                 .then();
@@ -61,7 +61,7 @@ export function handleCode(code: number): void {
         case 502:
             message
                 .open({
-                    content: "网络错误(502)",
+                    content: i18n.global.t("error.502"),
                     type: "error",
                 })
                 .then();
@@ -69,7 +69,7 @@ export function handleCode(code: number): void {
         case 503:
             message
                 .open({
-                    content: "服务不可用(503)",
+                    content: i18n.global.t("error.503"),
                     type: "error",
                 })
                 .then();
@@ -77,7 +77,7 @@ export function handleCode(code: number): void {
         case 504:
             message
                 .open({
-                    content: "网络超时(504)",
+                    content: i18n.global.t("error.504"),
                     type: "error",
                 })
                 .then();
@@ -85,7 +85,7 @@ export function handleCode(code: number): void {
         case 505:
             message
                 .open({
-                    content: "HTTP版本不受支持(505)",
+                    content: i18n.global.t("error.505"),
                     type: "error",
                 })
                 .then();
@@ -93,7 +93,7 @@ export function handleCode(code: number): void {
         default:
             message
                 .open({
-                    content: `连接出错(${code})!`,
+                    content: i18n.global.t("error.other") + `(${code})`,
                     type: "error",
                 })
                 .then();

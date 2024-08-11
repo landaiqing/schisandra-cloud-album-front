@@ -7,6 +7,9 @@ import {nodePolyfills} from "vite-plugin-node-polyfills";
 import Components from 'unplugin-vue-components/vite';
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import {dirname, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 
 export default defineConfig(({mode}: { mode: string }): object => {
     const env: Record<string, string> = loadEnv(mode, process.cwd());
@@ -18,6 +21,11 @@ export default defineConfig(({mode}: { mode: string }): object => {
             }
         },
         plugins: [vue(),
+            VueI18nPlugin({
+                /* options */
+                // locale messages resource pre-compile option
+                include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/language/**'),
+            }),
             Components({
                 dts: true,
                 dirs: ['src/components', 'src/views'],
