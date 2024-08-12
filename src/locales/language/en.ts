@@ -29,6 +29,11 @@ export default {
         repasswordValidate: "please enter the confirmation password",
         forgetPassword: "forget password",
         resetPassword: "reset password",
+        captchaSuccess: "captcha success！",
+        captchaError: "captcha failed！",
+        rotateCaptchaTitle: "Please drag the slider to complete the puzzle",
+        systemError: "System error, please try again later",
+        captchaExpired: "captcha expired, please try again",
     },
     error: {
         networkError: 'Network error, please try again later',

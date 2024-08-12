@@ -1854,6 +1854,13 @@ globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
+go-captcha-vue@^2:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/go-captcha-vue/-/go-captcha-vue-2.0.1.tgz#d9e3606e28648b7c9daeb7679aaf9b26592ca299"
+  integrity sha512-nzFrn4qlk+bE1kHioCaOkdoMHkrzBZ0FzYcXgoGCQ9CSeDEYtMrey64T6wGz0JdEJwznElKc97jUGhbLavO5xQ==
+  dependencies:
+    vue "^3.0.1"
+
 gopd@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmmirror.com/gopd/-/gopd-1.0.1.tgz#29ff76de69dac7489b7c0918a5788e56477c332c"
@@ -3371,7 +3378,7 @@ vue-types@^3.0.0:
   dependencies:
     is-plain-object "3.0.1"
 
-vue@^3.4.37:
+vue@^3.0.1, vue@^3.4.37:
   version "3.4.37"
   resolved "https://registry.npmmirror.com/vue/-/vue-3.4.37.tgz#64ce0eeb8de16a29fb74e504777ee8c0c1cf229e"
   integrity sha512-3vXvNfkKTBsSJ7JP+LyR7GBuwQuckbWvuwAid3xbqK9ppsKt/DUvfqgZ48fgOLEfpy1IacL5f8QhUVl77RaI7A==

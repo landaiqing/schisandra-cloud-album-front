@@ -33,7 +33,8 @@
                 <AFlex :vertical="true">
                   <span class="login-card-span">{{ t("login.phoneCaptcha") }}</span>
                   <AFlex :vertical="false" align="center" justify="center">
-                    <AInput v-model:value="phoneLoginForm.captcha" size="large" :placeholder=captchaValidate allow-clear>
+                    <AInput v-model:value="phoneLoginForm.captcha" size="large" :placeholder=captchaValidate
+                            allow-clear>
                       <template #prefix>
                         <SafetyOutlined/>
                       </template>
@@ -126,6 +127,18 @@
         </ATooltip>
       </ACard>
     </div>
+    <div v-if="showRotateCaptcha" class="mask">
+      <!--    滑动验证码 -->
+      <gocaptcha-rotate
+          class="gocaptcha-rotate"
+          v-if="showRotateCaptcha"
+          :data="captchaData"
+          :config="{
+            title: t('login.rotateCaptchaTitle'),
+          }"
+          :events="rotateEvent"
+      />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -136,11 +149,27 @@ import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import LoginFooter from "@/views/Login/LoginFooter.vue";
 import {useRouter} from "vue-router";
+import {checkRotatedCaptcha, getRotatedCaptchaData} from "@/api/captcha";
+import {message} from "ant-design-vue";
 
 const router = useRouter();
 const {t} = useI18n();
 const accountLoginFormRef = ref<any>();
 const phoneLoginFormRef = ref<any>();
+const showRotateCaptcha = ref<boolean>(false);
+const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
+const captchaErrorCount = ref<number>(0);
+const rotateEvent = {
+  confirm: (angle: number) => {
+    checkCaptcha(angle);
+  },
+  close: () => {
+    closeRotateCaptcha();
+  },
+  refresh: () => {
+    getRotateCaptcha();
+  },
+};
 // 账号登录表单数据
 const accountLoginForm: UnwrapRef<AccountLogin> = reactive({
   account: '',
@@ -185,11 +214,12 @@ const state = reactive({
   countDownTime: 60,
   showCountDown: false,
 });
+
 /**
  * 验证码发送倒计时
  */
 const countDown = () => {
-  const startTime = localStorage.getItem('startTimeSendCaptcha');
+  const startTime = localStorage.getItem('start_time_send_captcha');
   const nowTime = new Date().getTime();
   let surplus: number = 60;
   let timer: any;
@@ -197,17 +227,15 @@ const countDown = () => {
     surplus = 60 - Math.floor((nowTime - Number(startTime)) / 1000);
     surplus = surplus <= 0 ? 0 : surplus;
   } else {
-    localStorage.setItem('startTimeSendCaptcha', String(nowTime));
+    localStorage.setItem('start_time_send_captcha', String(nowTime));
   }
-
   state.countDownTime = surplus;
-
   if (timer) {
     clearInterval(timer);
   }
   timer = setInterval(() => {
     if (state.countDownTime <= 0) {
-      localStorage.removeItem('startTimeSendCaptcha');
+      localStorage.removeItem('start_time_send_captcha');
       clearInterval(timer);
       state.countDownTime = 60;
       state.showCountDown = false;
@@ -218,7 +246,7 @@ const countDown = () => {
   }, 1000);
 };
 onMounted(() => {
-  const sendEndTime = localStorage.getItem('startTimeSendCaptcha');
+  const sendEndTime = localStorage.getItem('start_time_send_captcha');
   if (sendEndTime) {
     state.showCountDown = true;
     countDown();
@@ -232,8 +260,8 @@ async function sendCaptcha() {
   phoneLoginFormRef.value
       .validateFields("phone")
       .then(() => {
-        countDown();
-        console.log('values');
+        showRotateCaptcha.value = true;
+        getRotateCaptcha();
       })
       .catch((error: any) => {
         console.log('error', error);
@@ -268,6 +296,52 @@ async function phoneLoginSubmit() {
       });
 }
 
+/**
+ * 获取旋转验证码数据
+ */
+async function getRotateCaptcha() {
+  const data: any = await getRotatedCaptchaData();
+  if (data.code === 0 && data.data) {
+    captchaData.image = data.data.image;
+    captchaData.thumb = data.data.thumb;
+    captchaData.key = data.data.key;
+  } else {
+    message.error(t('login.systemError'));
+  }
+}
+
+/**
+ * 验证旋转验证码
+ * @param angle
+ */
+async function checkCaptcha(angle: number) {
+  if (captchaErrorCount.value >= 1) {
+    message.error(t('login.captchaError'));
+    getRotateCaptcha().then();
+    captchaErrorCount.value = 0;
+  } else {
+    const result: any = await checkRotatedCaptcha(angle, captchaData.key);
+    if (result.code === 0 && result.success) {
+      message.success(t('login.captchaSuccess'));
+      showRotateCaptcha.value = false;
+      countDown();
+    } else if (result.code === 1011) {
+      message.error(t('login.captchaExpired'));
+      getRotateCaptcha().then();
+      captchaErrorCount.value = 0;
+    } else {
+      captchaErrorCount.value++;
+      message.error(t('login.captchaError'));
+    }
+  }
+}
+
+/**
+ * 关闭旋转验证码
+ */
+async function closeRotateCaptcha() {
+  showRotateCaptcha.value = false;
+}
 </script>
 <style src="./index.scss" scoped>
 @import "@/assets/styles/global.scss";

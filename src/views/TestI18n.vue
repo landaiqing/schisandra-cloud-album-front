@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="test">
     <AButton @click="handleClick"> {{ t('login.test') }}</AButton>
     <AButton @click="changeLang('zh')"> 切换中文</AButton>
     <AButton @click="changeLang('en')"> 切换英文</AButton>
@@ -32,5 +32,13 @@ async function changeLang(language: any) {
 
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import "@/assets/styles/theme.scss";
+
+.test {
+  @include useTheme {
+    background: getModeVar('primary');
+    color: getColor('info');
+  }
+}
 </style>

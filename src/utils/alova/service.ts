@@ -17,10 +17,10 @@ export const service = createAlova({
     requestAdapter: axiosRequestAdapter(),
     l2Cache: localforageStorageAdapter,
     cacheFor: {
-        GET: {
-            mode: 'restore',
-            expire: 10 * 1000
-        },
+        // GET: {
+        //     mode: 'restore',
+        //     expire: 10 * 1000
+        // },
     },
     cacheLogger: import.meta.env.VITE_NODE_ENV === 'development',
     // 设置全局的请求拦截器

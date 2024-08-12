@@ -28,7 +28,6 @@ declare module 'vue' {
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     BoxDog: typeof import('./src/components/BoxDog/BoxDog.vue')['default']
     DynamicTitle: typeof import('./src/components/DynamicTitle/DynamicTitle.vue')['default']
-    FoegetPage: typeof import('./src/views/Forget/FoegetPage.vue')['default']
     ForgetPage: typeof import('./src/views/Forget/ForgetPage.vue')['default']
     LockOutlined: typeof import('@ant-design/icons-vue')['LockOutlined']
     LoginFooter: typeof import('./src/views/Login/LoginFooter.vue')['default']
@@ -36,15 +35,12 @@ declare module 'vue' {
     NotFound: typeof import('./src/views/404/NotFound.vue')['default']
     QRLogin: typeof import('./src/views/QRLogin/QRLogin.vue')['default']
     QRLoginFooter: typeof import('./src/views/QRLogin/QRLoginFooter.vue')['default']
-    RegisterFooter: typeof import('./src/views/Register/RegisterFooter.vue')['default']
-    RegisterPage: typeof import('./src/views/Register/RegisterPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SafetyOutlined: typeof import('@ant-design/icons-vue')['SafetyOutlined']
     TabletOutlined: typeof import('@ant-design/icons-vue')['TabletOutlined']
     TestI18n: typeof import('./src/views/TestI18n.vue')['default']
     TestTheme: typeof import('./src/views/TestTheme.vue')['default']
-    TotoroCom: typeof import('./src/components/Totoro/TotoroCom.vue')['default']
     UserOutlined: typeof import('@ant-design/icons-vue')['UserOutlined']
   }
 }

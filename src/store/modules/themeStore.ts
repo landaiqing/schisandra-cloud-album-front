@@ -5,13 +5,13 @@ import variables from '@/assets/styles/colors.module.scss';
 import {parse, stringify} from "zipson/lib";
 
 /**
- * theme 配置 开启持久化
+ * theme 配置
  */
 export const useThemeStore = defineStore(
     'theme',
     () => {
-        const themeName = ref('green'); // 主题名称
-        const darkMode = ref('light'); // 颜色模式
+        const themeName = ref<string>('green'); // 主题名称
+        const darkMode = ref<string>('light'); // 颜色模式
         const darkModeComp = computed(() => {
             document.documentElement.setAttribute('data-dark', darkMode.value);
             return darkMode.value;

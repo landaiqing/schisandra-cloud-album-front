@@ -17,6 +17,10 @@
       </AButtonGroup>
       <div class="test">test</div>
     </AConfigProvider>
+    <AButton type="primary" @click="()=>{
+
+    }">获取验证码
+    </AButton>
 
   </div>
 </template>
@@ -25,9 +29,7 @@
 import variables from "@/assets/styles/colors.module.scss";
 import useStore from "@/store/index.ts";
 
-
 const app = useStore().theme;
-
 
 </script>
 <style lang="scss" scoped>

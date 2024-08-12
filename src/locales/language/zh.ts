@@ -29,6 +29,12 @@ export default {
         repasswordValidate: "请输入确认密码",
         forgetPassword: "忘记密码",
         resetPassword: "重置密码",
+        captchaSuccess: "验证成功！",
+        captchaError: "验证失败！",
+        rotateCaptchaTitle: "请拖动滑块完成拼图",
+        systemError: "系统错误！请稍后再试！",
+        captchaExpired: "验证码已过期，请重新获取！",
+
     },
     error: {
         networkError: '网络连接失败！',

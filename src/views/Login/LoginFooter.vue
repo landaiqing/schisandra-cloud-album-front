@@ -15,7 +15,7 @@
 import {GithubOutlined, QqOutlined, QrcodeOutlined} from "@ant-design/icons-vue";
 import {useI18n} from "vue-i18n";
 import {h} from "vue";
-import {useRouter} from 'vue-router'
+import {useRouter} from 'vue-router';
 
 const router = useRouter();
 const {t} = useI18n();

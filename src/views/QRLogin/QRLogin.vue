@@ -39,7 +39,7 @@
 import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
-import {useRouter} from 'vue-router'
+import {useRouter} from 'vue-router';
 
 const {t} = useI18n();
 
