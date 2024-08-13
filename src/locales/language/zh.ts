@@ -35,6 +35,7 @@ export default {
         systemError: "系统错误！请稍后再试！",
         captchaExpired: "验证码已过期，请重新获取！",
 
+
     },
     error: {
         networkError: '网络连接失败！',
@@ -50,6 +51,8 @@ export default {
         504: '网关超时(504)',
         505: 'HTTP版本不受支持(505)',
         other: '连接出错',
+        authTokenError: "认证失败，请重新登录！",
+        authTokenExpired: "认证过期，请重新登录！",
 
     }
 };

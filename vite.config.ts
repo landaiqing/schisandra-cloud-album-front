@@ -14,6 +14,7 @@ import {fileURLToPath} from 'node:url';
 export default defineConfig(({mode}: { mode: string }): object => {
     const env: Record<string, string> = loadEnv(mode, process.cwd());
     return {
+        base: '/',
         resolve: {
             //设置别名
             alias: {

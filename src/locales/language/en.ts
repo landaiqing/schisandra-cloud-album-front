@@ -34,6 +34,7 @@ export default {
         rotateCaptchaTitle: "Please drag the slider to complete the puzzle",
         systemError: "System error, please try again later",
         captchaExpired: "captcha expired, please try again",
+
     },
     error: {
         networkError: 'Network error, please try again later',
@@ -49,5 +50,7 @@ export default {
         504: 'gateway timeout (504)',
         505: 'http version not supported (505)',
         other: 'connect error',
+        authTokenError: "auth token error, please try again later",
+        authTokenExpired: "auth token expired, please login again",
     }
 };

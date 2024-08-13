@@ -33,6 +33,9 @@ body {
     justify-content: center;
     width: 600px;
     height: 420px;
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
 }
 
 * {

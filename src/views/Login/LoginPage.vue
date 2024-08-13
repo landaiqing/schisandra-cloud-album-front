@@ -260,8 +260,9 @@ async function sendCaptcha() {
   phoneLoginFormRef.value
       .validateFields("phone")
       .then(() => {
-        showRotateCaptcha.value = true;
-        getRotateCaptcha();
+        getRotateCaptcha().then(() => {
+          showRotateCaptcha.value = true;
+        });
       })
       .catch((error: any) => {
         console.log('error', error);
@@ -315,10 +316,11 @@ async function getRotateCaptcha() {
  * @param angle
  */
 async function checkCaptcha(angle: number) {
-  if (captchaErrorCount.value >= 1) {
+  if (captchaErrorCount.value >= 2) {
     message.error(t('login.captchaError'));
-    getRotateCaptcha().then();
-    captchaErrorCount.value = 0;
+    getRotateCaptcha().then(() => {
+      captchaErrorCount.value = 0;
+    });
   } else {
     const result: any = await checkRotatedCaptcha(angle, captchaData.key);
     if (result.code === 0 && result.success) {
@@ -327,8 +329,10 @@ async function checkCaptcha(angle: number) {
       countDown();
     } else if (result.code === 1011) {
       message.error(t('login.captchaExpired'));
-      getRotateCaptcha().then();
-      captchaErrorCount.value = 0;
+      getRotateCaptcha().then(() => {
+        captchaErrorCount.value = 0;
+      });
+
     } else {
       captchaErrorCount.value++;
       message.error(t('login.captchaError'));

@@ -2,7 +2,6 @@ import {defineStore} from 'pinia';
 import {computed, ref} from 'vue';
 import {theme} from 'ant-design-vue';
 import variables from '@/assets/styles/colors.module.scss';
-import {parse, stringify} from "zipson/lib";
 
 /**
  * theme 配置
@@ -45,10 +44,6 @@ export const useThemeStore = defineStore(
             key: 'theme',
             storage: localStorage,
             paths: ["themeName", "darkMode"],
-            serializer: {
-                deserialize: parse,
-                serialize: stringify,
-            },
         }
     }
 );

@@ -1,7 +1,6 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue';
 import {User} from "@/types/user";
-import {parse, stringify} from "zipson/lib";
 
 
 export const useAuthStore = defineStore(
@@ -34,10 +33,6 @@ export const useAuthStore = defineStore(
             key: 'user',
             storage: localStorage,
             paths: ["user"],
-            serializer: {
-                deserialize: parse,
-                serialize: stringify,
-            },
         }
     }
 );

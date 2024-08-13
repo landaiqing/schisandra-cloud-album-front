@@ -1,6 +1,6 @@
 <template>
   <AConfigProvider
-      :locale="lang.getLang() === 'en' ? enUS : zhCN"
+      :locale="lang.lang === 'en' ? enUS : zhCN"
       :theme="app.themeConfig"
   >
     <router-view v-slot="{ Component, route }">

@@ -6,7 +6,7 @@ export const localforageStorageAdapter = {
         localforage.setItem(key, value).then();
     },
     get(key: string) {
-        let value;
+        let value: any;
         localforage.getItem(key).then((res: any) => {
             if (res === null || res === undefined) {
                 value = "";

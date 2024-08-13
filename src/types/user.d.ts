@@ -1,6 +1,8 @@
 export interface User {
-    token?: string
+    accessToken?: string
     userId?: string
+    refreshToken?: string
+    expiresAt?: number
 
 }
 

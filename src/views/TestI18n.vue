@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <AButton @click="handleClick"> {{ t('login.test') }}</AButton>
+    <AButton @click="handleClick"> {{ t('login.title') }}</AButton>
     <AButton @click="changeLang('zh')"> 切换中文</AButton>
     <AButton @click="changeLang('en')"> 切换英文</AButton>
 
@@ -27,9 +27,8 @@ const handleClick = () => {
 const lang = useStore().lang;
 
 async function changeLang(language: any) {
-  lang.setLang(language);
+  lang.lang = language;
   locale.value = language;
-
 }
 </script>
 <style lang="scss" scoped>
