@@ -24,15 +24,18 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
         handler: async () => {
             try {
                 const user = useStore().user;
-                const res: any = await refreshToken(user.getUser()?.refreshToken || '');
+                const res: any = await refreshToken(user.user?.refreshToken || '');
                 if (res.code === 0 && res.data) {
-                    user.setUser({
-                        userId: res.data.userId,
-                        accessToken: res.data.access_token,
-                        refreshToken: res.data.refresh_token,
-                        expiresAt: res.data.expires_at,
-                    });
+                    const {uid, access_token, refresh_token, expires_at} = res.data;
+                    user.user.userId = uid;
+                    user.user.accessToken = access_token;
+                    user.user.refreshToken = refresh_token;
+                    user.user.expiresAt = expires_at;
                 }
+                // else {
+                //     message.error(res.message);
+                //     await router.push('/login');
+                // }
             } catch (error) {
                 // token刷新失败，跳转回登录页
                 message.error(i18n.global.t('error.authTokenError')).then();
@@ -55,10 +58,10 @@ export const service = createAlova({
     beforeRequest: onAuthRequired(async (method: any) => {
         if (!method.meta?.ignoreToken) {
             const user = useStore().user;
-            method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.getUser()?.accessToken}`;
+            method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.user.accessToken}`;
         }
         const lang = useStore().lang;
-        method.config.headers['Accept-Language'] = lang.lang|| 'zh';
+        method.config.headers['Accept-Language'] = lang.lang || 'zh';
     }),
     // 响应拦截器
     responded: onResponseRefreshToken({

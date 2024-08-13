@@ -1,10 +1,3 @@
-export interface User {
-    accessToken?: string
-    userId?: string
-    refreshToken?: string
-    expiresAt?: number
-
-}
 
 export interface AccountLogin {
     account?: string

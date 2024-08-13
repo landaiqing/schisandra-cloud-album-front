@@ -1,30 +1,19 @@
 import {defineStore} from 'pinia';
-import {ref} from 'vue';
-import {User} from "@/types/user";
+import {reactive} from 'vue';
 
 
 export const useAuthStore = defineStore(
     'user',
     () => {
-        const user = ref<User>();
-
-        function setUser(data: User) {
-            user.value = data;
-        }
-
-        function getUser() {
-            return user.value;
-        }
-
-        function clearUser() {
-            user.value = void 0;
-        }
+        const user: any = reactive({
+            accessToken: '',
+            userId: '',
+            refreshToken: '',
+            expiresAt: 0,
+        });
 
         return {
             user,
-            setUser,
-            getUser,
-            clearUser
         };
     },
     {
@@ -32,7 +21,7 @@ export const useAuthStore = defineStore(
         persist: {
             key: 'user',
             storage: localStorage,
-            paths: ["user"],
+            paths: ['user'],
         }
     }
 );

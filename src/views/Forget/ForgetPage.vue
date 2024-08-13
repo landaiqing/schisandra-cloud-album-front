@@ -142,7 +142,7 @@ const state = reactive({
  * 验证码发送倒计时
  */
 const countDown = () => {
-  const startTime = localStorage.getItem('startTimeSendCaptcha');
+  const startTime = localStorage.getItem('start_time_send_captcha');
   const nowTime = new Date().getTime();
   let surplus: number = 60;
   let timer: any;
@@ -150,7 +150,7 @@ const countDown = () => {
     surplus = 60 - Math.floor((nowTime - Number(startTime)) / 1000);
     surplus = surplus <= 0 ? 0 : surplus;
   } else {
-    localStorage.setItem('startTimeSendCaptcha', String(nowTime));
+    localStorage.setItem('start_time_send_captcha', String(nowTime));
   }
 
   state.countDownTime = surplus;
@@ -160,7 +160,7 @@ const countDown = () => {
   }
   timer = setInterval(() => {
     if (state.countDownTime <= 0) {
-      localStorage.removeItem('startTimeSendCaptcha');
+      localStorage.removeItem('start_time_send_captcha');
       clearInterval(timer);
       state.countDownTime = 60;
       state.showCountDown = false;
@@ -171,7 +171,7 @@ const countDown = () => {
   }, 1000);
 };
 onMounted(() => {
-  const sendEndTime = localStorage.getItem('startTimeSendCaptcha');
+  const sendEndTime = localStorage.getItem('start_time_send_captcha');
   if (sendEndTime) {
     state.showCountDown = true;
     countDown();

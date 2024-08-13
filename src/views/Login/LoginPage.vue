@@ -21,6 +21,7 @@
                 <span class="login-card-span">{{ t("login.phone") }}</span>
                 <AInput v-model:value="phoneLoginForm.phone" class="login-form-input" size="large"
                         :placeholder=phoneValidate allow-clear
+                        autocomplete="off"
                 >
                   <template #prefix>
                     <TabletOutlined/>
@@ -72,13 +73,13 @@
                       {{ t("login.accountLogin") }}
                  </span>
             </template>
-            <AForm ref="accountLoginFormRef" :rules="rules" :model="accountLoginForm">
+            <AForm ref="accountLoginFormRef" :rules="rules" :model="accountLoginForm" autocomplete="off">
               <AFormItem
                   class="login-form-item"
                   name="account">
                 <span class="login-card-span">{{ t("login.account") }}</span>
                 <AInput v-model:value="accountLoginForm.account" class="login-form-input" size="large"
-                        :placeholder=accountValidate allow-clear>
+                        :placeholder=accountValidate allow-clear autocomplete="off">
                   <template #prefix>
                     <user-outlined/>
                   </template>
@@ -90,7 +91,7 @@
                 <AFlex :vertical="true">
                   <span class="login-card-span">{{ t("login.password") }}</span>
                   <AInputPassword v-model:value="accountLoginForm.password" class="login-form-input" size="large"
-                                  :placeholder=passwordValidate allow-clear>
+                                  :placeholder=passwordValidate allow-clear autocomplete="off">
                     <template #prefix>
                       <SafetyOutlined/>
                     </template>
@@ -151,6 +152,8 @@ import LoginFooter from "@/views/Login/LoginFooter.vue";
 import {useRouter} from "vue-router";
 import {checkRotatedCaptcha, getRotatedCaptchaData} from "@/api/captcha";
 import {message} from "ant-design-vue";
+import {phoneLoginApi, sendMessage} from "@/api/user";
+import useStore from "@/store";
 
 const router = useRouter();
 const {t} = useI18n();
@@ -289,11 +292,22 @@ async function accountLoginSubmit() {
 async function phoneLoginSubmit() {
   phoneLoginFormRef.value
       .validate()
-      .then(() => {
-        console.log('values', phoneLoginForm);
+      .then(async () => {
+        const res: any = await phoneLoginApi(phoneLoginForm);
+        if (res.code === 0 && res.success) {
+          const userStore = useStore().user;
+          const {uid, access_token, refresh_token, expires_at} = res.data;
+          userStore.user.userId = uid;
+          userStore.user.accessToken = access_token;
+          userStore.user.refreshToken = refresh_token;
+          userStore.user.expiresAt = expires_at;
+          message.success(t('login.loginSuccess'));
+        } else {
+          message.error(res.message);
+        }
       })
       .catch((error: any) => {
-        console.log('error', error);
+        console.error(error);
       });
 }
 
@@ -303,9 +317,11 @@ async function phoneLoginSubmit() {
 async function getRotateCaptcha() {
   const data: any = await getRotatedCaptchaData();
   if (data.code === 0 && data.data) {
-    captchaData.image = data.data.image;
-    captchaData.thumb = data.data.thumb;
-    captchaData.key = data.data.key;
+    const {angle, image, thumb, key} = data.data;
+    captchaData.angle = angle;
+    captchaData.image = image;
+    captchaData.thumb = thumb;
+    captchaData.key = key;
   } else {
     message.error(t('login.systemError'));
   }
@@ -324,9 +340,11 @@ async function checkCaptcha(angle: number) {
   } else {
     const result: any = await checkRotatedCaptcha(angle, captchaData.key);
     if (result.code === 0 && result.success) {
-      message.success(t('login.captchaSuccess'));
       showRotateCaptcha.value = false;
-      countDown();
+      const result: boolean = await sendMessageByPhone();
+      if (result) {
+        countDown();
+      }
     } else if (result.code === 1011) {
       message.error(t('login.captchaExpired'));
       getRotateCaptcha().then(() => {
@@ -345,6 +363,21 @@ async function checkCaptcha(angle: number) {
  */
 async function closeRotateCaptcha() {
   showRotateCaptcha.value = false;
+}
+
+/**
+ * 发送手机验证码
+ */
+async function sendMessageByPhone(): Promise<boolean> {
+  const phone: string = phoneLoginForm.phone as string;
+  const res: any = await sendMessage(phone);
+  if (res.code === 0 && res.success) {
+    message.success(t('login.sendCaptchaSuccess'));
+    return true;
+  } else {
+    message.error(res.data);
+    return false;
+  }
 }
 </script>
 <style src="./index.scss" scoped>

@@ -34,6 +34,10 @@ export default {
         rotateCaptchaTitle: "请拖动滑块完成拼图",
         systemError: "系统错误！请稍后再试！",
         captchaExpired: "验证码已过期，请重新获取！",
+        sendCaptchaSuccess: "验证码已发送，请注意查收！",
+        sendCaptchaError: "验证码发送失败，请稍后再试！",
+        loginSuccess: "登录成功！",
+        loginError: "登录失败！",
 
 
     },

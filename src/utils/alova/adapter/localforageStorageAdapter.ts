@@ -8,7 +8,7 @@ export const localforageStorageAdapter = {
     get(key: string) {
         let value: any;
         localforage.getItem(key).then((res: any) => {
-            if (res === null || res === undefined) {
+            if (res === null || res === undefined || res === "") {
                 value = "";
             } else {
                 value = res;

@@ -34,7 +34,10 @@ export default {
         rotateCaptchaTitle: "Please drag the slider to complete the puzzle",
         systemError: "System error, please try again later",
         captchaExpired: "captcha expired, please try again",
-
+        sendCaptchaSuccess: "captcha sent successfully, please check your phone!",
+        sendCaptchaError: "captcha sending failed, please try again later",
+        loginSuccess: "login success！",
+        loginError: "login failed!",
     },
     error: {
         networkError: 'Network error, please try again later',
