@@ -57,6 +57,7 @@ export default {
         other: '连接出错',
         authTokenError: "认证失败，请重新登录！",
         authTokenExpired: "认证过期，请重新登录！",
-
+        loginExpired: "登录已过期!,请重新登录!",
+        pleaseLogin: "请先登录！",
     }
 };

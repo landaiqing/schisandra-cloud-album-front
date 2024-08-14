@@ -38,6 +38,7 @@ export default {
         sendCaptchaError: "captcha sending failed, please try again later",
         loginSuccess: "login success！",
         loginError: "login failed!",
+
     },
     error: {
         networkError: 'Network error, please try again later',
@@ -55,5 +56,8 @@ export default {
         other: 'connect error',
         authTokenError: "auth token error, please try again later",
         authTokenExpired: "auth token expired, please login again",
+        loginExpired: "login expired, please try again",
+        pleaseLogin: "please login first",
+
     }
 };

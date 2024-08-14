@@ -6,17 +6,15 @@ import test from "@/router/modules/test.ts";
 import test2 from "@/router/modules/testI18n.ts";
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import {close, start} from '@/utils/nprogress/nprogress.ts';
-import qrlogin from "@/router/modules/qrlogin.ts";
-import resetpass from "@/router/modules/resetpass.ts";
+import {close, start} from '@/components/Nprogress/nprogress.ts';
 import notFound from "@/router/modules/notFound.ts";
+import landing from "@/router/modules/landing.ts";
 
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
-    ...qrlogin,
-    ...resetpass,
     ...notFound,
+    ...landing,
     ...test,
     ...test2,
     {
@@ -35,14 +33,14 @@ router.beforeEach((to, from, next) => {
     start();
     if (to.meta.requiresAuth) {
         const user = useStore().user;
-        const token: string | undefined = user.getUser()?.token;
-        const userId: string | undefined = user.getUser()?.userId;
-        if (token !== undefined && userId !== undefined) {
+        const token: string | undefined = user.user.refreshToken;
+        const userId: string | undefined = user.user.userId;
+        if (token !== "" && userId !== "") {
             next();
         } else {
             message.warn('请先登录').then();
             next({
-                path: '/',
+                path: '/login',
                 query: {redirect: to.fullPath}
             });
         }

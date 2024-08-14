@@ -4,7 +4,7 @@ export default [
         name: 'test2',
         component: () => import('@/views/TestI18n.vue'),
         meta: {
-            requiresAuth: false,
+            requiresAuth: true,
             title: '测试'
         }
     }

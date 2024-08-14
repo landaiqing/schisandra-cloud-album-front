@@ -29,6 +29,7 @@ declare module 'vue' {
     BoxDog: typeof import('./src/components/BoxDog/BoxDog.vue')['default']
     DynamicTitle: typeof import('./src/components/DynamicTitle/DynamicTitle.vue')['default']
     ForgetPage: typeof import('./src/views/Forget/ForgetPage.vue')['default']
+    LandingPage: typeof import('./src/views/Landing/LandingPage.vue')['default']
     LockOutlined: typeof import('@ant-design/icons-vue')['LockOutlined']
     LoginFooter: typeof import('./src/views/Login/LoginFooter.vue')['default']
     LoginPage: typeof import('./src/views/Login/LoginPage.vue')['default']

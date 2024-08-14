@@ -4,7 +4,7 @@ export default [
 		name: 'test',
 		component: () => import('@/views/TestTheme.vue'),
 		meta: {
-            requiresAuth: false,
+            requiresAuth: true,
 			title: '测试'
 		}
 	}

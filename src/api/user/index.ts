@@ -5,11 +5,17 @@ import {PhoneLogin} from "@/types/user";
  * 获取用户信息
  */
 export const getUserInfo = () => {
-    return service.Get('/api/auth/user/List', {
+    return service.Get('/api/auth/user/list', {
         meta: {
             ignoreToken: false
         },
-        cacheFor: 1000 * 60
+        cacheFor: {
+            // 设置缓存模式为持久化模式
+            mode: 'restore',
+            // 缓存时间
+            expire: 1000 * 10,
+            tag: 'v1'
+        }
     });
 
 };
@@ -18,10 +24,9 @@ export const getUserInfo = () => {
  * @param refreshToken
  */
 export const refreshToken = (refreshToken: string) => {
-    return service.Get('/api/auth/token/refresh', {
-        params: {
-            refresh_token: refreshToken
-        },
+    return service.Post('/api/token/refresh', {
+        refresh_token: refreshToken
+    }, {
         meta: {
             authRole: 'refreshToken',
             ignoreToken: false

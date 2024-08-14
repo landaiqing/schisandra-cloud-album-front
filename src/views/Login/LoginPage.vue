@@ -54,7 +54,10 @@
               </AFormItem>
               <AFormItem>
                 <AFlex :vertical="false" justify="space-between">
-                  <ACheckbox>{{ t("login.autoLogin") }}</ACheckbox>
+                  <ACheckbox @change="(e: any)=>{
+                    autoLoginChang(e.target.checked);
+                  }" v-model:checked="autoLoginChecked">{{ t("login.autoLogin") }}
+                  </ACheckbox>
                 </AFlex>
 
               </AFormItem>
@@ -100,7 +103,10 @@
               </AFormItem>
               <AFormItem>
                 <AFlex :vertical="false" justify="space-between">
-                  <ACheckbox>{{ t("login.autoLogin") }}</ACheckbox>
+                  <ACheckbox v-model:checked="autoLoginChecked" @change="(e: any)=>{
+                    autoLoginChang(e.target.checked);
+                  }">{{ t("login.autoLogin") }}
+                  </ACheckbox>
                   <a @click="()=>{
                     router.push('/resetpass')
                   }">{{ t("login.forgotPassword") }}</a>
@@ -162,6 +168,7 @@ const phoneLoginFormRef = ref<any>();
 const showRotateCaptcha = ref<boolean>(false);
 const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
 const captchaErrorCount = ref<number>(0);
+const autoLoginChecked = ref<boolean>(localStorage.getItem('auto_login') === 'true');
 const rotateEvent = {
   confirm: (angle: number) => {
     checkCaptcha(angle);
@@ -209,7 +216,7 @@ const rules: Record<string, Rule[]> = {
   captcha: [
     {
       required: true, message: t('login.captchaValidate'), trigger: 'change'
-    }
+    },
   ]
 };
 
@@ -378,6 +385,10 @@ async function sendMessageByPhone(): Promise<boolean> {
     message.error(res.data);
     return false;
   }
+}
+
+async function autoLoginChang(checkedValue: boolean) {
+  return localStorage.setItem('auto_login', String(checkedValue));
 }
 </script>
 <style src="./index.scss" scoped>
