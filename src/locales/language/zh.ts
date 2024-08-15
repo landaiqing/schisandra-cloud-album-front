@@ -38,6 +38,10 @@ export default {
         sendCaptchaError: "验证码发送失败，请稍后再试！",
         loginSuccess: "登录成功！",
         loginError: "登录失败！",
+        twoPasswordNotSame: "两次密码输入不一致！",
+        resetPasswordSuccess: "密码重置成功！",
+        resetPasswordError: "密码重置失败！",
+
 
 
     },

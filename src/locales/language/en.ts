@@ -38,6 +38,9 @@ export default {
         sendCaptchaError: "captcha sending failed, please try again later",
         loginSuccess: "login success！",
         loginError: "login failed!",
+        twoPasswordNotSame: "two passwords are not the same, please try again！",
+        resetPasswordSuccess: "reset password success！",
+        resetPasswordError: "reset password failed！",
 
     },
     error: {

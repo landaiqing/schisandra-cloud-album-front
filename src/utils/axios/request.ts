@@ -14,7 +14,7 @@ class Request {
         this.instance.interceptors.request.use(
             (config) => {
                 const user = useStore().user;
-                const token: string | undefined = user.getUser()?.accessToken;
+                const token: string | undefined = user.user.accessToken;
                 if (token) {
                     config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${token}`;
                 }

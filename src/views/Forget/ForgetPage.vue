@@ -15,7 +15,8 @@
           >
             <AFormItem name="phone">
               <span class="forget-card-span">{{ t("login.phone") }}</span>
-              <AInput v-model:value="ResetPasswordForm.phone" :placeholder=phoneValidate size="large" allow-clear>
+              <AInput v-model:value="ResetPasswordForm.phone" :placeholder=phoneValidate size="large" allow-clear
+                      autocomplete="off">
                 <template #prefix>
                   <TabletOutlined/>
                 </template>
@@ -26,7 +27,7 @@
                 <span class="forget-card-span">{{ t("login.phoneCaptcha") }}</span>
                 <AFlex :vertical="false" align="center" justify="center">
                   <AInput v-model:value="ResetPasswordForm.captcha" :placeholder=captchaValidate size="large"
-                          allow-clear>
+                          allow-clear autocomplete="off">
                     <template #prefix>
                       <SafetyOutlined/>
                     </template>
@@ -44,20 +45,21 @@
             </AFormItem>
             <AFormItem name="password">
               <span class="forget-card-span">{{ t("login.password") }}</span>
-              <AInput v-model:value="ResetPasswordForm.password" :placeholder=passwordValidate size="large" allow-clear>
+              <AInputPassword v-model:value="ResetPasswordForm.password" :placeholder=passwordValidate size="large"
+                              allow-clear autocomplete="password">
                 <template #prefix>
                   <LockOutlined/>
                 </template>
-              </AInput>
+              </AInputPassword>
             </AFormItem>
             <AFormItem name="repassword">
               <span class="forget-card-span">{{ t("login.repassword") }}</span>
-              <AInput v-model:value="ResetPasswordForm.repassword" :placeholder=repasswordValidate size="large"
-                      allow-clear>
+              <AInputPassword v-model:value="ResetPasswordForm.repassword" :placeholder=repasswordValidate size="large"
+                              allow-clear autocomplete="password">
                 <template #prefix>
                   <LockOutlined/>
                 </template>
-              </AInput>
+              </AInputPassword>
             </AFormItem>
             <AFormItem>
               <AButton @click="resetPasswordSubmit" style="width: 100%;" type="primary" size="large">{{
@@ -77,6 +79,18 @@
         </ATooltip>
       </ACard>
     </div>
+    <div v-if="showRotateCaptcha" class="mask">
+      <!--    滑动验证码 -->
+      <gocaptcha-rotate
+          class="gocaptcha-rotate"
+          v-if="showRotateCaptcha"
+          :data="captchaData"
+          :config="{
+            title: t('login.rotateCaptchaTitle'),
+          }"
+          :events="resetPasswordRotateEvent"
+      />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -86,11 +100,27 @@ import {useRouter} from "vue-router";
 import {onMounted, reactive, ref, UnwrapRef} from "vue";
 import {ResetPassword} from "@/types/user";
 import {Rule} from "ant-design-vue/lib/form";
-
+import {checkRotatedCaptcha, getRotatedCaptchaData} from "@/api/captcha";
+import {message} from "ant-design-vue";
+import {resetPasswordApi, sendMessage} from "@/api/user";
 
 const router = useRouter();
 const {t} = useI18n();
 const resetPasswordRef = ref();
+const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
+const showRotateCaptcha = ref<boolean>(false);
+const captchaErrorCount = ref<number>(0);
+const resetPasswordRotateEvent = {
+  confirm: (angle: number) => {
+    checkPhoneLoginCaptcha(angle);
+  },
+  close: () => {
+    showRotateCaptcha.value = false;
+  },
+  refresh: () => {
+    getRotateCaptcha();
+  },
+};
 const ResetPasswordForm: UnwrapRef<ResetPassword> = reactive({
   phone: '',
   captcha: '',
@@ -102,34 +132,40 @@ const passwordValidate = ref<string>(t('login.passwordValidate'));
 const phoneValidate = ref<string>(t('login.phoneValidate'));
 const captchaValidate = ref<string>(t('login.captchaValidate'));
 const repasswordValidate = ref<string>(t('login.repasswordValidate'));
-
+/**
+ * 表单验证规则
+ * @param _rule
+ * @param value
+ */
+const validateRepassword = async (_rule: Rule, value: string) => {
+  if (value !== ResetPasswordForm.password) {
+    return Promise.reject(t('login.twoPasswordNotSame'));
+  } else {
+    return Promise.resolve();
+  }
+};
 // 表单验证规则
 const rules: Record<string, Rule[]> = {
   password: [
     {
-      required: true, message: t('login.passwordValidate'), trigger: 'change'
+      required: true, message: t('login.passwordValidate'), trigger: 'blur'
     },
     {
       pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,18}$/,
       message: t('login.passwordRule'),
+      trigger: 'blur'
     },
   ],
   repassword: [
-    {
-      required: true, message: t('login.repasswordValidate'), trigger: 'change'
-    },
-    {
-      pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,18}$/,
-      message: t('login.passwordRule'),
-    },
+    {validator: validateRepassword, trigger: 'blur'}
   ],
   phone: [
-    {required: true, message: t('login.phoneValidate'), trigger: 'change'},
+    {required: true, message: t('login.phoneValidate'), trigger: 'blur'},
     {pattern: /^1[2-9]\d{9}$/, message: t('login.phoneValidate')}
   ],
   captcha: [
     {
-      required: true, message: t('login.captchaValidate'), trigger: 'change'
+      required: true, message: t('login.captchaValidate'), trigger: 'blur'
     }
   ]
 };
@@ -138,6 +174,7 @@ const state = reactive({
   countDownTime: 60,
   showCountDown: false,
 });
+
 /**
  * 验证码发送倒计时
  */
@@ -185,8 +222,9 @@ async function sendCaptcha() {
   resetPasswordRef.value
       .validateFields("phone")
       .then(() => {
-        countDown();
-        console.log('values');
+        getRotateCaptcha().then(() => {
+          showRotateCaptcha.value = true;
+        });
       })
       .catch((error: any) => {
         console.log('error', error);
@@ -199,12 +237,79 @@ async function sendCaptcha() {
 async function resetPasswordSubmit() {
   resetPasswordRef.value
       .validate()
-      .then(() => {
-        console.log('values', ResetPasswordForm);
+      .then(async () => {
+        const res: any = await resetPasswordApi(ResetPasswordForm);
+        if (res.code === 0 && res.success) {
+          message.success(t('login.resetPasswordSuccess'));
+          await router.push('/login');
+        } else {
+          message.error(t('login.resetPasswordError'));
+        }
       })
       .catch((error: any) => {
         console.log('error', error);
       });
+}
+
+/**
+ * 获取旋转验证码数据
+ */
+async function getRotateCaptcha() {
+  const data: any = await getRotatedCaptchaData();
+  if (data.code === 0 && data.data) {
+    const {angle, image, thumb, key} = data.data;
+    captchaData.angle = angle;
+    captchaData.image = image;
+    captchaData.thumb = thumb;
+    captchaData.key = key;
+  } else {
+    message.error(t('login.systemError'));
+  }
+}
+
+/**
+ * 发送手机验证码
+ */
+async function sendMessageByPhone(): Promise<boolean> {
+  const phone: string = ResetPasswordForm.phone as string;
+  const res: any = await sendMessage(phone);
+  if (res.code === 0 && res.success) {
+    message.success(t('login.sendCaptchaSuccess'));
+    return true;
+  } else {
+    message.error(res.data);
+    return false;
+  }
+}
+
+/**
+ * 验证旋转验证码
+ * @param angle
+ */
+async function checkPhoneLoginCaptcha(angle: number) {
+  if (captchaErrorCount.value >= 2) {
+    message.error(t('login.captchaError'));
+    getRotateCaptcha().then(() => {
+      captchaErrorCount.value = 0;
+    });
+  } else {
+    const result: any = await checkRotatedCaptcha(angle, captchaData.key);
+    if (result.code === 0 && result.success) {
+      showRotateCaptcha.value = false;
+      const result: boolean = await sendMessageByPhone();
+      if (result) {
+        countDown();
+      }
+    } else if (result.code === 1011) {
+      message.error(t('login.captchaExpired'));
+      getRotateCaptcha().then(() => {
+        captchaErrorCount.value = 0;
+      });
+    } else {
+      captchaErrorCount.value++;
+      message.error(t('login.captchaError'));
+    }
+  }
 }
 </script>
 <style src="./index.scss" scoped>

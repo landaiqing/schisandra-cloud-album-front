@@ -1,5 +1,5 @@
 import {service} from "@/utils/alova/service.ts";
-import {PhoneLogin} from "@/types/user";
+import {AccountLogin, PhoneLogin, ResetPassword} from "@/types/user";
 
 /**
  * 获取用户信息
@@ -60,6 +60,41 @@ export const phoneLoginApi = (param: PhoneLogin) => {
             meta: {
                 ignoreToken: true,
                 authRole: 'login'
+            }
+        }
+    );
+};
+/**
+ * 账号登录
+ * @param param
+ */
+export const accountLoginApi = (param: AccountLogin) => {
+    return service.Post('/api/user/login', {
+            account: param.account,
+            password: param.password,
+        },
+        {
+            meta: {
+                ignoreToken: true,
+                authRole: 'login'
+            }
+        }
+    );
+};
+/**
+ * 重置密码
+ * @param param
+ */
+export const resetPasswordApi = (param: ResetPassword) => {
+    return service.Post('/api/user/reset_password', {
+            phone: param.phone,
+            captcha: param.captcha,
+            password: param.password,
+            repassword: param.repassword
+        },
+        {
+            meta: {
+                ignoreToken: true,
             }
         }
     );

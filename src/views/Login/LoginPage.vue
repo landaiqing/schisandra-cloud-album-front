@@ -134,23 +134,35 @@
         </ATooltip>
       </ACard>
     </div>
-    <div v-if="showRotateCaptcha" class="mask">
+    <div v-if="showPhoneRotateCaptcha" class="mask">
       <!--    滑动验证码 -->
       <gocaptcha-rotate
           class="gocaptcha-rotate"
-          v-if="showRotateCaptcha"
+          v-if="showPhoneRotateCaptcha"
           :data="captchaData"
           :config="{
             title: t('login.rotateCaptchaTitle'),
           }"
-          :events="rotateEvent"
+          :events="phoneLoginRotateEvent"
+      />
+    </div>
+    <div v-if="showAccountRotateCaptcha" class="mask">
+      <!--    滑动验证码 -->
+      <gocaptcha-rotate
+          class="gocaptcha-rotate"
+          v-if="showAccountRotateCaptcha"
+          :data="captchaData"
+          :config="{
+            title: t('login.rotateCaptchaTitle'),
+          }"
+          :events="accountLoginRotateEvent"
       />
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import {Rule} from "ant-design-vue/lib/form";
-import {onMounted, reactive, ref, UnwrapRef} from "vue";
+import {onBeforeMount, onMounted, reactive, ref, UnwrapRef} from "vue";
 import {AccountLogin, PhoneLogin} from "@/types/user";
 import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
@@ -158,23 +170,35 @@ import LoginFooter from "@/views/Login/LoginFooter.vue";
 import {useRouter} from "vue-router";
 import {checkRotatedCaptcha, getRotatedCaptchaData} from "@/api/captcha";
 import {message} from "ant-design-vue";
-import {phoneLoginApi, sendMessage} from "@/api/user";
+import {accountLoginApi, phoneLoginApi, sendMessage} from "@/api/user";
 import useStore from "@/store";
 
 const router = useRouter();
 const {t} = useI18n();
 const accountLoginFormRef = ref<any>();
 const phoneLoginFormRef = ref<any>();
-const showRotateCaptcha = ref<boolean>(false);
+const showPhoneRotateCaptcha = ref<boolean>(false);
+const showAccountRotateCaptcha = ref<boolean>(false);
 const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
 const captchaErrorCount = ref<number>(0);
 const autoLoginChecked = ref<boolean>(localStorage.getItem('auto_login') === 'true');
-const rotateEvent = {
+const phoneLoginRotateEvent = {
   confirm: (angle: number) => {
-    checkCaptcha(angle);
+    checkPhoneLoginCaptcha(angle);
   },
   close: () => {
-    closeRotateCaptcha();
+    showPhoneRotateCaptcha.value = false;
+  },
+  refresh: () => {
+    getRotateCaptcha();
+  },
+};
+const accountLoginRotateEvent = {
+  confirm: (angle: number) => {
+    checkAccountLoginCaptcha(angle);
+  },
+  close: () => {
+    showAccountRotateCaptcha.value = false;
   },
   refresh: () => {
     getRotateCaptcha();
@@ -271,7 +295,7 @@ async function sendCaptcha() {
       .validateFields("phone")
       .then(() => {
         getRotateCaptcha().then(() => {
-          showRotateCaptcha.value = true;
+          showPhoneRotateCaptcha.value = true;
         });
       })
       .catch((error: any) => {
@@ -286,7 +310,9 @@ async function accountLoginSubmit() {
   accountLoginFormRef.value
       .validate()
       .then(() => {
-        console.log('values', accountLoginForm);
+        getRotateCaptcha().then(() => {
+          showAccountRotateCaptcha.value = true;
+        });
       })
       .catch((error: any) => {
         console.log('error', error);
@@ -338,7 +364,7 @@ async function getRotateCaptcha() {
  * 验证旋转验证码
  * @param angle
  */
-async function checkCaptcha(angle: number) {
+async function checkPhoneLoginCaptcha(angle: number) {
   if (captchaErrorCount.value >= 2) {
     message.error(t('login.captchaError'));
     getRotateCaptcha().then(() => {
@@ -347,7 +373,7 @@ async function checkCaptcha(angle: number) {
   } else {
     const result: any = await checkRotatedCaptcha(angle, captchaData.key);
     if (result.code === 0 && result.success) {
-      showRotateCaptcha.value = false;
+      showPhoneRotateCaptcha.value = false;
       const result: boolean = await sendMessageByPhone();
       if (result) {
         countDown();
@@ -357,7 +383,6 @@ async function checkCaptcha(angle: number) {
       getRotateCaptcha().then(() => {
         captchaErrorCount.value = 0;
       });
-
     } else {
       captchaErrorCount.value++;
       message.error(t('login.captchaError'));
@@ -366,10 +391,41 @@ async function checkCaptcha(angle: number) {
 }
 
 /**
- * 关闭旋转验证码
+ * 检查账户登录旋转验证码
+ * @param angle
  */
-async function closeRotateCaptcha() {
-  showRotateCaptcha.value = false;
+async function checkAccountLoginCaptcha(angle: number) {
+  if (captchaErrorCount.value >= 2) {
+    message.error(t('login.captchaError'));
+    getRotateCaptcha().then(() => {
+      captchaErrorCount.value = 0;
+    });
+  } else {
+    const result: any = await checkRotatedCaptcha(angle, captchaData.key);
+    if (result.code === 0 && result.success) {
+      showAccountRotateCaptcha.value = false;
+      const res: any = await accountLoginApi(accountLoginForm);
+      if (res.code === 0 && res.success) {
+        const userStore = useStore().user;
+        const {uid, access_token, refresh_token, expires_at} = res.data;
+        userStore.user.userId = uid;
+        userStore.user.accessToken = access_token;
+        userStore.user.refreshToken = refresh_token;
+        userStore.user.expiresAt = expires_at;
+        message.success(t('login.loginSuccess'));
+      } else {
+        message.error(t('login.loginError'));
+      }
+    } else if (result.code === 1011) {
+      message.error(t('login.captchaExpired'));
+      getRotateCaptcha().then(() => {
+        captchaErrorCount.value = 0;
+      });
+    } else {
+      captchaErrorCount.value++;
+      message.error(t('login.captchaError'));
+    }
+  }
 }
 
 /**
@@ -387,9 +443,20 @@ async function sendMessageByPhone(): Promise<boolean> {
   }
 }
 
+/**
+ * 自动登录
+ * @param checkedValue
+ */
 async function autoLoginChang(checkedValue: boolean) {
   return localStorage.setItem('auto_login', String(checkedValue));
 }
+
+onBeforeMount(() => {
+  const autoLogin: string | null = localStorage.getItem('auto_login');
+  if (!autoLogin) {
+    localStorage.setItem('auto_login', 'true');
+  }
+});
 </script>
 <style src="./index.scss" scoped>
 @import "@/assets/styles/global.scss";
