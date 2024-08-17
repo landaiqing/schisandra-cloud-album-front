@@ -16,6 +16,6 @@ export default function useStore() {
     return {
         user: isAutoLogin() ? useAuthStore() : useAuthSessionStore(), // 自动登录时使用 useAuthStore，否则使用 useAuthSessionStore
         theme: useThemeStore(),
-        lang: langStore()
+        lang: langStore(),
     };
 }

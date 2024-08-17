@@ -7,7 +7,7 @@ export const useAuthStore = defineStore(
     () => {
         const user: any = reactive({
             accessToken: '',
-            userId: '',
+            uid: '',
             refreshToken: '',
             expiresAt: 0,
         });

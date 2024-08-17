@@ -8,6 +8,10 @@ export const generateClientId = () => {
         {
             meta: {
                 ignoreToken: true,
+            },
+            cacheFor: {
+                mode: "restore",
+                expire: 1000 * 60 * 60 * 24 * 30 // 30天
             }
         }
     );
@@ -25,13 +29,34 @@ export const generateQrCode = (clientId: string) => {
             meta: {
                 ignoreToken: true,
             },
-            cacheFor: {
-                // 设置缓存模式为持久化模式
-                mode: 'restore',
-                // 缓存时间
-                expire: 30 * 24 * 60 * 60 * 1000,
-                tag: 'v1'
-            }
+        }
+    );
+};
+/**
+ * 关闭websocket
+ * @param clientId
+ */
+export const closeWebsocket = (clientId: string) => {
+    return service.Get('/api/ws/delete',
+        {
+            params: {
+                client_id: clientId
+            },
+            meta: {
+                ignoreToken: true,
+            },
+        }
+    );
+};
+export const sendSocketMessage = (clientId: string) => {
+    return service.Get('/api/ws/send',
+        {
+            params: {
+                client_id: clientId
+            },
+            meta: {
+                ignoreToken: true,
+            },
         }
     );
 };

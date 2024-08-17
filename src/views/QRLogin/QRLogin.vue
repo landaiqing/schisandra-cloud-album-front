@@ -18,7 +18,10 @@
               :size="230"
               :error-level="'H'"
               :status="status"
-              @refresh="async () => await getQrCode()"
+              @refresh="() => {
+                getClientId();
+                getQrCode();
+              }"
               :value=qrcode
               :icon="logo"
           />
@@ -42,9 +45,12 @@ import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
-import {generateClientId, generateQrCode} from "@/api/oauth";
-import {ref} from "vue";
+import {closeWebsocket, generateClientId, generateQrCode} from "@/api/oauth";
+import {onMounted, onUnmounted, ref} from "vue";
 import logo from "@/assets/svgs/logo-schisandra.svg";
+import useWebSocket from "@/utils/websocket/websocket.ts";
+import useStore from "@/store";
+import {message} from "ant-design-vue";
 
 const {t} = useI18n();
 
@@ -66,15 +72,17 @@ async function getClientId() {
   }
 }
 
-getClientId();
 
 /**
  *  获取二维码
  */
 async function getQrCode() {
   const clientId: any = localStorage.getItem('client_id');
+  if (!clientId) {
+    status.value = 'expired';
+    return;
+  }
   const res: any = await generateQrCode(clientId);
-  console.log(res);
   if (res.code === 0 && res.data) {
     status.value = 'active';
     qrcode.value = res.data;
@@ -84,7 +92,53 @@ async function getQrCode() {
   }
 }
 
-getQrCode();
+/**
+ *  获取本地client_id
+ */
+function getLocalClientId(): string {
+  const clientID: string | null = localStorage.getItem('client_id');
+  if (clientID) {
+    return clientID;
+  } else {
+    getClientId();
+    return getLocalClientId();
+  }
+
+}
+
+const wsOptions = {
+  url: import.meta.env.VITE_WEB_SOCKET_URL as string + "?client_id=" + getLocalClientId(),
+};
+
+const {open, close, on} = useWebSocket(wsOptions);
+
+onMounted(async () => {
+  await getClientId();
+  await getQrCode();
+  open();
+
+  // 注册消息接收处理函数
+  on('message', (data: any) => {
+    console.log(data);
+    if (data) {
+      const user = useStore().user;
+      user.user.accessToken = data.access_token;
+      user.user.refreshToken = data.refresh_token;
+      user.user.uid = data.uid;
+      user.user.expiresAt = data.expires_at;
+      status.value = 'scanned';
+      message.success(t('login.loginSuccess'));
+    } else {
+      message.error(t('login.loginError'));
+    }
+  });
+});
+
+onUnmounted(async () => {
+  // await closeWebsocket(getLocalClientId());
+  close(true);
+
+});
 </script>
 <style src="./index.scss" scoped>
 @import "@/assets/styles/global.scss";

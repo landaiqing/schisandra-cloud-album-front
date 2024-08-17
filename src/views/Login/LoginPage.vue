@@ -330,7 +330,7 @@ async function phoneLoginSubmit() {
         if (res.code === 0 && res.success) {
           const userStore = useStore().user;
           const {uid, access_token, refresh_token, expires_at} = res.data;
-          userStore.user.userId = uid;
+          userStore.user.uid = uid;
           userStore.user.accessToken = access_token;
           userStore.user.refreshToken = refresh_token;
           userStore.user.expiresAt = expires_at;
@@ -408,7 +408,7 @@ async function checkAccountLoginCaptcha(angle: number) {
       if (res.code === 0 && res.success) {
         const userStore = useStore().user;
         const {uid, access_token, refresh_token, expires_at} = res.data;
-        userStore.user.userId = uid;
+        userStore.user.uid = uid;
         userStore.user.accessToken = access_token;
         userStore.user.refreshToken = refresh_token;
         userStore.user.expiresAt = expires_at;
