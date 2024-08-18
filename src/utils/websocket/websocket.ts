@@ -27,7 +27,7 @@ class WebSocketService {
         this.ws.addEventListener('close', this.handleClose);
         setInterval(() => {
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                this.send('ping');
+                this.send("ping");
             }
         }, this.heartbeatIntervalMs);
     }

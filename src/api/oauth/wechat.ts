@@ -48,15 +48,3 @@ export const closeWebsocket = (clientId: string) => {
         }
     );
 };
-export const sendSocketMessage = (clientId: string) => {
-    return service.Get('/api/ws/send',
-        {
-            params: {
-                client_id: clientId
-            },
-            meta: {
-                ignoreToken: true,
-            },
-        }
-    );
-};

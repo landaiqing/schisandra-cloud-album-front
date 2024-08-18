@@ -1,4 +1,4 @@
-// index.ts
+// wechat.ts
 import {createI18n} from 'vue-i18n';
 import zh from './language/zh.ts';
 import en from './language/en.ts';

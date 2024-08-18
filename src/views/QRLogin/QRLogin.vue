@@ -19,7 +19,6 @@
               :error-level="'H'"
               :status="status"
               @refresh="() => {
-                getClientId();
                 getQrCode();
               }"
               :value=qrcode
@@ -45,7 +44,7 @@ import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
-import {closeWebsocket, generateClientId, generateQrCode} from "@/api/oauth";
+import {closeWebsocket, generateClientId, generateQrCode} from "@/api/oauth/wechat.ts";
 import {onMounted, onUnmounted, ref} from "vue";
 import logo from "@/assets/svgs/logo-schisandra.svg";
 import useWebSocket from "@/utils/websocket/websocket.ts";
@@ -77,9 +76,10 @@ async function getClientId() {
  *  获取二维码
  */
 async function getQrCode() {
-  const clientId: any = localStorage.getItem('client_id');
+  const clientId: string | null = localStorage.getItem('client_id');
   if (!clientId) {
     status.value = 'expired';
+    await getClientId();
     return;
   }
   const res: any = await generateQrCode(clientId);
@@ -120,22 +120,21 @@ onMounted(async () => {
   // 注册消息接收处理函数
   on('message', (data: any) => {
     console.log(data);
-    if (data) {
+    if (data.code === 0 && data.data) {
       const user = useStore().user;
-      user.user.accessToken = data.access_token;
-      user.user.refreshToken = data.refresh_token;
-      user.user.uid = data.uid;
-      user.user.expiresAt = data.expires_at;
+      const {access_token, refresh_token, uid, expires_at} = data.data;
+      user.user.accessToken = access_token;
+      user.user.refreshToken = refresh_token;
+      user.user.uid = uid;
+      user.user.expiresAt = expires_at;
       status.value = 'scanned';
       message.success(t('login.loginSuccess'));
-    } else {
-      message.error(t('login.loginError'));
     }
   });
 });
 
 onUnmounted(async () => {
-  // await closeWebsocket(getLocalClientId());
+  await closeWebsocket(getLocalClientId());
   close(true);
 
 });
