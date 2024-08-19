@@ -52,11 +52,9 @@
                 </AFlex>
 
               </AFormItem>
-              <AFormItem>
+              <AFormItem id="phone_login_auto" name="auto_login">
                 <AFlex :vertical="false" justify="space-between">
-                  <ACheckbox @change="(e: any)=>{
-                    autoLoginChang(e.target.checked);
-                  }" v-model:checked="autoLoginChecked">{{ t("login.autoLogin") }}
+                  <ACheckbox v-model:checked="phoneLoginForm.auto_login">{{ t("login.autoLogin") }}
                   </ACheckbox>
                 </AFlex>
 
@@ -101,11 +99,9 @@
                   </AInputPassword>
                 </AFlex>
               </AFormItem>
-              <AFormItem>
+              <AFormItem id="account_login_auto" name="auto_login">
                 <AFlex :vertical="false" justify="space-between">
-                  <ACheckbox v-model:checked="autoLoginChecked" @change="(e: any)=>{
-                    autoLoginChang(e.target.checked);
-                  }">{{ t("login.autoLogin") }}
+                  <ACheckbox v-model:checked="accountLoginForm.auto_login">{{ t("login.autoLogin") }}
                   </ACheckbox>
                   <a @click="()=>{
                     router.push('/resetpass')
@@ -162,7 +158,7 @@
 </template>
 <script setup lang="ts">
 import {Rule} from "ant-design-vue/lib/form";
-import {onBeforeMount, onMounted, reactive, ref, UnwrapRef} from "vue";
+import {onMounted, reactive, ref, UnwrapRef} from "vue";
 import {AccountLogin, PhoneLogin} from "@/types/user";
 import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
@@ -181,7 +177,6 @@ const showPhoneRotateCaptcha = ref<boolean>(false);
 const showAccountRotateCaptcha = ref<boolean>(false);
 const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
 const captchaErrorCount = ref<number>(0);
-const autoLoginChecked = ref<boolean>(localStorage.getItem('auto_login') === 'true');
 const phoneLoginRotateEvent = {
   confirm: (angle: number) => {
     checkPhoneLoginCaptcha(angle);
@@ -208,11 +203,13 @@ const accountLoginRotateEvent = {
 const accountLoginForm: UnwrapRef<AccountLogin> = reactive({
   account: '',
   password: '',
+  auto_login: true,
 });
 // 手机登录表单数据
 const phoneLoginForm: UnwrapRef<PhoneLogin> = reactive({
   phone: '',
   captcha: '',
+  auto_login: true,
 });
 // 表单验证提示
 const accountValidate = ref<string>(t('login.accountValidate'));
@@ -442,21 +439,6 @@ async function sendMessageByPhone(): Promise<boolean> {
     return false;
   }
 }
-
-/**
- * 自动登录
- * @param checkedValue
- */
-async function autoLoginChang(checkedValue: boolean) {
-  return localStorage.setItem('auto_login', String(checkedValue));
-}
-
-onBeforeMount(() => {
-  const autoLogin: string | null = localStorage.getItem('auto_login');
-  if (!autoLogin) {
-    localStorage.setItem('auto_login', 'true');
-  }
-});
 </script>
 <style src="./index.scss" scoped>
 @import "@/assets/styles/global.scss";

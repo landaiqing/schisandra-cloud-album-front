@@ -15,7 +15,7 @@
             </span>
           <AQrcode
               class="qrlogin-card-qr"
-              :size="230"
+              :size="280"
               :error-level="'H'"
               :status="status"
               @refresh="() => {
@@ -24,7 +24,6 @@
               :value=qrcode
               :icon="logo"
           />
-          <ACheckbox class="qrlogin-card-auto-login">{{ t("login.autoLogin") }}</ACheckbox>
         </AFlex>
         <QRLoginFooter/>
         <ATooltip placement="left">
@@ -44,7 +43,7 @@ import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
-import {closeWebsocket, generateClientId, generateQrCode} from "@/api/oauth/wechat.ts";
+import {generateClientId, generateQrCode} from "@/api/oauth/wechat.ts";
 import {onMounted, onUnmounted, ref} from "vue";
 import logo from "@/assets/svgs/logo-schisandra.svg";
 import useWebSocket from "@/utils/websocket/websocket.ts";
@@ -80,30 +79,29 @@ async function getQrCode() {
   if (!clientId) {
     status.value = 'expired';
     await getClientId();
-    return;
-  }
-  const res: any = await generateQrCode(clientId);
-  if (res.code === 0 && res.data) {
-    status.value = 'active';
-    qrcode.value = res.data;
-    localStorage.setItem('qr_code', res.data);
+    await getQrCode();
   } else {
-    status.value = 'expired';
+    const res: any = await generateQrCode(clientId);
+    if (res.code === 0 && res.data) {
+      status.value = 'active';
+      qrcode.value = res.data;
+    } else {
+      status.value = 'expired';
+    }
   }
 }
 
 /**
  *  获取本地client_id
  */
-function getLocalClientId(): string {
+function getLocalClientId(): string | null {
   const clientID: string | null = localStorage.getItem('client_id');
   if (clientID) {
     return clientID;
   } else {
     getClientId();
-    return getLocalClientId();
+    return localStorage.getItem('client_id');
   }
-
 }
 
 const wsOptions = {
@@ -113,13 +111,10 @@ const wsOptions = {
 const {open, close, on} = useWebSocket(wsOptions);
 
 onMounted(async () => {
-  await getClientId();
   await getQrCode();
   open();
-
   // 注册消息接收处理函数
   on('message', (data: any) => {
-    console.log(data);
     if (data.code === 0 && data.data) {
       const user = useStore().user;
       const {access_token, refresh_token, uid, expires_at} = data.data;
@@ -134,9 +129,7 @@ onMounted(async () => {
 });
 
 onUnmounted(async () => {
-  await closeWebsocket(getLocalClientId());
   close(true);
-
 });
 </script>
 <style src="./index.scss" scoped>

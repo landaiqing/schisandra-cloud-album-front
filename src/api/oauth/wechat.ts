@@ -4,7 +4,7 @@ import {service} from "@/utils/alova/service.ts";
  * 生成客户端id
  */
 export const generateClientId = () => {
-    return service.Get('/api/oauth/generate_client_id',
+    return service.Get('/api/oauth/wechat/generate_client_id',
         {
             meta: {
                 ignoreToken: true,
@@ -21,7 +21,7 @@ export const generateClientId = () => {
  * @param clientId
  */
 export const generateQrCode = (clientId: string) => {
-    return service.Get('/api/oauth/get_temp_qrcode',
+    return service.Get('/api/oauth/wechat/get_temp_qrcode',
         {
             params: {
                 client_id: clientId

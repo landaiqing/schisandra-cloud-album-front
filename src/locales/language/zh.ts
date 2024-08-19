@@ -23,7 +23,7 @@ export default {
         passwordRule: "密码要6~18位字符，且必须包含字母、数字和特殊符号！",
         phoneLoginAndRegister: "短信注册/登录",
         open: "请打开",
-        scan: "扫码登录",
+        scan: "扫码关注公众号",
         wechat: "微信",
         repassword: "确认密码",
         repasswordValidate: "请输入确认密码",

@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    3DCard: typeof import('./src/components/3DCard/3DCard.vue')['default']
     AButton: typeof import('ant-design-vue/es')['Button']
     AButtonGroup: typeof import('ant-design-vue/es')['ButtonGroup']
     ACard: typeof import('ant-design-vue/es')['Card']
@@ -27,7 +28,9 @@ declare module 'vue' {
     ATimePicker: typeof import('ant-design-vue/es')['TimePicker']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     BoxDog: typeof import('./src/components/BoxDog/BoxDog.vue')['default']
+    Card3D: typeof import('./src/components/3DCard/Card3D.vue')['default']
     DynamicTitle: typeof import('./src/components/DynamicTitle/DynamicTitle.vue')['default']
+    EffectsCard: typeof import('./src/components/EffectsCard/EffectsCard.vue')['default']
     ForgetPage: typeof import('./src/views/Forget/ForgetPage.vue')['default']
     LandingPage: typeof import('./src/views/Landing/LandingPage.vue')['default']
     LockOutlined: typeof import('@ant-design/icons-vue')['LockOutlined']

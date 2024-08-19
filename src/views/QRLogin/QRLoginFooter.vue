@@ -6,7 +6,13 @@
           router.push('/login')
       }" class="qrlogin-form-bottom-button" :icon="h(TabletOutlined)">{{ t("login.phoneLoginAndRegister") }}
       </AButton>
-      <AButton @click="openGiteeUrl" class="qrlogin-form-bottom-button" :icon="h(QqOutlined)"></AButton>
+      <AButton class="qrlogin-form-bottom-button" :icon="h(QqOutlined)"></AButton>
+      <AButton @click="openGiteeUrl" class="qrlogin-form-bottom-button"
+               style="display: flex; align-items: center;justify-content: center;">
+        <template #icon>
+          <img :src=gitee alt="gitee" class="gitee-icon" style="width: 16px; height: 16px;"/>
+        </template>
+      </AButton>
       <AButton @click="openGithubUrl" class="qrlogin-form-bottom-button" :icon="h(GithubOutlined)"></AButton>
     </AFlex>
   </div>
@@ -20,18 +26,23 @@ import {getGithubUrl} from "@/api/oauth/github.ts";
 import {getGiteeUrl} from "@/api/oauth/gitee.ts";
 import useStore from "@/store";
 import {message} from "ant-design-vue";
+import gitee from "@/assets/svgs/gitee.svg";
+import {generateClientId} from "@/api/oauth/wechat.ts";
+import {getQQUrl} from "@/api/oauth/qq.ts";
 
 const router = useRouter();
 const {t} = useI18n();
 
 const githubRedirectUrl = ref<string>('');
 const giteeRedirectUrl = ref<string>('');
+const qqRedirectUrl = ref<string>('');
 
 /**
  * Get the redirect url of Github OAuth
  */
 async function getGithubRedirectUrl() {
-  const res: any = await getGithubUrl();
+  const clientId: string = getLocalClientId() as string;
+  const res: any = await getGithubUrl(clientId);
   if (res.code === 0 && res.data) {
     githubRedirectUrl.value = res.data;
   }
@@ -44,6 +55,43 @@ async function getGiteeRedirectUrl() {
   const res: any = await getGiteeUrl();
   if (res.code === 0 && res.data) {
     giteeRedirectUrl.value = res.data;
+  }
+}
+
+/**
+ *  获取client_id
+ */
+async function getClientId() {
+  const id: string | null = localStorage.getItem('client_id');
+  if (!id) {
+    const res: any = await generateClientId();
+    if (res.code === 0 && res.data) {
+      localStorage.setItem('client_id', res.data);
+    }
+  }
+}
+
+/**
+ * Get the redirect url of QQ OAuth
+ */
+async function getQQRedirectUrl() {
+  const clientId: string = getLocalClientId() as string;
+  const res: any = await getQQUrl(clientId);
+  if (res.code === 0 && res.data) {
+    qqRedirectUrl.value = res.data;
+  }
+}
+
+/**
+ *  获取本地client_id
+ */
+function getLocalClientId(): string | null {
+  const clientID: string | null = localStorage.getItem('client_id');
+  if (clientID) {
+    return clientID;
+  } else {
+    getClientId();
+    return localStorage.getItem('client_id');
   }
 }
 
@@ -107,6 +155,7 @@ const openGiteeUrl = () => {
 onMounted(() => {
   getGithubRedirectUrl();
   getGiteeRedirectUrl();
+  getQQRedirectUrl();
 });
 </script>
 <style src="./index.scss" scoped>
