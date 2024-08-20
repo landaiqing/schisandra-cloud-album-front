@@ -11,12 +11,9 @@ export const useThemeStore = defineStore(
     () => {
         const themeName = ref<string>('green'); // 主题名称
         const darkMode = ref<string>('light'); // 颜色模式
-        const darkModeComp = computed(() => {
-            document.documentElement.setAttribute('data-dark', darkMode.value);
-            return darkMode.value;
-        });
         const themeConfig = computed(() => {
             document.documentElement.setAttribute('data-theme', themeName.value);
+            document.documentElement.setAttribute('data-dark', darkMode.value);
             // 主题配置
             return {
                 token: {
@@ -35,9 +32,9 @@ export const useThemeStore = defineStore(
             themeName.value = value;
         };
         const toggleDarkMode = () => {
-            darkMode.value = darkMode.value === 'light' ? 'dark' : 'light';
+            darkMode.value = darkMode.value === "dark" ? "light" : "dark";
         };
-        return {themeName, themeConfig, darkMode, darkModeComp, setThemeName, toggleDarkMode};
+        return {themeName, themeConfig, darkMode, setThemeName, toggleDarkMode};
     },
     {
         persist: {

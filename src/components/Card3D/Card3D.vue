@@ -4,7 +4,7 @@
     <h1>Popular</h1>
     <div class="card card__one">
       <div class="card__bg" style="background-position: -8.01px 4.59px;"></div>
-      <img class="card__img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/62105/3dr_mono.png"
+      <img class="card__img" src="@/assets/images/3dr_mono.png"
            style="transform: translateX(17.8px) translateY(-10.2px);">
       <div class="card__text">
         <p class="card__title">Princess Mononoke</p>
@@ -12,7 +12,7 @@
     </div>
     <div class="card card__two">
       <div class="card__bg" style="background-position: -8.01px 4.59px;"></div>
-      <img class="card__img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/62105/3dr_chihiro.png"
+      <img class="card__img" src="@/assets/images/3dr_chihiro.png"
            style="transform: translateX(17.8px) translateY(-10.2px);">
       <div class="card__text">
         <p class="card__title">Spirited Away</p>
@@ -20,7 +20,7 @@
     </div>
     <div class="card card__three">
       <div class="card__bg" style="background-position: -8.01px 4.59px;"></div>
-      <img class="card__img" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/62105/3dr_howlcastle.png"
+      <img class="card__img" src="@/assets/images/3dr_howlcastle.png"
            style="transform: translateX(17.8px) translateY(-10.2px);">
       <div class="card__text">
         <p class="card__title">Howl's Moving Castle</p>
@@ -65,25 +65,7 @@ onMounted(() => {
 });
 
 </script>
-<style scoped>
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800");
-
-html, body {
-  height: 100%;
-}
-
-body {
-  align-items: center;
-  background: #642B73;
-  background: linear-gradient(to bottom, #C6426E, #642B73);
-  display: flex;
-  font-family: "Open Sans", sans;
-  justify-content: center;
-  overflow: hidden;
-  perspective: 1800px;
-  text-align: center;
-  margin: 0 20px;
-}
+<style scoped lang="scss">
 
 h1 {
   color: #3e3e42;
@@ -157,7 +139,7 @@ h3 {
 }
 
 .card__one .card__bg {
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/62105/3dr_monobg.jpg") center/cover no-repeat;
+  background: url("@/assets/images/3dr_monobg.jpg") center/cover no-repeat;
 }
 
 .card__two .card__img {
@@ -165,7 +147,7 @@ h3 {
 }
 
 .card__two .card__bg {
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/62105/3dr_spirited.jpg") center/cover no-repeat;
+  background: url("@/assets/images/3dr_spirited.jpg") center/cover no-repeat;
 }
 
 .card__three .card__img {
@@ -175,7 +157,7 @@ h3 {
 }
 
 .card__three .card__bg {
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/62105/3dr_howlbg.jpg") center/cover no-repeat;
+  background: url("@/assets/images/3dr_howlbg.jpg") center/cover no-repeat;
 }
 
 .card__text {

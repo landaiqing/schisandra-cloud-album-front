@@ -39,7 +39,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
             }),
             AutoImport({
                 //安装两行后你会发现在组件中不用再导入ref，reactive等
-                imports: ['vue', 'vue-router', 'pinia'],
+                imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
                 dts: 'auto-import.d.ts',
                 //ant-design-vue
                 resolvers: [AntDesignVueResolver({

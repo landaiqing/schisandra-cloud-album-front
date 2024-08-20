@@ -4,7 +4,13 @@
       <BoxDog/>
     </div>
     <div class="login-right">
-      <span class="login-right-title">{{ t("login.title") }}</span>
+
+      <span class="login-right-title">
+        <img src="@/assets/images/logo-schisandra.png" @click="()=>{
+          router.push('/')
+        }" style="width: 30px; height: 30px;cursor: pointer;" alt="">
+        {{ t("login.title") }}
+      </span>
       <ACard class="login-card" bordered :hoverable="false">
         <ATabs :centered="false" size="large">
           <!--    短信登录      -->
@@ -54,7 +60,8 @@
               </AFormItem>
               <AFormItem id="phone_login_auto" name="auto_login">
                 <AFlex :vertical="false" justify="space-between">
-                  <ACheckbox v-model:checked="phoneLoginForm.auto_login">{{ t("login.autoLogin") }}
+                  <ACheckbox id="phone_login_auto_checkbox" v-model:checked="phoneLoginForm.auto_login">
+                    {{ t("login.autoLogin") }}
                   </ACheckbox>
                 </AFlex>
 
@@ -101,7 +108,8 @@
               </AFormItem>
               <AFormItem id="account_login_auto" name="auto_login">
                 <AFlex :vertical="false" justify="space-between">
-                  <ACheckbox v-model:checked="accountLoginForm.auto_login">{{ t("login.autoLogin") }}
+                  <ACheckbox id="account_login_auto_checkbox" v-model:checked="accountLoginForm.auto_login">
+                    {{ t("login.autoLogin") }}
                   </ACheckbox>
                   <a @click="()=>{
                     router.push('/resetpass')
@@ -153,6 +161,21 @@
           }"
           :events="accountLoginRotateEvent"
       />
+    </div>
+
+    <div class="area">
+      <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
     </div>
   </div>
 </template>
@@ -440,6 +463,6 @@ async function sendMessageByPhone(): Promise<boolean> {
   }
 }
 </script>
-<style src="./index.scss" scoped>
-@import "@/assets/styles/global.scss";
+<style src="./index.scss" scoped lang="scss">
+
 </style>

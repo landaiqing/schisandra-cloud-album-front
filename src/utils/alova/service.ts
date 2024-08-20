@@ -22,15 +22,22 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
 
         // 当token过期时触发，在此函数中触发刷新token
         handler: async () => {
-            // 刷新token
-            const user = useStore().user;
-            const res: any = await refreshToken(user.user?.refreshToken || '');
-            if (res.code === 0 && res.data) {
-                const {access_token, refresh_token, uid} = res.data;
-                user.user.accessToken = access_token;
-                user.user.refreshToken = refresh_token;
-                user.user.uid = uid;
-            } else {
+            try {
+                // 刷新token
+                const user = useStore().user;
+                const res: any = await refreshToken(user.user?.refreshToken || '');
+                if (res.code === 0 && res.data) {
+                    const {access_token, refresh_token, uid} = res.data;
+                    user.user.accessToken = access_token;
+                    user.user.refreshToken = refresh_token;
+                    user.user.uid = uid;
+                } else {
+                    message.error(i18n.global.t('error.loginExpired'));
+                    localStorage.removeItem('user');
+                    await router.push('/login');
+                }
+            } catch (error: any) {
+                console.error(error);
                 message.error(i18n.global.t('error.loginExpired'));
                 localStorage.removeItem('user');
                 await router.push('/login');

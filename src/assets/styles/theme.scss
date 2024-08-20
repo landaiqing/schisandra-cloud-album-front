@@ -1,16 +1,15 @@
 @import "colors.module";
 
 $modes: (
-        light: (
-                bgColor: #fff,
+        "light": (
+                bgColor: transparent,
                 infoColor: #000
         ),
-        dark: (
+        "dark": (
                 bgColor: #000,
                 infoColor: #fff
         )
 );
-
 $curMode: light;
 $curTheme: red;
 @mixin useTheme() {

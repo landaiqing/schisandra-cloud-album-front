@@ -13,7 +13,7 @@
       </ASelect>
       <AButtonGroup>
         <AButton type="primary">切换主题- {{ app.themeName }}</AButton>
-        <AButton @click="app.toggleDarkMode">切换模式{{ app.darkModeComp }}</AButton>
+        <AButton @click="app.toggleDarkMode">切换模式{{ app.darkMode }}</AButton>
       </AButtonGroup>
       <div class="test">test</div>
     </AConfigProvider>

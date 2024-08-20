@@ -42,8 +42,21 @@ export default {
         resetPasswordSuccess: "密码重置成功！",
         resetPasswordError: "密码重置失败！",
 
-
-
+    },
+    landing: {
+        immediately: '立即进入',
+        english: 'English',
+        chinese: '中文',
+        learnMore: '了解更多',
+        title: '五味子云相册',
+        description: '在这个瞬息万变的世界里，我们用镜头捕捉每一个精彩瞬间。五味子云相册，为您提供一个安全、便捷的云端空间，让您的照片随时随地触手可及。 无需担心存储空间不足，无需担心照片丢失。五味子云相册，让您的每一张照片都得到妥善保管，让美好的记忆永不褪色。',
+        userAgreement: '用户协议',
+        privacyPolicy: '隐私政策',
+        termsOfService: '服务条款',
+        contactUs: '联系我们',
+        friends: '友情链接',
+        helpCenter: '帮助中心',
+        copyright: '版权所有 © 2021 五味子云相册',
     },
     error: {
         networkError: '网络连接失败！',

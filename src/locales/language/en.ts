@@ -43,6 +43,21 @@ export default {
         resetPasswordError: "reset password failed！",
 
     },
+    landing: {
+        immediately: 'Immediately',
+        english: 'English',
+        chinese: 'Chinese',
+        learnMore: 'Learn More',
+        title: 'Schisandra Cloud Album',
+        description: 'Schisandra Cloud Album is a cloud storage service that allows users to store and manage their digital assets in the cloud. It provides a simple and easy-to-use interface, and supports multiple file formats, including images, videos, documents, and audio files.',
+        userAgreement: 'user agreement',
+        privacyPolicy: 'privacy policy',
+        termsOfService: 'terms of service',
+        contactUs: 'contact us',
+        friends: 'friends',
+        helpCenter: 'help center',
+        copyright: '© 2021 Schisandra Cloud Album. All rights reserved.',
+    },
     error: {
         networkError: 'Network error, please try again later',
         400: 'request error (400)',
