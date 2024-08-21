@@ -3,20 +3,21 @@
 import {createRouter, createWebHistory, Router, RouteRecordRaw} from 'vue-router';
 import login from './modules/login';
 import test from "@/router/modules/test.ts";
-import test2 from "@/router/modules/testI18n.ts";
+
 import useStore from "@/store";
 import {message} from "ant-design-vue";
 import {close, start} from '@/components/Nprogress/nprogress.ts';
 import notFound from "@/router/modules/notFound.ts";
 import landing from "@/router/modules/landing.ts";
-
+import mainRouter from "@/router/modules/main_router.ts";
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
     ...notFound,
     ...landing,
+    ...mainRouter,
     ...test,
-    ...test2,
+
     {
         path: '/:pathMatch(.*)',
         redirect: '/404',
@@ -29,7 +30,7 @@ const router: Router = createRouter({
     routes
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
     start();
     if (to.meta.requiresAuth) {
         const user = useStore().user;

@@ -138,6 +138,9 @@ onMounted(async () => {
       user.user.expiresAt = expires_at;
       status.value = 'scanned';
       message.success(t('login.loginSuccess'));
+      setTimeout(() => {
+        router.push('/main');
+      }, 1000);
     }
   });
 });

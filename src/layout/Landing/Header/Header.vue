@@ -16,7 +16,27 @@
             <label for="toggle-box-checkbox" class="toggle-box-label-left"></label>
             <label for="toggle-box-checkbox" class="toggle-box-label"></label>
           </div>
+          <div style="margin-right: 20px;">
+            <ADropdown>
+              <template #overlay>
+                <AMenu @click="(e: any)=>{
+                  changeTheme(e.key)
+                }">
+                  <AMenuItem v-for="(color, name) in variables" :key="name" :value="color">
+                    <div
+                        v-bind:style="{ backgroundColor: name as string, width: '20px', height: '20px', borderRadius: '20%' }">
+                    </div>
+                  </AMenuItem>
+                </AMenu>
+              </template>
+              <AButton type="text" size="large">
+                <div
+                    v-bind:style="{ backgroundColor: app.themeName, width: '20px', height: '20px', borderRadius: '20%' }">
+                </div>
+              </AButton>
+            </ADropdown>
 
+          </div>
           <div style="margin-right: 20px;">
             <ADropdown>
               <template #overlay>
@@ -34,6 +54,7 @@
             </ADropdown>
 
           </div>
+
           <AButton @click="router.push('/login')" type="primary" size="large" style="margin-right: 10px;">
             {{ t("landing.immediately") }}
           </AButton>
@@ -49,6 +70,7 @@ import useStore from "@/store/index.ts";
 import {ref} from "vue";
 import {DownOutlined} from '@ant-design/icons-vue';
 import {useI18n} from "vue-i18n";
+import variables from "@/assets/styles/colors.module.scss";
 
 const lang = useStore().lang;
 const {t, locale} = useI18n();
@@ -57,6 +79,10 @@ const {t, locale} = useI18n();
 async function changeLang(language: any) {
   lang.lang = language;
   locale.value = language;
+}
+
+async function changeTheme(theme: any) {
+  app.setThemeName(theme);
 }
 
 const app = useStore().theme;

@@ -6,7 +6,7 @@
           router.push('/qrlogin')
       }" class="login-form-bottom-button" :icon="h(QrcodeOutlined)">{{ t("login.qrLogin") }}
       </AButton>
-      <AButton class="login-form-bottom-button" :icon="h(QqOutlined)"></AButton>
+      <AButton @click="openQQUrl" class="login-form-bottom-button" :icon="h(QqOutlined)"></AButton>
       <AButton @click="openGiteeUrl" class="login-form-bottom-button"
                style="display: flex; align-items: center;justify-content: center;">
         <template #icon>
@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import {GithubOutlined, QqOutlined, QrcodeOutlined} from "@ant-design/icons-vue";
 import {useI18n} from "vue-i18n";
-import {h, onMounted, ref} from "vue";
+import {h, onBeforeMount, ref} from "vue";
 import {useRouter} from 'vue-router';
 import {getGithubUrl} from "@/api/oauth/github.ts";
 import {getGiteeUrl} from "@/api/oauth/gitee.ts";
@@ -117,6 +117,9 @@ const openGithubUrl = () => {
         user.user.expiresAt = expires_at;
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
+        setTimeout(() => {
+          router.push('/main');
+        }, 1000);
       }
     }
   };
@@ -146,12 +149,47 @@ const openGiteeUrl = () => {
         user.user.expiresAt = expires_at;
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
+        setTimeout(() => {
+          router.push('/main');
+        }, 1000);
       }
     }
   };
   window.addEventListener("message", messageHandler);
 };
-onMounted(() => {
+/**
+ * Open the QQ OAuth page in a new window
+ */
+const openQQUrl = () => {
+  const iWidth = 800;                         //弹出窗口的宽度;
+  const iHeight = 500;                        //弹出窗口的高度;
+  //window.screen.height获得屏幕的高，window.screen.width获得屏幕的宽
+  const iTop = (window.screen.height - 30 - iHeight) / 2;       //获得窗口的垂直位置;
+  const iLeft = (window.screen.width - 10 - iWidth) / 2;        //获得窗口的水平位置;
+  window.open(qqRedirectUrl.value, 'newwindow', 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',toolbar=no,menubar=no,scrollbars=auto,resizable=no,location=no,status=no');
+
+  const messageHandler = (e: any) => {
+    if (typeof e.data === 'string') {
+      const data: any = JSON.parse(e.data);
+      if (data.code === 0 && data.data) {
+        const user = useStore().user;
+        const {access_token, refresh_token, uid, expires_at} = data.data;
+        user.user.accessToken = access_token;
+        user.user.refreshToken = refresh_token;
+        user.user.uid = uid;
+        user.user.expiresAt = expires_at;
+        message.success(t('login.loginSuccess'));
+        window.removeEventListener("message", messageHandler);
+        setTimeout(() => {
+          router.push('/main');
+        }, 1000);
+      }
+    }
+  };
+  window.addEventListener("message", messageHandler);
+};
+
+onBeforeMount(() => {
   getGithubRedirectUrl();
   getGiteeRedirectUrl();
   getQQRedirectUrl();

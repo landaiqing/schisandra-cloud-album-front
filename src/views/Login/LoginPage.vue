@@ -355,6 +355,9 @@ async function phoneLoginSubmit() {
           userStore.user.refreshToken = refresh_token;
           userStore.user.expiresAt = expires_at;
           message.success(t('login.loginSuccess'));
+          setTimeout(() => {
+            router.push('/main');
+          }, 1000);
         } else {
           message.error(res.message);
         }
@@ -433,6 +436,9 @@ async function checkAccountLoginCaptcha(angle: number) {
         userStore.user.refreshToken = refresh_token;
         userStore.user.expiresAt = expires_at;
         message.success(t('login.loginSuccess'));
+        setTimeout(() => {
+          router.push('/main');
+        }, 1000);
       } else {
         message.error(t('login.loginError'));
       }
