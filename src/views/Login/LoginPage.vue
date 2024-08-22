@@ -46,7 +46,8 @@
                         <SafetyOutlined/>
                       </template>
                     </AInput>
-                    <AButton v-if="!state.showCountDown" @click="sendCaptcha" style="margin-left: 10px" size="large">{{
+                    <AButton v-if="!state.showCountDown" @click="sendCaptchaThrottle" style="margin-left: 10px"
+                             size="large">{{
                         t("login.sendCaptcha")
                       }}
                     </AButton>
@@ -67,7 +68,7 @@
 
               </AFormItem>
               <AFormItem>
-                <AButton @click="phoneLoginSubmit" type="primary" size="large" class="login-form-button">
+                <AButton @click="phoneLoginSubmitDebounce" type="primary" size="large" class="login-form-button">
                   {{ t("login.loginAndRegister") }}
                 </AButton>
               </AFormItem>
@@ -118,7 +119,7 @@
 
               </AFormItem>
               <AFormItem>
-                <AButton @click="accountLoginSubmit" type="primary" size="large" class="login-form-button">
+                <AButton @click="accountLoginSubmitDebounce" type="primary" size="large" class="login-form-button">
                   {{
                     t("login.login")
                   }}
@@ -191,6 +192,7 @@ import {checkRotatedCaptcha, getRotatedCaptchaData} from "@/api/captcha";
 import {message} from "ant-design-vue";
 import {accountLoginApi, phoneLoginApi, sendMessage} from "@/api/user";
 import useStore from "@/store";
+import {useDebounceFn, useThrottleFn} from "@vueuse/core";
 
 const router = useRouter();
 const {t} = useI18n();
@@ -202,24 +204,24 @@ const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
 const captchaErrorCount = ref<number>(0);
 const phoneLoginRotateEvent = {
   confirm: (angle: number) => {
-    checkPhoneLoginCaptcha(angle);
+    checkPhoneLoginCaptchaDebounce(angle);
   },
   close: () => {
     showPhoneRotateCaptcha.value = false;
   },
   refresh: () => {
-    getRotateCaptcha();
+    refreshCaptcha();
   },
 };
 const accountLoginRotateEvent = {
   confirm: (angle: number) => {
-    checkAccountLoginCaptcha(angle);
+    checkAccountLoginCaptchaDebounce(angle);
   },
   close: () => {
     showAccountRotateCaptcha.value = false;
   },
   refresh: () => {
-    getRotateCaptcha();
+    refreshCaptcha();
   },
 };
 // 账号登录表单数据
@@ -264,7 +266,7 @@ const rules: Record<string, Rule[]> = {
   ]
 };
 
-const state = reactive({
+const state: any = reactive<any>({
   countDownTime: 60,
   showCountDown: false,
 });
@@ -308,6 +310,11 @@ onMounted(() => {
 });
 
 /**
+ *  发送验证码节流
+ */
+const sendCaptchaThrottle = useThrottleFn(sendCaptcha, 3000);
+
+/**
  * 发送验证码
  */
 async function sendCaptcha() {
@@ -324,6 +331,11 @@ async function sendCaptcha() {
 }
 
 /**
+ *  账号登录  防抖
+ */
+const accountLoginSubmitDebounce = useDebounceFn(accountLoginSubmit, 3000);
+
+/**
  * 账号登录提交
  */
 async function accountLoginSubmit() {
@@ -338,6 +350,11 @@ async function accountLoginSubmit() {
         console.log('error', error);
       });
 }
+
+/**
+ * 手机登录提交  防抖
+ */
+const phoneLoginSubmitDebounce = useDebounceFn(phoneLoginSubmit, 3000);
 
 /**
  * 手机登录提交
@@ -368,6 +385,11 @@ async function phoneLoginSubmit() {
 }
 
 /**
+ * 刷新验证码  节流
+ */
+const refreshCaptcha = useThrottleFn(getRotateCaptcha, 3000);
+
+/**
  * 获取旋转验证码数据
  */
 async function getRotateCaptcha() {
@@ -382,6 +404,11 @@ async function getRotateCaptcha() {
     message.error(t('login.systemError'));
   }
 }
+
+/**
+ *  检查手机登录旋转验证码   防抖
+ */
+const checkPhoneLoginCaptchaDebounce = useDebounceFn(checkPhoneLoginCaptcha, 500);
 
 /**
  * 验证旋转验证码
@@ -412,6 +439,11 @@ async function checkPhoneLoginCaptcha(angle: number) {
     }
   }
 }
+
+/**
+ * 检查账户登录旋转验证码  防抖
+ */
+const checkAccountLoginCaptchaDebounce = useDebounceFn(checkAccountLoginCaptcha, 500);
 
 /**
  * 检查账户登录旋转验证码

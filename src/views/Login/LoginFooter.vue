@@ -6,14 +6,14 @@
           router.push('/qrlogin')
       }" class="login-form-bottom-button" :icon="h(QrcodeOutlined)">{{ t("login.qrLogin") }}
       </AButton>
-      <AButton @click="openQQUrl" class="login-form-bottom-button" :icon="h(QqOutlined)"></AButton>
-      <AButton @click="openGiteeUrl" class="login-form-bottom-button"
+      <AButton @click="openQQbUrlDebounce" class="login-form-bottom-button" :icon="h(QqOutlined)"></AButton>
+      <AButton @click="openGiteebUrlDebounce" class="login-form-bottom-button"
                style="display: flex; align-items: center;justify-content: center;">
         <template #icon>
           <img :src=gitee alt="gitee" class="gitee-icon" style="width: 16px; height: 16px;"/>
         </template>
       </AButton>
-      <AButton @click="openGithubUrl" class="login-form-bottom-button" :icon="h(GithubOutlined)"></AButton>
+      <AButton @click="openGithubUrlDebounce" class="login-form-bottom-button" :icon="h(GithubOutlined)"></AButton>
     </AFlex>
   </div>
 </template>
@@ -29,6 +29,7 @@ import {message} from "ant-design-vue";
 import gitee from "@/assets/svgs/gitee.svg";
 import {generateClientId} from "@/api/oauth/wechat.ts";
 import {getQQUrl} from "@/api/oauth/qq.ts";
+import {useDebounceFn} from "@vueuse/core";
 
 const router = useRouter();
 const {t} = useI18n();
@@ -95,9 +96,14 @@ function getLocalClientId(): string | null {
 }
 
 /**
+ * Open the Github OAuth page in a new window with debounce
+ */
+const openGithubUrlDebounce = useDebounceFn(openGithubUrl, 1000);
+
+/**
  * Open the Github OAuth page in a new window
  */
-const openGithubUrl = () => {
+function openGithubUrl() {
   const iWidth = 800;                         //弹出窗口的宽度;
   const iHeight = 500;                        //弹出窗口的高度;
   //window.screen.height获得屏幕的高，window.screen.width获得屏幕的宽
@@ -124,11 +130,17 @@ const openGithubUrl = () => {
     }
   };
   window.addEventListener("message", messageHandler);
-};
+}
+
+/**
+ * Open the Gitee OAuth page in a new window with debounce
+ */
+const openGiteebUrlDebounce = useDebounceFn(openGiteeUrl, 1000);
+
 /**
  * Open the Gitee OAuth page in a new window
  */
-const openGiteeUrl = () => {
+function openGiteeUrl() {
   const iWidth = 800;                         //弹出窗口的宽度;
   const iHeight = 500;                        //弹出窗口的高度;
   //window.screen.height获得屏幕的高，window.screen.width获得屏幕的宽
@@ -156,11 +168,17 @@ const openGiteeUrl = () => {
     }
   };
   window.addEventListener("message", messageHandler);
-};
+}
+
+/**
+ * Open the QQ OAuth page in a new window with debounce
+ */
+const openQQbUrlDebounce = useDebounceFn(openQQUrl, 1000);
+
 /**
  * Open the QQ OAuth page in a new window
  */
-const openQQUrl = () => {
+function openQQUrl() {
   const iWidth = 800;                         //弹出窗口的宽度;
   const iHeight = 500;                        //弹出窗口的高度;
   //window.screen.height获得屏幕的高，window.screen.width获得屏幕的宽
@@ -187,7 +205,7 @@ const openQQUrl = () => {
     }
   };
   window.addEventListener("message", messageHandler);
-};
+}
 
 onBeforeMount(() => {
   getGithubRedirectUrl();

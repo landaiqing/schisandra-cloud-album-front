@@ -62,7 +62,7 @@
               </AInputPassword>
             </AFormItem>
             <AFormItem>
-              <AButton @click="resetPasswordSubmit" style="width: 100%;" type="primary" size="large">{{
+              <AButton @click="resetPassword" style="width: 100%;" type="primary" size="large">{{
                   t("login.resetPassword")
                 }}
               </AButton>
@@ -103,6 +103,7 @@ import {Rule} from "ant-design-vue/lib/form";
 import {checkRotatedCaptcha, getRotatedCaptchaData} from "@/api/captcha";
 import {message} from "ant-design-vue";
 import {resetPasswordApi, sendMessage} from "@/api/user";
+import {useDebounceFn} from "@vueuse/core";
 
 const router = useRouter();
 const {t} = useI18n();
@@ -118,7 +119,7 @@ const resetPasswordRotateEvent = {
     showRotateCaptcha.value = false;
   },
   refresh: () => {
-    getRotateCaptcha();
+    refreshCaptcha();
   },
 };
 const ResetPasswordForm: UnwrapRef<ResetPassword> = reactive({
@@ -232,6 +233,11 @@ async function sendCaptcha() {
 }
 
 /**
+ * 重置密码表单提交  防抖
+ */
+const resetPassword = useDebounceFn(resetPasswordSubmit, 1000);
+
+/**
  * 重置密码表单提交
  */
 async function resetPasswordSubmit() {
@@ -250,6 +256,11 @@ async function resetPasswordSubmit() {
         console.log('error', error);
       });
 }
+
+/**
+ * 刷新验证码  节流
+ */
+const refreshCaptcha = useDebounceFn(getRotateCaptcha, 3000);
 
 /**
  * 获取旋转验证码数据
