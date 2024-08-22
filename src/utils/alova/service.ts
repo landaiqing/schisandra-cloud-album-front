@@ -12,6 +12,7 @@ import {axiosRequestAdapter} from "@alova/adapter-axios";
 import {refreshToken} from "@/api/user";
 import router from "@/router/router.ts";
 
+let hasShownNetworkError: boolean = false;
 const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication<typeof VueHook,
     typeof axiosRequestAdapter>({
     refreshTokenOnSuccess: {
@@ -80,7 +81,8 @@ export const service = createAlova({
         onError:
             (error: AxiosError, _method: any) => {
                 const {response} = error;
-                if (response) {
+                if (response && !hasShownNetworkError) {
+                    hasShownNetworkError = true;
                     handleCode(response.status);
                 }
                 if (!window.navigator.onLine) {
