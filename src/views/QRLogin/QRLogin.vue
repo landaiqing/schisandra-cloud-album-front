@@ -75,12 +75,10 @@ const status = ref<string>('loading');
  *  获取client_id
  */
 async function getClientId() {
-  const id: string | null = localStorage.getItem('client_id');
-  if (!id) {
-    const res: any = await generateClientId();
-    if (res.code === 0 && res.data) {
-      localStorage.setItem('client_id', res.data);
-    }
+  const client = useStore().client;
+  const res: any = await generateClientId();
+  if (res.code === 0 && res.data) {
+    client.setClientId(res.data);
   }
 }
 
@@ -89,13 +87,13 @@ async function getClientId() {
  *  获取二维码
  */
 async function getQrCode() {
-  const clientId: string | null = localStorage.getItem('client_id');
-  if (!clientId) {
+  const client = useStore().client;
+  if (!client.getClientId()) {
     status.value = 'expired';
     await getClientId();
     await getQrCode();
   } else {
-    const res: any = await generateQrCode(clientId);
+    const res: any = await generateQrCode(client.getClientId() as string);
     if (res.code === 0 && res.data) {
       status.value = 'active';
       qrcode.value = res.data;
@@ -108,13 +106,13 @@ async function getQrCode() {
 /**
  *  获取本地client_id
  */
-function getLocalClientId(): string | null {
-  const clientID: string | null = localStorage.getItem('client_id');
-  if (clientID) {
-    return clientID;
+function getLocalClientId() {
+  const client = useStore().client;
+  if (client.getClientId()) {
+    return client.getClientId();
   } else {
     getClientId();
-    return localStorage.getItem('client_id');
+    return client.getClientId();
   }
 }
 

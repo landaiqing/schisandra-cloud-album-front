@@ -8,7 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
-    AButtonGroup: typeof import('ant-design-vue/es')['ButtonGroup']
     ACard: typeof import('ant-design-vue/es')['Card']
     ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
     AConfigProvider: typeof import('ant-design-vue/es')['ConfigProvider']
@@ -22,8 +21,6 @@ declare module 'vue' {
     AMenu: typeof import('ant-design-vue/es')['Menu']
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
     AQrcode: typeof import('ant-design-vue/es')['QRCode']
-    ASelect: typeof import('ant-design-vue/es')['Select']
-    ASelectOption: typeof import('ant-design-vue/es')['SelectOption']
     ATabPane: typeof import('ant-design-vue/es')['TabPane']
     ATabs: typeof import('ant-design-vue/es')['Tabs']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
@@ -47,7 +44,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SafetyOutlined: typeof import('@ant-design/icons-vue')['SafetyOutlined']
     TabletOutlined: typeof import('@ant-design/icons-vue')['TabletOutlined']
-    TestTheme: typeof import('./src/views/TestTheme.vue')['default']
     UserOutlined: typeof import('@ant-design/icons-vue')['UserOutlined']
     WechatOutlined: typeof import('@ant-design/icons-vue')['WechatOutlined']
   }

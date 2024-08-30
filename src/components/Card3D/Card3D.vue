@@ -1,6 +1,6 @@
 <template>
   <div class="cards" style="transform: rotateX(-10.2deg) rotateY(-17.8deg);">
-    <h3>Movies</h3>
+    <h3>Album</h3>
     <h1>Popular</h1>
     <div class="card card__one">
       <div class="card__bg" style="background-position: -8.01px 4.59px;"></div>

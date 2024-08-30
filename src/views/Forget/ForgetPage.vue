@@ -91,6 +91,20 @@
           :events="resetPasswordRotateEvent"
       />
     </div>
+    <div class="area">
+      <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -190,9 +204,7 @@ const countDown = () => {
   } else {
     localStorage.setItem('start_time_send_captcha', String(nowTime));
   }
-
   state.countDownTime = surplus;
-
   if (timer) {
     clearInterval(timer);
   }
@@ -258,7 +270,7 @@ async function resetPasswordSubmit() {
 }
 
 /**
- * 刷新验证码  节流
+ * 刷新验证码 防抖
  */
 const refreshCaptcha = useDebounceFn(getRotateCaptcha, 3000);
 

@@ -60,19 +60,6 @@ async function getGiteeRedirectUrl() {
 }
 
 /**
- *  获取client_id
- */
-async function getClientId() {
-  const id: string | null = localStorage.getItem('client_id');
-  if (!id) {
-    const res: any = await generateClientId();
-    if (res.code === 0 && res.data) {
-      localStorage.setItem('client_id', res.data);
-    }
-  }
-}
-
-/**
  * Get the redirect url of QQ OAuth
  */
 async function getQQRedirectUrl() {
@@ -84,15 +71,26 @@ async function getQQRedirectUrl() {
 }
 
 /**
+ *  获取client_id
+ */
+async function getClientId() {
+  const client = useStore().client;
+  const res: any = await generateClientId();
+  if (res.code === 0 && res.data) {
+    client.setClientId(res.data);
+  }
+}
+
+/**
  *  获取本地client_id
  */
-function getLocalClientId(): string | null {
-  const clientID: string | null = localStorage.getItem('client_id');
-  if (clientID) {
-    return clientID;
+function getLocalClientId() {
+  const client = useStore().client;
+  if (client.getClientId()) {
+    return client.getClientId();
   } else {
     getClientId();
-    return localStorage.getItem('client_id');
+    return client.getClientId();
   }
 }
 
@@ -127,6 +125,9 @@ function openGithubUrl() {
         setTimeout(() => {
           router.push('/main');
         }, 1000);
+      } else {
+        message.error(t('login.loginError'));
+        window.removeEventListener("message", messageHandler);
       }
     }
   };
@@ -165,6 +166,9 @@ function openGiteeUrl() {
         setTimeout(() => {
           router.push('/main');
         }, 1000);
+      }else {
+        message.error(t('login.loginError'));
+        window.removeEventListener("message", messageHandler);
       }
     }
   };
@@ -202,6 +206,9 @@ function openQQUrl() {
         setTimeout(() => {
           router.push('/main');
         }, 1000);
+      }else {
+        message.error(t('login.loginError'));
+        window.removeEventListener("message", messageHandler);
       }
     }
   };
