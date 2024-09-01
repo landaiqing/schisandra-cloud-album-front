@@ -30,6 +30,7 @@ import gitee from "@/assets/svgs/gitee.svg";
 import {generateClientId} from "@/api/oauth/wechat.ts";
 import {getQQUrl} from "@/api/oauth/qq.ts";
 import {useDebounceFn} from "@vueuse/core";
+import {getUserDevice} from "@/api/oauth";
 
 const router = useRouter();
 const {t} = useI18n();
@@ -110,7 +111,7 @@ function openGithubUrl() {
   const iLeft = (window.screen.width - 10 - iWidth) / 2;        //获得窗口的水平位置;
   window.open(githubRedirectUrl.value, 'newwindow', 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',toolbar=no,menubar=no,scrollbars=auto,resizable=no,location=no,status=no');
 
-  const messageHandler = (e: any) => {
+  const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
       const data: any = JSON.parse(e.data);
       if (data.code === 0 && data.data) {
@@ -120,6 +121,7 @@ function openGithubUrl() {
         user.user.refreshToken = refresh_token;
         user.user.uid = uid;
         user.user.expiresAt = expires_at;
+        await getUserDevice(uid);
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
         setTimeout(() => {
@@ -151,7 +153,7 @@ function openGiteeUrl() {
   window.open(giteeRedirectUrl.value, '_blank', 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',toolbar=no,menubar=no,scrollbars=auto,resizable=no,location=no,status=no');
 
 
-  const messageHandler = (e: any) => {
+  const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
       const data: any = JSON.parse(e.data);
       if (data.code === 0 && data.data) {
@@ -161,12 +163,13 @@ function openGiteeUrl() {
         user.user.refreshToken = refresh_token;
         user.user.uid = uid;
         user.user.expiresAt = expires_at;
+        await getUserDevice(uid);
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
         setTimeout(() => {
           router.push('/main');
         }, 1000);
-      }else {
+      } else {
         message.error(t('login.loginError'));
         window.removeEventListener("message", messageHandler);
       }
@@ -191,7 +194,7 @@ function openQQUrl() {
   const iLeft = (window.screen.width - 10 - iWidth) / 2;        //获得窗口的水平位置;
   window.open(qqRedirectUrl.value, 'newwindow', 'height=' + iHeight + ',innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',toolbar=no,menubar=no,scrollbars=auto,resizable=no,location=no,status=no');
 
-  const messageHandler = (e: any) => {
+  const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
       const data: any = JSON.parse(e.data);
       if (data.code === 0 && data.data) {
@@ -201,12 +204,13 @@ function openQQUrl() {
         user.user.refreshToken = refresh_token;
         user.user.uid = uid;
         user.user.expiresAt = expires_at;
+        await getUserDevice(uid);
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
         setTimeout(() => {
           router.push('/main');
         }, 1000);
-      }else {
+      } else {
         message.error(t('login.loginError'));
         window.removeEventListener("message", messageHandler);
       }

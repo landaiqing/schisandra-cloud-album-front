@@ -63,6 +63,7 @@ import logo from "@/assets/svgs/logo-schisandra.svg";
 import useWebSocket from "@/utils/websocket/websocket.ts";
 import useStore from "@/store";
 import {message} from "ant-design-vue";
+import {getUserDevice} from "@/api/oauth";
 
 const {t} = useI18n();
 
@@ -126,7 +127,7 @@ onMounted(async () => {
   await getQrCode();
   open();
   // 注册消息接收处理函数
-  on('message', (data: any) => {
+  on('message', async (data: any) => {
     if (data.code === 0 && data.data) {
       const user = useStore().user;
       const {access_token, refresh_token, uid, expires_at} = data.data;
@@ -135,6 +136,7 @@ onMounted(async () => {
       user.user.uid = uid;
       user.user.expiresAt = expires_at;
       status.value = 'scanned';
+      await getUserDevice(uid);
       message.success(t('login.loginSuccess'));
       setTimeout(() => {
         router.push('/main');
@@ -142,6 +144,7 @@ onMounted(async () => {
     }
   });
 });
+
 
 onUnmounted(async () => {
   close(true);
