@@ -41,6 +41,7 @@ export default {
         twoPasswordNotSame: "两次密码输入不一致！",
         resetPasswordSuccess: "密码重置成功！",
         resetPasswordError: "密码重置失败！",
+        pleaseLogin: "请先登录！",
 
     },
     landing: {
@@ -74,7 +75,8 @@ export default {
         other: '连接出错',
         authTokenError: "认证失败，请重新登录！",
         authTokenExpired: "认证过期，请重新登录！",
-        loginExpired: "登录已过期!,请重新登录!",
+        loginExpired: "登录已过期!",
         pleaseLogin: "请先登录！",
+        loginExpiredDesc: "该账号在其他地方登录，请重新登录！"
     }
 };

@@ -7,6 +7,7 @@ import {close, start} from '@/components/Nprogress/nprogress.ts';
 import notFound from "./modules/notFound.ts";
 import landing from "./modules/landing.ts";
 import mainRouter from "./modules/main_router.ts";
+import i18n from "@/locales";
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
@@ -26,14 +27,25 @@ const router: Router = createRouter({
 
 router.beforeEach((to, _from, next) => {
     start();
-    if (to.meta.requiresAuth) {
-        const user = useStore().user;
-        const token: string | undefined = user.user.refreshToken;
-        const userId: string | undefined = user.user.userId;
-        if (token !== "" && userId !== "") {
+    const user = useStore().user;
+    const token: string | undefined = user.user.refreshToken;
+    const userId: string | undefined = user.user.userId;
+
+    // 检查用户是否已登录
+    const isLoggedIn: boolean = token !== "" && userId !== "";
+
+    if (to.path === '/login' || to.path === '/qrlogin' || to.path === '/resetpass') {
+        if (isLoggedIn) {
+            // 如果用户已登录，重定向到主页或其他页面
+            next({path: '/main'});
+        } else {
+            next();
+        }
+    } else if (to.meta.requiresAuth) {
+        if (isLoggedIn) {
             next();
         } else {
-            message.warn('请先登录').then();
+            message.warn(i18n.global.t('login.pleaseLogin')).then();
             next({
                 path: '/login',
                 query: {redirect: to.fullPath}
@@ -43,6 +55,7 @@ router.beforeEach((to, _from, next) => {
         next();
     }
 });
+
 
 router.afterEach(() => {
     // 关闭进度条

@@ -41,6 +41,7 @@ export default {
         twoPasswordNotSame: "two passwords are not the same, please try again！",
         resetPasswordSuccess: "reset password success！",
         resetPasswordError: "reset password failed！",
+        pleaseLogin: "please login！",
 
     },
     landing: {
@@ -76,6 +77,7 @@ export default {
         authTokenExpired: "auth token expired, please login again",
         loginExpired: "login expired, please try again",
         pleaseLogin: "please login first",
+        loginExpiredDesc: "this account has been logged in elsewhere, please login again",
 
     }
 };

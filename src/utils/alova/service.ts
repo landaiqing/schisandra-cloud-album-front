@@ -6,7 +6,7 @@ import {localforageStorageAdapter} from "@/utils/alova/adapter/localforageStorag
 import {createServerTokenAuthentication} from "alova/client";
 import {AxiosError, AxiosResponse} from "axios";
 import {handleCode} from "@/utils/errorCode/errorCodeHandler.ts";
-import {message} from "ant-design-vue";
+import {message, notification} from "ant-design-vue";
 import i18n from "@/locales";
 import {axiosRequestAdapter} from "@alova/adapter-axios";
 import {refreshToken} from "@/api/user";
@@ -26,7 +26,7 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
             try {
                 // 刷新token
                 const user = useStore().user;
-                const res: any = await refreshToken(user.user?.refreshToken || '');
+                const res: any = await refreshToken(user.user?.refreshToken);
                 if (res.code === 0 && res.data) {
                     const {access_token, refresh_token, uid} = res.data;
                     user.user.accessToken = access_token;
@@ -75,7 +75,19 @@ export const service = createAlova({
             if (response.data instanceof Blob) {
                 return response;
             } else {
-                return response.data;
+                if (response.data.code === 403) {
+                    notification.error({
+                        placement: 'topRight',
+                        message: i18n.global.t('error.loginExpired'),
+                        description: i18n.global.t('error.loginExpiredDesc'),
+                        onClose: () => {
+                            localStorage.removeItem('user');
+                            router.push('/login');
+                        }
+                    });
+                } else {
+                    return response.data;
+                }
             }
         },
         onError:
