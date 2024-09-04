@@ -333,7 +333,7 @@ async function sendCaptcha() {
 /**
  *  账号登录  防抖
  */
-const accountLoginSubmitDebounce = useDebounceFn(accountLoginSubmit, 3000);
+const accountLoginSubmitDebounce = useDebounceFn(accountLoginSubmit, 1000);
 
 /**
  * 账号登录提交
@@ -354,7 +354,7 @@ async function accountLoginSubmit() {
 /**
  * 手机登录提交  防抖
  */
-const phoneLoginSubmitDebounce = useDebounceFn(phoneLoginSubmit, 3000);
+const phoneLoginSubmitDebounce = useDebounceFn(phoneLoginSubmit, 1000);
 
 /**
  * 手机登录提交

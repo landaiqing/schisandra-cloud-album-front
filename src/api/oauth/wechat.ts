@@ -1,22 +1,6 @@
 import {service} from "@/utils/alova/service.ts";
 
 /**
- * 生成客户端id
- */
-export const generateClientId = () => {
-    return service.Get('/api/oauth/wechat/generate_client_id',
-        {
-            meta: {
-                ignoreToken: true,
-            },
-            cacheFor: {
-                mode: "restore",
-                expire: 1000 * 60 * 60 * 24 * 30 // 30天
-            }
-        }
-    );
-};
-/**
  * 获取临时二维码
  * @param clientId
  */

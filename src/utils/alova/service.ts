@@ -35,13 +35,13 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
                 } else {
                     message.error(i18n.global.t('error.loginExpired'));
                     localStorage.removeItem('user');
-                    await router.push('/login');
+                    router.push('/login').then();
                 }
             } catch (error: any) {
                 console.error(error);
                 message.error(i18n.global.t('error.loginExpired'));
                 localStorage.removeItem('user');
-                await router.push('/login');
+                router.push('/login').then();
             }
         }
     }
@@ -68,27 +68,33 @@ export const service = createAlova({
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';
+        const client = useStore().client;
+        method.config.headers['X-Request-Id'] = client.getClientId() || '';
     }),
     // 响应拦截器
     responded: onResponseRefreshToken({
         onSuccess: async (response: AxiosResponse, _method: any) => {
             if (response.data instanceof Blob) {
                 return response;
-            } else {
-                if (response.data.code === 403) {
-                    notification.error({
-                        placement: 'topRight',
-                        message: i18n.global.t('error.loginExpired'),
-                        description: i18n.global.t('error.loginExpiredDesc'),
-                        onClose: () => {
-                            localStorage.removeItem('user');
-                            router.push('/login');
-                        }
-                    });
-                } else {
-                    return response.data;
-                }
             }
+            const {code} = response.data;
+            if (code === 403) {
+                notification.error({
+                    placement: 'topRight',
+                    duration: 5,
+                    message: i18n.global.t('error.loginExpired'),
+                    description: i18n.global.t('error.loginExpiredDesc'),
+                    onClose: () => {
+                        localStorage.removeItem('user');
+                        router.push('/login').then();
+                    }
+                });
+
+                throw new Error('Authentication Expired');
+            } else {
+                return response.data;
+            }
+
         },
         onError:
             (error: AxiosError, _method: any) => {

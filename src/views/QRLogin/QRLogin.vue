@@ -57,13 +57,13 @@ import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
-import {generateClientId, generateQrCode} from "@/api/oauth/wechat.ts";
+import {generateQrCode} from "@/api/oauth/wechat.ts";
 import {onMounted, onUnmounted, ref} from "vue";
 import logo from "@/assets/svgs/logo-schisandra.svg";
 import useWebSocket from "@/utils/websocket/websocket.ts";
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import {getUserDevice} from "@/api/oauth";
+import {generateClientId, getUserDevice} from "@/api/oauth";
 
 const {t} = useI18n();
 
@@ -94,7 +94,7 @@ async function getQrCode() {
     await getClientId();
     await getQrCode();
   } else {
-    const res: any = await generateQrCode(client.getClientId() as string);
+    const res: any = await generateQrCode(client.getClientId() || "");
     if (res.code === 0 && res.data) {
       status.value = 'active';
       qrcode.value = res.data;
@@ -118,7 +118,7 @@ function getLocalClientId() {
 }
 
 const wsOptions = {
-  url: import.meta.env.VITE_WEB_SOCKET_URL as string + "?client_id=" + getLocalClientId(),
+  url: import.meta.env.VITE_WEB_SOCKET_URL + "?client_id=" + getLocalClientId(),
 };
 
 const {open, close, on} = useWebSocket(wsOptions);

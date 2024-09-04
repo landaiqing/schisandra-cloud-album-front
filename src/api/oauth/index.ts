@@ -15,3 +15,20 @@ export const getUserDevice = (userId: string) => {
         }
     );
 };
+
+/**
+ * 生成客户端id
+ */
+export const generateClientId = () => {
+    return service.Get('/api/client/generate_client_id',
+        {
+            meta: {
+                ignoreToken: true,
+            },
+            cacheFor: {
+                mode: "restore",
+                expire: 1000 * 60 * 60 * 24 * 30 // 30天
+            }
+        }
+    );
+};

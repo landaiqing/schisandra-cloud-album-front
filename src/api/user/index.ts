@@ -55,6 +55,7 @@ export const phoneLoginApi = (param: PhoneLogin) => {
     return service.Post('/api/user/phone_login', {
             phone: param.phone,
             captcha: param.captcha,
+            auto_login: param.auto_login
         },
         {
             meta: {
@@ -72,6 +73,7 @@ export const accountLoginApi = (param: AccountLogin) => {
     return service.Post('/api/user/login', {
             account: param.account,
             password: param.password,
+            auto_login: param.auto_login
         },
         {
             meta: {
@@ -95,6 +97,21 @@ export const resetPasswordApi = (param: ResetPassword) => {
         {
             meta: {
                 ignoreToken: true,
+            }
+        }
+    );
+};
+/**
+ * 获取用户权限
+ * @param user_id
+ */
+export const getUserPermissions = (user_id: string) => {
+    return service.Get('/api/auth/permission/get_user_permissions', {
+            params: {
+                user_id: user_id
+            },
+            meta: {
+                ignoreToken: false,
             }
         }
     );

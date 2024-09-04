@@ -28,11 +28,13 @@ const router: Router = createRouter({
 router.beforeEach((to, _from, next) => {
     start();
     const user = useStore().user;
+    const client = useStore().client;
     const token: string | undefined = user.user.refreshToken;
     const userId: string | undefined = user.user.userId;
+    const clientId: string | undefined = client.getClientId();
 
     // 检查用户是否已登录
-    const isLoggedIn: boolean = token !== "" && userId !== "";
+    const isLoggedIn: boolean = token !== "" && userId !== "" && clientId !== "";
 
     if (to.path === '/login' || to.path === '/qrlogin' || to.path === '/resetpass') {
         if (isLoggedIn) {

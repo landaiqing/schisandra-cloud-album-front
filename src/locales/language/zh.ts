@@ -77,6 +77,6 @@ export default {
         authTokenExpired: "认证过期，请重新登录！",
         loginExpired: "登录已过期!",
         pleaseLogin: "请先登录！",
-        loginExpiredDesc: "该账号在其他地方登录，请重新登录！"
+        loginExpiredDesc: "该账号在其他地方登录，请刷新后重新登录！"
     }
 };
