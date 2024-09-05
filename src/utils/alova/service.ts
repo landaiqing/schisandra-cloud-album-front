@@ -6,11 +6,10 @@ import {localforageStorageAdapter} from "@/utils/alova/adapter/localforageStorag
 import {createServerTokenAuthentication} from "alova/client";
 import {AxiosError, AxiosResponse} from "axios";
 import {handleCode} from "@/utils/errorCode/errorCodeHandler.ts";
-import {message, notification} from "ant-design-vue";
+import {message} from "ant-design-vue";
 import i18n from "@/locales";
 import {axiosRequestAdapter} from "@alova/adapter-axios";
 import {refreshToken} from "@/api/user";
-import router from "@/router/router.ts";
 
 let hasShownNetworkError: boolean = false;
 const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication<typeof VueHook,
@@ -18,30 +17,27 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
     refreshTokenOnSuccess: {
         // 在请求前触发，将接收到method参数，并返回boolean表示token是否过期
         isExpired: (response: AxiosResponse<any, any>, _method: any) => {
-            return response.data.code === 401;
+            const code = response.data.code;
+            return code === 401;
         },
 
         // 当token过期时触发，在此函数中触发刷新token
         handler: async () => {
-            try {
-                // 刷新token
-                const user = useStore().user;
-                const res: any = await refreshToken(user.user?.refreshToken);
-                if (res.code === 0 && res.data) {
-                    const {access_token, refresh_token, uid} = res.data;
-                    user.user.accessToken = access_token;
-                    user.user.refreshToken = refresh_token;
-                    user.user.uid = uid;
-                } else {
-                    message.error(i18n.global.t('error.loginExpired'));
-                    localStorage.removeItem('user');
-                    router.push('/login').then();
-                }
-            } catch (error: any) {
-                console.error(error);
+            // 刷新token
+            const user = useStore().user;
+            const res: any = await refreshToken(user.user?.refreshToken);
+            if (res.code === 0 && res.data) {
+                const {access_token, refresh_token, uid} = res.data;
+                user.user.accessToken = access_token;
+                user.user.refreshToken = refresh_token;
+                user.user.uid = uid;
+            } else {
                 message.error(i18n.global.t('error.loginExpired'));
                 localStorage.removeItem('user');
-                router.push('/login').then();
+                localStorage.removeItem('clientId');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
             }
         }
     }
@@ -68,8 +64,6 @@ export const service = createAlova({
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';
-        const client = useStore().client;
-        method.config.headers['X-Request-Id'] = client.getClientId() || '';
     }),
     // 响应拦截器
     responded: onResponseRefreshToken({
@@ -79,21 +73,20 @@ export const service = createAlova({
             }
             const {code} = response.data;
             if (code === 403) {
-                notification.error({
-                    placement: 'topRight',
-                    duration: 5,
-                    message: i18n.global.t('error.loginExpired'),
-                    description: i18n.global.t('error.loginExpiredDesc'),
-                    onClose: () => {
-                        localStorage.removeItem('user');
-                        router.push('/login').then();
-                    }
+                localStorage.removeItem('user');
+                localStorage.removeItem('clientId');
+                message.open({
+                    type: 'error',
+                    content: i18n.global.t('error.loginExpired'),
+                    duration: 2,
                 });
-
-                throw new Error('Authentication Expired');
-            } else {
-                return response.data;
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+                return Promise.reject(response.data);
             }
+            return response.data;
+
 
         },
         onError:

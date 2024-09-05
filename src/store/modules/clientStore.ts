@@ -20,12 +20,12 @@ export const useClientStore = defineStore(
             getClientId
         };
     },
-    {
-        // 开启数据持久化
-        persist: {
-            key: 'clientId',
-            storage: localStorage,
-            paths: ["clientId"],
-        }
-    }
+    // {
+    //     // 开启数据持久化
+    //     persist: {
+    //         key: 'clientId',
+    //         storage: localStorage,
+    //         paths: ["clientId"],
+    //     }
+    // }
 );
