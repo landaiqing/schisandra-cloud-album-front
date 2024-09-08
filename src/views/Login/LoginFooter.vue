@@ -84,7 +84,7 @@ async function getClientId() {
  *  获取本地client_id
  */
 async function getLocalClientId() {
-  if (client.getClientId() !== '' && client.getClientId() !== null) {
+  if (client.getClientId()) {
     return client.getClientId();
   } else {
     await getClientId();

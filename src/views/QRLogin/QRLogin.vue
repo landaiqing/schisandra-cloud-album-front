@@ -68,7 +68,7 @@ import {generateClientId, getUserDevice} from "@/api/oauth";
 const {t} = useI18n();
 
 const router = useRouter();
-
+const client = useStore().client;
 const qrcode = ref<string>('');
 const status = ref<string>('loading');
 
@@ -76,7 +76,6 @@ const status = ref<string>('loading');
  *  获取client_id
  */
 async function getClientId() {
-  const client = useStore().client;
   const res: any = await generateClientId();
   if (res.code === 0 && res.data) {
     client.setClientId(res.data);
@@ -88,7 +87,6 @@ async function getClientId() {
  *  获取二维码
  */
 async function getQrCode() {
-  const client = useStore().client;
   if (!client.getClientId()) {
     status.value = 'expired';
     await getClientId();
@@ -98,6 +96,7 @@ async function getQrCode() {
     if (res.code === 0 && res.data) {
       status.value = 'active';
       qrcode.value = res.data;
+      await handleListenMessage();
     } else {
       status.value = 'expired';
     }
@@ -108,7 +107,6 @@ async function getQrCode() {
  *  获取本地client_id
  */
 function getLocalClientId() {
-  const client = useStore().client;
   if (client.getClientId()) {
     return client.getClientId();
   } else {
@@ -123,8 +121,10 @@ const wsOptions = {
 
 const {open, close, on} = useWebSocket(wsOptions);
 
-onMounted(async () => {
-  await getQrCode();
+/**
+ *  监听消息
+ */
+async function handleListenMessage() {
   open();
   // 注册消息接收处理函数
   on('message', async (data: any) => {
@@ -143,8 +143,11 @@ onMounted(async () => {
       }, 1000);
     }
   });
-});
+}
 
+onMounted(async () => {
+  await getQrCode();
+});
 
 onUnmounted(async () => {
   close(true);
