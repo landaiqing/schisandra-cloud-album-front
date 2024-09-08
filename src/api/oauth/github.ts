@@ -14,7 +14,7 @@ export const getGithubUrl = (state: string) => {
             },
             cacheFor: {
                 mode: "restore",
-                expire: 1000 * 60 * 60 * 24 * 30 // 30 days
+                expire: 1000 * 60 * 60 * 24 * 7
             }
         }
     );

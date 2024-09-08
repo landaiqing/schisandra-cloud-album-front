@@ -27,7 +27,7 @@ export const generateClientId = () => {
             },
             cacheFor: {
                 mode: "restore",
-                expire: 1000 * 60 * 60 * 24 * 30 // 30天
+                expire: 1000 * 60 * 60 * 24 * 7
             }
         }
     );
