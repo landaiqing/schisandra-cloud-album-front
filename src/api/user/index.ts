@@ -106,10 +106,9 @@ export const resetPasswordApi = (param: ResetPassword) => {
  * @param user_id
  */
 export const getUserPermissions = (user_id: string) => {
-    return service.Get('/api/auth/permission/get_user_permissions', {
-            params: {
-                user_id: user_id
-            },
+    return service.Post('/api/auth/permission/get_user_permissions', {
+            user_id: user_id,
+        }, {
             meta: {
                 ignoreToken: false,
             }

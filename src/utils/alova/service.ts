@@ -34,7 +34,6 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
             } else {
                 message.error(i18n.global.t('error.loginExpired'));
                 localStorage.removeItem('user');
-                localStorage.removeItem('clientId');
                 setTimeout(() => {
                     window.location.href = '/login';
                 }, 2000);
@@ -50,12 +49,7 @@ export const service = createAlova({
     requestAdapter: axiosRequestAdapter(),
     l2Cache: localforageStorageAdapter,
     cacheLogger: import.meta.env.VITE_NODE_ENV === 'development',
-    cacheFor: {
-        // GET: {
-        //     mode: "restore",
-        //     expire: 1000 * 60 * 60 * 24 * 7 // 7天过期
-        // }
-    },
+    cacheFor: {},
     // 设置全局的请求拦截器
     beforeRequest: onAuthRequired(async (method: any) => {
         if (!method.meta?.ignoreToken) {
@@ -74,7 +68,6 @@ export const service = createAlova({
             const {code} = response.data;
             if (code === 403) {
                 localStorage.removeItem('user');
-                localStorage.removeItem('clientId');
                 message.open({
                     type: 'error',
                     content: i18n.global.t('error.loginExpired'),

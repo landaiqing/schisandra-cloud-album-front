@@ -4,7 +4,7 @@ import {ref} from "vue";
 export const useClientStore = defineStore(
     'clientId',
     () => {
-        const clientId = ref<string>();
+        const clientId = ref<string>('');
 
         function setClientId(id: string) {
             clientId.value = id;

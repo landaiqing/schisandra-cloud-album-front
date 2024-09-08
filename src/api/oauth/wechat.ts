@@ -16,19 +16,4 @@ export const generateQrCode = (clientId: string) => {
         }
     );
 };
-/**
- * 关闭websocket
- * @param clientId
- */
-export const closeWebsocket = (clientId: string) => {
-    return service.Get('/api/ws/delete',
-        {
-            params: {
-                client_id: clientId
-            },
-            meta: {
-                ignoreToken: true,
-            },
-        }
-    );
-};
+
