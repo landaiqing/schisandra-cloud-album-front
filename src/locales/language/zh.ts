@@ -78,5 +78,21 @@ export default {
         loginExpired: "登录已过期!",
         pleaseLogin: "请先登录！",
         loginExpiredDesc: "该账号在其他地方登录，请刷新后重新登录！"
+    },
+    comment: {
+        comment: '评论',
+        sendComment: '发表评论',
+        emoji: '表情',
+        picture: '图片',
+        placeholder: '输入评论（Enter换行，Ctrl+Enter发送）',
+        allComments: '全部评论',
+        latest: '最新',
+        hot: '最热',
+        reply: '回复',
+        report: '举报',
+        delete: '删除',
+        copy: '复制',
+        cancelReply: '取消',
     }
+
 };

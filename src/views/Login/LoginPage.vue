@@ -1,9 +1,10 @@
 <template>
-  <div class="login-main">
-    <div class="login-left">
-      <BoxDog/>
-    </div>
-    <div class="login-right">
+  <a-spin :spinning="loginLoading" tip="Login..." size="large">
+    <div class="login-main">
+      <div class="login-left">
+        <BoxDog/>
+      </div>
+      <div class="login-right">
 
       <span class="login-right-title">
         <img src="@/assets/images/logo-schisandra.png" @click="()=>{
@@ -11,174 +12,178 @@
         }" style="width: 30px; height: 30px;cursor: pointer;" alt="">
         {{ t("login.title") }}
       </span>
-      <ACard class="login-card" bordered :hoverable="false">
-        <ATabs :centered="false" size="large">
-          <!--    短信登录      -->
-          <ATabPane key="phoneLogin">
-            <template #tab>
+        <ACard class="login-card" bordered :hoverable="false">
+          <ATabs :centered="false" size="large">
+            <!--    短信登录      -->
+            <ATabPane key="phoneLogin">
+              <template #tab>
                 <span class="login-tab-span">
                       {{ t("login.phoneLogin") }}
                  </span>
-            </template>
-            <AForm ref="phoneLoginFormRef" :rules="rules" :model="phoneLoginForm">
-              <AFormItem
-                  class="login-form-item"
-                  name="phone">
-                <span class="login-card-span">{{ t("login.phone") }}</span>
-                <AInput v-model:value="phoneLoginForm.phone" class="login-form-input" size="large"
-                        :placeholder=phoneValidate allow-clear
-                        autocomplete="off"
-                >
-                  <template #prefix>
-                    <TabletOutlined/>
-                  </template>
-                </AInput>
-              </AFormItem>
-              <AFormItem
-                  class="login-form-item"
-                  name="captcha">
-                <AFlex :vertical="true">
-                  <span class="login-card-span">{{ t("login.phoneCaptcha") }}</span>
-                  <AFlex :vertical="false" align="center" justify="center">
-                    <AInput v-model:value="phoneLoginForm.captcha" size="large" :placeholder=captchaValidate
-                            allow-clear>
-                      <template #prefix>
-                        <SafetyOutlined/>
-                      </template>
-                    </AInput>
-                    <AButton v-if="!state.showCountDown" @click="sendCaptchaThrottle" style="margin-left: 10px"
-                             size="large">{{
-                        t("login.sendCaptcha")
-                      }}
-                    </AButton>
-                    <AButton v-if="state.showCountDown" disabled style="margin-left: 10px" size="large">{{
-                        state.countDownTime
-                      }}s{{ t("login.reSendCaptcha") }}
-                    </AButton>
+              </template>
+              <AForm ref="phoneLoginFormRef" :rules="rules" :model="phoneLoginForm">
+                <AFormItem
+                    class="login-form-item"
+                    name="phone">
+                  <span class="login-card-span">{{ t("login.phone") }}</span>
+                  <AInput v-model:value="phoneLoginForm.phone" class="login-form-input" size="large"
+                          :placeholder=phoneValidate allow-clear
+                          autocomplete="off"
+                  >
+                    <template #prefix>
+                      <TabletOutlined/>
+                    </template>
+                  </AInput>
+                </AFormItem>
+                <AFormItem
+                    class="login-form-item"
+                    name="captcha">
+                  <AFlex :vertical="true">
+                    <span class="login-card-span">{{ t("login.phoneCaptcha") }}</span>
+                    <AFlex :vertical="false" align="center" justify="center">
+                      <AInput v-model:value="phoneLoginForm.captcha" size="large" :placeholder=captchaValidate
+                              allow-clear>
+                        <template #prefix>
+                          <SafetyOutlined/>
+                        </template>
+                      </AInput>
+                      <AButton v-if="!state.showCountDown" @click="sendCaptchaThrottle" style="margin-left: 10px"
+                               size="large">{{
+                          t("login.sendCaptcha")
+                        }}
+                      </AButton>
+                      <AButton v-if="state.showCountDown" disabled style="margin-left: 10px" size="large">
+                        {{
+                          state.countDownTime
+                        }}s{{ t("login.reSendCaptcha") }}
+                      </AButton>
+                    </AFlex>
                   </AFlex>
-                </AFlex>
 
-              </AFormItem>
-              <AFormItem id="phone_login_auto" name="auto_login">
-                <AFlex :vertical="false" justify="space-between">
-                  <ACheckbox id="phone_login_auto_checkbox" v-model:checked="phoneLoginForm.auto_login">
-                    {{ t("login.autoLogin") }}
-                  </ACheckbox>
-                </AFlex>
+                </AFormItem>
+                <AFormItem id="phone_login_auto" name="auto_login">
+                  <AFlex :vertical="false" justify="space-between">
+                    <ACheckbox id="phone_login_auto_checkbox" v-model:checked="phoneLoginForm.auto_login">
+                      {{ t("login.autoLogin") }}
+                    </ACheckbox>
+                  </AFlex>
 
-              </AFormItem>
-              <AFormItem>
-                <AButton @click="phoneLoginSubmitDebounce" type="primary" size="large" class="login-form-button">
-                  {{ t("login.loginAndRegister") }}
-                </AButton>
-              </AFormItem>
-            </AForm>
-            <LoginFooter/>
-          </ATabPane>
-          <!--    账号登录      -->
-          <ATabPane key="accountLogin">
-            <template #tab>
+                </AFormItem>
+                <AFormItem>
+                  <AButton @click="phoneLoginSubmitDebounce" type="primary" size="large" class="login-form-button">
+                    {{ t("login.loginAndRegister") }}
+                  </AButton>
+                </AFormItem>
+              </AForm>
+              <LoginFooter/>
+            </ATabPane>
+            <!--    账号登录      -->
+            <ATabPane key="accountLogin">
+              <template #tab>
                 <span class="login-tab-span">
                       {{ t("login.accountLogin") }}
                  </span>
-            </template>
-            <AForm ref="accountLoginFormRef" :rules="rules" :model="accountLoginForm" autocomplete="off">
-              <AFormItem
-                  class="login-form-item"
-                  name="account">
-                <span class="login-card-span">{{ t("login.account") }}</span>
-                <AInput v-model:value="accountLoginForm.account" class="login-form-input" size="large"
-                        :placeholder=accountValidate allow-clear autocomplete="off">
-                  <template #prefix>
-                    <user-outlined/>
-                  </template>
-                </AInput>
-              </AFormItem>
-              <AFormItem
-                  class="login-form-item"
-                  name="password">
-                <AFlex :vertical="true">
-                  <span class="login-card-span">{{ t("login.password") }}</span>
-                  <AInputPassword v-model:value="accountLoginForm.password" class="login-form-input" size="large"
-                                  :placeholder=passwordValidate allow-clear autocomplete="off">
+              </template>
+              <AForm ref="accountLoginFormRef" :rules="rules" :model="accountLoginForm" autocomplete="off">
+                <AFormItem
+                    class="login-form-item"
+                    name="account">
+                  <span class="login-card-span">{{ t("login.account") }}</span>
+                  <AInput v-model:value="accountLoginForm.account" class="login-form-input" size="large"
+                          :placeholder=accountValidate allow-clear autocomplete="off">
                     <template #prefix>
-                      <SafetyOutlined/>
+                      <user-outlined/>
                     </template>
-                  </AInputPassword>
-                </AFlex>
-              </AFormItem>
-              <AFormItem id="account_login_auto" name="auto_login">
-                <AFlex :vertical="false" justify="space-between">
-                  <ACheckbox id="account_login_auto_checkbox" v-model:checked="accountLoginForm.auto_login">
-                    {{ t("login.autoLogin") }}
-                  </ACheckbox>
-                  <a @click="()=>{
+                  </AInput>
+                </AFormItem>
+                <AFormItem
+                    class="login-form-item"
+                    name="password">
+                  <AFlex :vertical="true">
+                    <span class="login-card-span">{{ t("login.password") }}</span>
+                    <AInputPassword v-model:value="accountLoginForm.password" class="login-form-input" size="large"
+                                    :placeholder=passwordValidate allow-clear autocomplete="off">
+                      <template #prefix>
+                        <SafetyOutlined/>
+                      </template>
+                    </AInputPassword>
+                  </AFlex>
+                </AFormItem>
+                <AFormItem id="account_login_auto" name="auto_login">
+                  <AFlex :vertical="false" justify="space-between">
+                    <ACheckbox id="account_login_auto_checkbox" v-model:checked="accountLoginForm.auto_login">
+                      {{ t("login.autoLogin") }}
+                    </ACheckbox>
+                    <a @click="()=>{
                     router.push('/resetpass')
                   }">{{ t("login.forgotPassword") }}</a>
-                </AFlex>
+                  </AFlex>
 
-              </AFormItem>
-              <AFormItem>
-                <AButton @click="accountLoginSubmitDebounce" type="primary" size="large" class="login-form-button">
-                  {{
-                    t("login.login")
-                  }}
-                </AButton>
-              </AFormItem>
-            </AForm>
-            <LoginFooter/>
-          </ATabPane>
-        </ATabs>
-        <ATooltip placement="left">
-          <template #title>
-            <span>{{ t("login.qrLogin") }}</span>
-          </template>
-          <div @click="()=>{
+                </AFormItem>
+                <AFormItem>
+                  <AButton @click="accountLoginSubmitDebounce" type="primary" size="large" class="login-form-button">
+                    {{
+                      t("login.login")
+                    }}
+                  </AButton>
+                </AFormItem>
+              </AForm>
+              <LoginFooter/>
+            </ATabPane>
+          </ATabs>
+          <ATooltip placement="left">
+            <template #title>
+              <span>{{ t("login.qrLogin") }}</span>
+            </template>
+            <div @click="()=>{
             router.push('/qrlogin');
           }" class="login-right-qrcode"/>
-        </ATooltip>
-      </ACard>
-    </div>
-    <div v-if="showPhoneRotateCaptcha" class="mask">
-      <!--    滑动验证码 -->
-      <gocaptcha-rotate
-          class="gocaptcha-rotate"
-          v-if="showPhoneRotateCaptcha"
-          :data="captchaData"
-          :config="{
+          </ATooltip>
+        </ACard>
+      </div>
+      <AModal v-model:open="showPhoneRotateCaptcha" :footer="null" :closable="false" width="375" :centered="true"
+              :maskClosable="false" bodyStyle="padding: 0">
+        <!--    滑动验证码 -->
+        <gocaptcha-rotate
+            class="gocaptcha-rotate"
+            v-if="showPhoneRotateCaptcha"
+            :data="captchaData"
+            :config="{
+                  title: t('login.rotateCaptchaTitle'),
+                }"
+            :events="phoneLoginRotateEvent"
+        />
+      </AModal>
+      <AModal v-model:open="showAccountRotateCaptcha" :footer="null" :closable="false" width="375" :centered="true"
+              :maskClosable="false" bodyStyle="padding: 0">
+        <!--    滑动验证码 -->
+        <gocaptcha-rotate
+            class="gocaptcha-rotate"
+            v-if="showAccountRotateCaptcha"
+            :data="captchaData"
+            :config="{
             title: t('login.rotateCaptchaTitle'),
           }"
-          :events="phoneLoginRotateEvent"
-      />
-    </div>
-    <div v-if="showAccountRotateCaptcha" class="mask">
-      <!--    滑动验证码 -->
-      <gocaptcha-rotate
-          class="gocaptcha-rotate"
-          v-if="showAccountRotateCaptcha"
-          :data="captchaData"
-          :config="{
-            title: t('login.rotateCaptchaTitle'),
-          }"
-          :events="accountLoginRotateEvent"
-      />
-    </div>
+            :events="accountLoginRotateEvent"
+        />
+      </AModal>
 
-    <div class="area">
-      <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
+      <div class="area">
+        <ul class="circles">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
     </div>
-  </div>
+  </a-spin>
 </template>
 <script setup lang="ts">
 import {Rule} from "ant-design-vue/lib/form";
@@ -202,6 +207,7 @@ const showPhoneRotateCaptcha = ref<boolean>(false);
 const showAccountRotateCaptcha = ref<boolean>(false);
 const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
 const captchaErrorCount = ref<number>(0);
+const loginLoading = ref<boolean>(false);
 const phoneLoginRotateEvent = {
   confirm: (angle: number) => {
     checkPhoneLoginCaptchaDebounce(angle);
@@ -360,6 +366,7 @@ const phoneLoginSubmitDebounce = useDebounceFn(phoneLoginSubmit, 1000);
  * 手机登录提交
  */
 async function phoneLoginSubmit() {
+  loginLoading.value = true;
   phoneLoginFormRef.value
       .validate()
       .then(async () => {
@@ -372,10 +379,12 @@ async function phoneLoginSubmit() {
           userStore.user.refreshToken = refresh_token;
           userStore.user.expiresAt = expires_at;
           message.success(t('login.loginSuccess'));
+          loginLoading.value = false;
           setTimeout(() => {
             router.push('/main');
           }, 1000);
         } else {
+          loginLoading.value = false;
           message.error(res.message);
         }
       })
@@ -459,6 +468,7 @@ async function checkAccountLoginCaptcha(angle: number) {
     const result: any = await checkRotatedCaptcha(angle, captchaData.key);
     if (result.code === 0 && result.success) {
       showAccountRotateCaptcha.value = false;
+      loginLoading.value = true;
       const res: any = await accountLoginApi(accountLoginForm);
       if (res.code === 0 && res.success) {
         const userStore = useStore().user;
@@ -468,10 +478,12 @@ async function checkAccountLoginCaptcha(angle: number) {
         userStore.user.refreshToken = refresh_token;
         userStore.user.expiresAt = expires_at;
         message.success(t('login.loginSuccess'));
+        loginLoading.value = false;
         setTimeout(() => {
           router.push('/main');
         }, 1000);
       } else {
+        loginLoading.value = false;
         message.error(t('login.loginError'));
       }
     } else if (result.code === 1011) {

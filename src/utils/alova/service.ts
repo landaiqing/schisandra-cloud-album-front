@@ -6,7 +6,7 @@ import {localforageStorageAdapter} from "@/utils/alova/adapter/localforageStorag
 import {createServerTokenAuthentication} from "alova/client";
 import {AxiosError, AxiosResponse} from "axios";
 import {handleCode} from "@/utils/errorCode/errorCodeHandler.ts";
-import {message} from "ant-design-vue";
+import {message, Modal} from "ant-design-vue";
 import i18n from "@/locales";
 import {axiosRequestAdapter} from "@alova/adapter-axios";
 import {refreshToken} from "@/api/user";
@@ -68,14 +68,16 @@ export const service = createAlova({
             const {code} = response.data;
             if (code === 403) {
                 localStorage.removeItem('user');
-                message.open({
-                    type: 'error',
-                    content: i18n.global.t('error.loginExpired'),
-                    duration: 2,
+                Modal.warning({
+                    title: i18n.global.t('error.loginExpired'),
+                    content: i18n.global.t('error.authTokenExpired'),
+                    onOk() {
+                        window.location.href = '/login';
+                    },
+                    onCancel() {
+                        window.location.href = '/login';
+                    }
                 });
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 2000);
                 return Promise.reject(response.data);
             }
             return response.data;

@@ -8,11 +8,13 @@ import "go-captcha-vue/dist/style.css";
 import GoCaptcha from "go-captcha-vue";
 import {createPinia, Pinia} from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import clickOutside from '@/directives/v-click-outside.ts';
 
 const pinia: Pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
 const app = createApp(App);
+app.directive('click-outside', clickOutside);
 app.use(pinia);
 app.use(router);
 app.use(i18n);

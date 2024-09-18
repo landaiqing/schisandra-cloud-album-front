@@ -79,5 +79,20 @@ export default {
         pleaseLogin: "please login first",
         loginExpiredDesc: "this account has been logged in elsewhere, please login again",
 
+    },
+    comment:{
+        comment: 'Comment',
+        sendComment: 'Send Comment',
+        emoji: 'Emoji',
+        picture: 'Picture',
+        placeholder: 'Enter a comment (enter line break, ctrl + enter send)',
+        allComments: 'All Comments',
+        latest: 'Latest',
+        hot: 'Hot',
+        reply: 'Reply',
+        report: 'Report',
+        delete: 'Delete',
+        copy: 'Copy',
+        cancelReply: 'Cancel Reply',
     }
 };
