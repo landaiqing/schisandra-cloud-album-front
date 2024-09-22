@@ -257,7 +257,7 @@ async function resetPasswordSubmit() {
       .validate()
       .then(async () => {
         const res: any = await resetPasswordApi(ResetPasswordForm);
-        if (res.code === 0 && res.success) {
+        if (res.code === 200 && res.success) {
           message.success(t('login.resetPasswordSuccess'));
           await router.push('/login');
         } else {
@@ -279,7 +279,7 @@ const refreshCaptcha = useDebounceFn(getRotateCaptcha, 3000);
  */
 async function getRotateCaptcha() {
   const data: any = await getRotatedCaptchaData();
-  if (data.code === 0 && data.data) {
+  if (data.code === 200 && data.data) {
     const {angle, image, thumb, key} = data.data;
     captchaData.angle = angle;
     captchaData.image = image;
@@ -296,7 +296,7 @@ async function getRotateCaptcha() {
 async function sendMessageByPhone(): Promise<boolean> {
   const phone: string = ResetPasswordForm.phone as string;
   const res: any = await sendMessage(phone);
-  if (res.code === 0 && res.success) {
+  if (res.code === 200 && res.success) {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
   } else {
@@ -317,7 +317,7 @@ async function checkPhoneLoginCaptcha(angle: number) {
     });
   } else {
     const result: any = await checkRotatedCaptcha(angle, captchaData.key);
-    if (result.code === 0 && result.success) {
+    if (result.code === 200 && result.success) {
       showRotateCaptcha.value = false;
       const result: boolean = await sendMessageByPhone();
       if (result) {

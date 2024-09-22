@@ -77,7 +77,7 @@ const status = ref<string>('loading');
  */
 async function getClientId() {
   const res: any = await generateClientId();
-  if (res.code === 0 && res.data) {
+  if (res.code === 200 && res.data) {
     client.setClientId(res.data);
   }
 }
@@ -93,7 +93,7 @@ async function getQrCode() {
     await getQrCode();
   } else {
     const res: any = await generateQrCode(client.getClientId() || "");
-    if (res.code === 0 && res.data) {
+    if (res.code === 200 && res.data) {
       status.value = 'active';
       qrcode.value = res.data;
       await handleListenMessage();
@@ -128,7 +128,7 @@ async function handleListenMessage() {
   open();
   // 注册消息接收处理函数
   on('message', async (data: any) => {
-    if (data.code === 0 && data.data) {
+    if (data.code === 200 && data.data) {
       const user = useStore().user;
       const {access_token, refresh_token, uid, expires_at} = data.data;
       user.user.accessToken = access_token;

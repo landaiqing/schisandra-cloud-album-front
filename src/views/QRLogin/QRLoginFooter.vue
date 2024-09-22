@@ -45,7 +45,7 @@ const qqRedirectUrl = ref<string>('');
 async function getGithubRedirectUrl() {
   const clientId: string = await getLocalClientId() as string;
   const res: any = await getGithubUrl(clientId);
-  if (res.code === 0 && res.data) {
+  if (res.code === 200 && res.data) {
     githubRedirectUrl.value = res.data;
   }
 }
@@ -55,7 +55,7 @@ async function getGithubRedirectUrl() {
  */
 async function getGiteeRedirectUrl() {
   const res: any = await getGiteeUrl();
-  if (res.code === 0 && res.data) {
+  if (res.code === 200 && res.data) {
     giteeRedirectUrl.value = res.data;
   }
 }
@@ -66,7 +66,7 @@ async function getGiteeRedirectUrl() {
 async function getQQRedirectUrl() {
   const clientId: string = await getLocalClientId() as string;
   const res: any = await getQQUrl(clientId);
-  if (res.code === 0 && res.data) {
+  if (res.code === 200 && res.data) {
     qqRedirectUrl.value = res.data;
   }
 }
@@ -76,7 +76,7 @@ async function getQQRedirectUrl() {
  */
 async function getClientId() {
   const res: any = await generateClientId();
-  if (res.code === 0 && res.data) {
+  if (res.code === 200 && res.data) {
     client.setClientId(res.data);
   }
 }
@@ -112,7 +112,7 @@ function openGithubUrl() {
   const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
       const data: any = JSON.parse(e.data);
-      if (data.code === 0 && data.data) {
+      if (data.code === 200 && data.data) {
         const user = useStore().user;
         const {access_token, refresh_token, uid, expires_at} = data.data;
         user.user.accessToken = access_token;
@@ -154,7 +154,7 @@ function openGiteeUrl() {
   const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
       const data: any = JSON.parse(e.data);
-      if (data.code === 0 && data.data) {
+      if (data.code === 200 && data.data) {
         const user = useStore().user;
         const {access_token, refresh_token, uid, expires_at} = data.data;
         user.user.accessToken = access_token;
@@ -195,7 +195,7 @@ function openQQUrl() {
   const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
       const data: any = JSON.parse(e.data);
-      if (data.code === 0 && data.data) {
+      if (data.code === 200 && data.data) {
         const user = useStore().user;
         const {access_token, refresh_token, uid, expires_at} = data.data;
         user.user.accessToken = access_token;

@@ -142,7 +142,7 @@
         </ACard>
       </div>
       <AModal v-model:open="showPhoneRotateCaptcha" :footer="null" :closable="false" width="375" :centered="true"
-              :maskClosable="false" bodyStyle="padding: 0">
+              :maskClosable="false" :bodyStyle="{padding: 0}">
         <!--    滑动验证码 -->
         <gocaptcha-rotate
             class="gocaptcha-rotate"
@@ -155,7 +155,7 @@
         />
       </AModal>
       <AModal v-model:open="showAccountRotateCaptcha" :footer="null" :closable="false" width="375" :centered="true"
-              :maskClosable="false" bodyStyle="padding: 0">
+              :maskClosable="false" :bodyStyle="{padding: 0}">
         <!--    滑动验证码 -->
         <gocaptcha-rotate
             class="gocaptcha-rotate"
@@ -371,7 +371,7 @@ async function phoneLoginSubmit() {
       .validate()
       .then(async () => {
         const res: any = await phoneLoginApi(phoneLoginForm);
-        if (res.code === 0 && res.success) {
+        if (res.code === 200 && res.success) {
           const userStore = useStore().user;
           const {uid, access_token, refresh_token, expires_at} = res.data;
           userStore.user.uid = uid;
@@ -403,7 +403,7 @@ const refreshCaptcha = useThrottleFn(getRotateCaptcha, 3000);
  */
 async function getRotateCaptcha() {
   const data: any = await getRotatedCaptchaData();
-  if (data.code === 0 && data.data) {
+  if (data.code === 200 && data.data) {
     const {angle, image, thumb, key} = data.data;
     captchaData.angle = angle;
     captchaData.image = image;
@@ -431,7 +431,7 @@ async function checkPhoneLoginCaptcha(angle: number) {
     });
   } else {
     const result: any = await checkRotatedCaptcha(angle, captchaData.key);
-    if (result.code === 0 && result.success) {
+    if (result.code === 200 && result.success) {
       showPhoneRotateCaptcha.value = false;
       const result: boolean = await sendMessageByPhone();
       if (result) {
@@ -466,11 +466,11 @@ async function checkAccountLoginCaptcha(angle: number) {
     });
   } else {
     const result: any = await checkRotatedCaptcha(angle, captchaData.key);
-    if (result.code === 0 && result.success) {
+    if (result.code === 200 && result.success) {
       showAccountRotateCaptcha.value = false;
       loginLoading.value = true;
       const res: any = await accountLoginApi(accountLoginForm);
-      if (res.code === 0 && res.success) {
+      if (res.code === 200 && res.success) {
         const userStore = useStore().user;
         const {uid, access_token, refresh_token, expires_at} = res.data;
         userStore.user.uid = uid;
@@ -504,7 +504,7 @@ async function checkAccountLoginCaptcha(angle: number) {
 async function sendMessageByPhone(): Promise<boolean> {
   const phone: string = phoneLoginForm.phone as string;
   const res: any = await sendMessage(phone);
-  if (res.code === 0 && res.success) {
+  if (res.code === 200 && res.success) {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
   } else {

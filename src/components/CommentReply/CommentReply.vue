@@ -12,6 +12,7 @@
         <AFlex :vertical="true" class="comment-content">
           <ATextarea :rows="4" class="comment-text" @focus="onFocusHandler"
                      v-model:value="commentContent"
+                     @keyup.ctrl.enter="commentSubmitThrottled"
                      :placeholder="commentTextAreaPlaceholder" allow-clear :showCount="false"/>
           <AFlex :vertical="false" align="center" justify="space-between" class="comment-actions"
                  v-if="showCommentActions">
@@ -34,14 +35,14 @@
                 <AUpload
                     :accept="'image/jpg, image/png, image/jpeg, image/gif, image/svg+xml, image/webp'"
                     name="images"
-                    :max-count="5"
+                    :max-count="3"
                     :multiple="true"
                     method="post"
                     :directory="false"
                     :show-upload-list="false"
                     :custom-request="customUploadRequest"
                     :before-upload="beforeUpload"
-                    :disabled="imageList.length >= 5"
+                    :disabled="imageList.length >= 3"
                 >
                   <ABadge :count="imageList.length">
                     <AButton type="text" size="small" :icon="h(PictureOutlined)"
@@ -57,7 +58,7 @@
                     </template>
                     <AAvatar shape="square" size="small">
                       <template #icon>
-                        <AImage v-if="item" :src="item"/>
+                        <AImage v-if="item" :width="24" :height="24" :src="item"/>
                       </template>
                     </AAvatar>
                   </ABadge>
@@ -66,7 +67,8 @@
             </AFlex>
             <AFlex :vertical="false" align="center">
               <AButton
-                  @click="console.log(commentContent.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' '))"
+                  @click="commentSubmitThrottled"
+                  :disabled="commentContent.trim().length === 0"
                   type="primary" size="middle" class="comment-action-btn">{{ t('comment.sendComment') }}
               </AButton>
             </AFlex>
@@ -198,19 +200,49 @@
                     >
                       <AFlex :vertical="false" align="center">
                         <AFlex :vertical="false" align="center" class="comment-action-item-reply">
-                          <AButton type="text" size="small" :icon="h(SmileOutlined)" class="comment-action-icon-reply">
+                          <AButton type="text" size="small" :icon="h(SmileOutlined)"
+                                   class="comment-action-icon-reply">
                             {{ t('comment.emoji') }}
                           </AButton>
                         </AFlex>
                         <AFlex :vertical="false" align="center" class="comment-action-item-reply">
-                          <AButton type="text" size="small" :icon="h(PictureOutlined)"
-                                   class="comment-action-icon-reply">
-                            {{ t('comment.picture') }}
-                          </AButton>
+                          <AUpload
+                              :accept="'image/jpg, image/png, image/jpeg, image/gif, image/svg+xml, image/webp'"
+                              name="images"
+                              :max-count="3"
+                              :multiple="true"
+                              method="post"
+                              :directory="false"
+                              :show-upload-list="false"
+                              :custom-request="customUploadRequest"
+                              :before-upload="beforeUpload"
+                              :disabled="imageList.length >= 3"
+                          >
+                            <ABadge :count="imageList.length">
+                              <AButton type="text" size="small" :icon="h(PictureOutlined)"
+                                       class="comment-action-icon-reply">
+                                {{ t('comment.picture') }}
+                              </AButton>
+                            </ABadge>
+                          </AUpload>
+                          <template v-if="imageList.length > 0">
+                            <ABadge style="margin-left: 10px;" v-for="(item, index) in imageList" :key="index">
+                              <template #count>
+                                <CloseCircleOutlined @click="removeBase64Image(index)" style="color: #f5222d"/>
+                              </template>
+                              <AAvatar shape="square" size="small">
+                                <template #icon>
+                                  <AImage v-if="item" :width="24" :height="24" :src="item"/>
+                                </template>
+                              </AAvatar>
+                            </ABadge>
+                          </template>
                         </AFlex>
                       </AFlex>
                       <AFlex :vertical="false" align="center">
-                        <AButton type="primary" size="middle" class="comment-action-btn-reply">
+                        <AButton @click="replySubmitThrottled" type="primary" size="middle"
+                                 :disabled="replyContent.trim().length === 0"
+                                 class="comment-action-btn-reply">
                           {{ t('comment.sendComment') }}
                         </AButton>
                       </AFlex>
@@ -247,14 +279,16 @@
                   </span>
                       <AFlex :vertical="false" justify="space-between" align="center">
                         <!--评论操作按钮 -->
-                        <AFlex :vertical="false" align="center" justify="space-between" class="reply-action-item-child">
+                        <AFlex :vertical="false" align="center" justify="space-between"
+                               class="reply-action-item-child">
                           <AFlex :vertical="false" align="center">
                             <AButton type="text" size="small" :icon="h(LikeOutlined)" class="reply-action-btn-child">
                               10
                             </AButton>
                           </AFlex>
                           <AFlex :vertical="false" align="center">
-                            <AButton type="text" size="small" :icon="h(DislikeOutlined)" class="reply-action-btn-child">
+                            <AButton type="text" size="small" :icon="h(DislikeOutlined)"
+                                     class="reply-action-btn-child">
                               1
                             </AButton>
                           </AFlex>
@@ -281,7 +315,8 @@
                           </AButton>
                           <!-- 评论操作按钮 -->
                           <ADropdown trigger="click">
-                            <AButton type="text" size="small" :icon="h(EllipsisOutlined)" class="reply-action-btn-child"
+                            <AButton type="text" size="small" :icon="h(EllipsisOutlined)"
+                                     class="reply-action-btn-child"
                                      @click.prevent>
                             </AButton>
                             <template #overlay>
@@ -307,7 +342,8 @@
                       <AFlex :vertical="false" align="center" class="reply-input-header-child">
                         <span class="reply-input-title-child">{{ t('comment.reply') + '：' }}</span>
                         <span class="reply-input-author-child">沈建明</span>
-                        <AButton @click="replyInputVisible = false" type="dashed" size="small" :icon="h(CloseOutlined )"
+                        <AButton @click="replyInputVisible = false" type="dashed" size="small"
+                                 :icon="h(CloseOutlined )"
                                  class="reply-input-cancel-child">
                           {{ t('comment.cancelReply') }}
                         </AButton>
@@ -377,6 +413,9 @@ import {
 import EMOJI from "@/constant/emoji.ts";
 import imageCompression from "browser-image-compression";
 import {message} from "ant-design-vue";
+import {useThrottleFn} from "@vueuse/core";
+import {commentListApi, commentSubmitApi, replySubmitApi} from "@/api/comment";
+import useStore from "@/store";
 
 const {t} = useI18n();
 const showCommentActions = ref<boolean>(false);
@@ -385,8 +424,10 @@ const data = reactive([t('comment.latest'), t('comment.hot')]);
 const segmentedValue = ref<string>(data[0]);
 const replyInputVisible = ref<boolean>(false);
 const commentContent = ref<string>("");
+const replyContent = ref<string>("");
 const fileList = ref<any[]>([]);
 const imageList = ref<any[]>([]);
+const user = useStore().user;
 
 /**
  * 聚焦事件
@@ -444,6 +485,98 @@ async function removeBase64Image(index: number) {
   fileList.value.splice(index, 1);
   imageList.value.splice(index, 1);
 }
+
+/**
+ *  评论提交 throttled
+ */
+const commentSubmitThrottled = useThrottleFn(commentSubmit, 1000);
+
+/**
+ *  评论提交
+ */
+async function commentSubmit() {
+  if (commentContent.value.trim() === "") {
+    message.error("评论内容不能为空");
+    return;
+  }
+  if (imageList.value.length > 3) {
+    message.error("最多只能上传3张图片");
+    return;
+  }
+  const content = commentContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
+
+  const commentParams: object = {
+    user_id: user.user.uid,
+    topic_id: "123",
+    content: content,
+    images: imageList.value,
+    author: user.user.uid,
+  };
+  const result: any = await commentSubmitApi(commentParams);
+  if (result.code === 200 && result.success) {
+    message.success("评论成功");
+    commentContent.value = "";
+    fileList.value = [];
+    imageList.value = [];
+  } else {
+    message.error("评论失败");
+  }
+}
+
+/**
+ *  回复提交 throttled
+ */
+const replySubmitThrottled = useThrottleFn(replySubmit, 1000);
+
+/**
+ *  回复提交
+ */
+async function replySubmit() {
+  if (commentContent.value.trim() === "") {
+    message.error("回复内容不能为空");
+    return;
+  }
+  if (imageList.value.length > 3) {
+    message.error("最多只能上传3张图片");
+    return;
+  }
+  const content = commentContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
+
+  const replyParams: object = {
+    user_id: user.user.uid,
+    topic_id: "123",
+    content: content,
+    images: imageList.value,
+    author: user.user.uid,
+    reply_id: "5",
+    reply_user: user.user.uid,
+  };
+  const result: any = await replySubmitApi(replyParams);
+  if (result.code === 200 && result.success) {
+    message.success("回复成功");
+    commentContent.value = "";
+    fileList.value = [];
+    imageList.value = [];
+  } else {
+    message.error("回复失败");
+  }
+}
+
+/**
+ *  获取评论列表
+ */
+async function getCommentList() {
+  const params = {
+    topic_id: "123",
+    page: 1,
+    size: 10,
+  };
+  // 获取评论列表
+  const result: any = await commentListApi(params);
+  console.log(result);
+}
+
+getCommentList();
 </script>
 <style src="./index.scss" lang="scss" scoped>
 
