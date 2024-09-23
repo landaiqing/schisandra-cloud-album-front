@@ -55,6 +55,7 @@ export const service = createAlova({
         if (!method.meta?.ignoreToken) {
             const user = useStore().user;
             method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.user.accessToken}`;
+            method.config.headers['X-UID'] = user.user.uid;
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';

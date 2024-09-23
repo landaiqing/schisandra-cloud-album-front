@@ -54,7 +54,7 @@
                       </AButton>
                       <AButton v-if="state.showCountDown" disabled style="margin-left: 10px" size="large">
                         {{
-                          state.countDownTime
+                          currentCountDownTime
                         }}s{{ t("login.reSendCaptcha") }}
                       </AButton>
                     </AFlex>
@@ -187,7 +187,7 @@
 </template>
 <script setup lang="ts">
 import {Rule} from "ant-design-vue/lib/form";
-import {onMounted, reactive, ref, UnwrapRef} from "vue";
+import {computed, onMounted, reactive, ref, UnwrapRef} from "vue";
 import {AccountLogin, PhoneLogin} from "@/types/user";
 import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
@@ -272,11 +272,16 @@ const rules: Record<string, Rule[]> = {
   ]
 };
 
-const state: any = reactive<any>({
+interface State {
+  countDownTime: number;
+  showCountDown: boolean;
+}
+
+const state = reactive<State>({
   countDownTime: 60,
   showCountDown: false,
-});
-
+} as State);
+const currentCountDownTime = computed(() => state.countDownTime);
 /**
  * 验证码发送倒计时
  */

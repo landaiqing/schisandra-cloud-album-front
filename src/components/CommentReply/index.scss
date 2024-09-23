@@ -3,7 +3,7 @@
     flex-direction: column;
     border: 1px solid #ccc;
     margin-top: 20px;
-    width: 100%;
+    width: 650px;
     padding: 50px;
 
     .comment-header-title {
@@ -19,6 +19,7 @@
         .comment-text {
             width: 600px;
         }
+
         .comment-actions {
             margin-top: 10px;
 
@@ -61,6 +62,12 @@
     .reply-list {
         margin-top: 30px;
 
+        .reply-pagination {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
         .reply-content {
             margin-left: 20px;
 
@@ -91,9 +98,12 @@
                 width: 600px;
                 //margin-top: 5px;
 
+                .reply-images {
+                    margin-top: 5px;
+                }
+
                 .reply-action-item {
                     margin-top: 10px;
-                    width: 200px;
 
                     .reply-action-btn {
                         font-size: 13px;
@@ -253,7 +263,6 @@
 
                         .reply-action-item-child {
                             margin-top: 10px;
-                            width: 200px;
 
                             .reply-action-btn-child {
                                 font-size: 13px;

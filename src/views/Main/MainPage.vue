@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
     <h1>Welcome to Main Page</h1>
     <AButton @click="handleClick">获取登录用户角色</AButton>
     {{ data }}
