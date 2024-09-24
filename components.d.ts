@@ -45,6 +45,7 @@ declare module 'vue' {
     DeleteOutlined: typeof import('@ant-design/icons-vue')['DeleteOutlined']
     DynamicTitle: typeof import('./src/components/DynamicTitle/DynamicTitle.vue')['default']
     EffectsCard: typeof import('./src/components/EffectsCard/EffectsCard.vue')['default']
+    EyeOutlined: typeof import('@ant-design/icons-vue')['EyeOutlined']
     ForgetPage: typeof import('./src/views/Forget/ForgetPage.vue')['default']
     GithubOutlined: typeof import('@ant-design/icons-vue')['GithubOutlined']
     LandingPage: typeof import('./src/views/Landing/LandingPage.vue')['default']

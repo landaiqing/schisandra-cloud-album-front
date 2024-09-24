@@ -222,6 +222,12 @@
                 background-color: #f5f5f5;
                 padding: 10px;
 
+                .reply-pagination-child {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-top: 10px;
+                }
+
                 .reply-item-child-content {
                     margin-left: 10px;
 

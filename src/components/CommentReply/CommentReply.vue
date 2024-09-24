@@ -122,7 +122,11 @@
                       <AAvatar shape="square" size="large"
                                v-for="(image, index) in item.images" :key="index">
                         <template #icon>
-                          <AImage :width="40" :height="40" :src="image"/>
+                          <AImage :width="40" :height="40" :src="image">
+                            <template #previewMask>
+                              <EyeOutlined style="font-size: 18px;"/>
+                            </template>
+                          </AImage>
                         </template>
                       </AAvatar>
                     </AFlex>
@@ -139,7 +143,9 @@
                             {{ item.dislikes }}
                           </AButton>
                         </AFlex>
-                        <AButton @click="replyListThrottled(item.id)" type="text" size="small"
+                        <AButton @click="()=>{
+                          handleShowReplyComment(item.id);
+                          replyListThrottled(item.id)}" type="text" size="small"
                                  :icon="h(MessageOutlined)"
                                  class="reply-action-btn">
                           {{ item.reply_count }}
@@ -289,209 +295,220 @@
                 <!-- 子回复列表 -->
 
                 <AFlex :vertical="true" class="reply-item-child"
-                       v-if="replyList.comments && showReplyComment && showReplyComment === item.id">
-                  <ASpin :spinning="replyLoading">
-                    <AFlex :vertical="false" style="margin-top: 5px" v-for="(child, index) in replyList.comments"
-                           :key="index">
-                      <AFlex :vertical="true" class="reply-item-child-avatar">
-                        <AAvatar :size="40" shape="circle" :src="child.avatar"/>
-                      </AFlex>
-                      <AFlex :vertical="true" class="reply-item-child-content">
-                        <AFlex :vertical="true">
-                          <AFlex :vertical="false" align="center">
-                            <span class="reply-name-child">{{ child.nickname }}</span>
-                            <span
-                                class="reply-at">@{{ child.reply_username }}</span>
-                            <a-tag color="cyan" class="reply-tag-child" size="small">Lv.5</a-tag>
-                            <!--                      <a-tag color="red" class="reply-tag" size="small">UP</a-tag>-->
-                          </AFlex>
-                          <AFlex :vertical="false" align="flex-end" justify="space-between">
-                            <AFlex :vertical="false" align="center" justify="space-between">
-                              <span class="reply-ip-child"> {{ child.location }} </span>
-                            </AFlex>
-                            <span class="reply-time-child">{{ formatTimeAgo(child.created_time) }}</span>
-                          </AFlex>
+                       v-if="showReplyComment && showReplyComment === item.id">
+                  <ASpin :spinning="replyLoading" size="default">
+                    <AFlex :vertical="true" v-if="replyList.comments">
+                      <AFlex :vertical="false" style="margin-top: 5px" v-for="(child, index) in replyList.comments"
+                             :key="index">
+                        <AFlex :vertical="true" class="reply-item-child-avatar">
+                          <AAvatar :size="40" shape="circle" :src="child.avatar"/>
                         </AFlex>
-                        <AFlex :vertical="true" align="center">
-                          <ACard class="reply-card-child" :body-style="{padding: '10px'}">
-                            <div class="reply-text-child" v-html="child.content">
-                            </div>
-                            <AFlex :vertical="false" align="center" class="reply-images" v-if="child.images">
-                              <AAvatar shape="square" size="large"
-                                       v-for="(image, index) in child.images" :key="index">
-                                <template #icon>
-                                  <AImage :width="40" :height="40" :src="image"/>
-                                </template>
-                              </AAvatar>
+                        <AFlex :vertical="true" class="reply-item-child-content">
+                          <AFlex :vertical="true">
+                            <AFlex :vertical="false" align="center">
+                              <span class="reply-name-child">{{ child.nickname }}</span>
+                              <span
+                                  class="reply-at">@{{ child.reply_username }}</span>
+                              <a-tag color="cyan" class="reply-tag-child" size="small">Lv.5</a-tag>
+                              <!--                      <a-tag color="red" class="reply-tag" size="small">UP</a-tag>-->
                             </AFlex>
-                            <AFlex :vertical="false" justify="space-between" align="center">
-                              <!--评论操作按钮 -->
-                              <AFlex :vertical="false" align="center" justify="space-between"
-                                     class="reply-action-item-child">
-                                <AFlex :vertical="false" align="center">
-                                  <AButton type="text" size="small" :icon="h(LikeOutlined)"
-                                           class="reply-action-btn-child">
-                                    {{ child.likes }}
-                                  </AButton>
-                                </AFlex>
-                                <AFlex :vertical="false" align="center">
-                                  <AButton type="text" size="small" :icon="h(DislikeOutlined)"
-                                           class="reply-action-btn-child">
-                                    {{ child.dislikes }}
-                                  </AButton>
-                                </AFlex>
-                                <AButton
-                                    @click="handleShowReplyInput(child.id)"
-                                    type="text" size="small" :icon="h(CommentOutlined)"
-                                    class="reply-action-btn-child">
-                                  {{ t('comment.reply') }}
-                                </AButton>
+                            <AFlex :vertical="false" align="flex-end" justify="space-between">
+                              <AFlex :vertical="false" align="center" justify="space-between">
+                                <span class="reply-ip-child"> {{ child.location }} </span>
                               </AFlex>
-                              <!-- 评论操作系统信息-->
-                              <AFlex :vertical="false" align="center" justify="flex-end"
-                                     class="reply-action-item-right-child">
-                                <AButton type="text" disabled size="small" :icon="h(WindowsOutlined)"
-                                         class="reply-action-info-child">
-                                  {{ child.operating_system }}
-                                </AButton>
-                                <AButton type="text" disabled size="small" :icon="h(ChromeOutlined)"
-                                         class="reply-action-info-child">
-                                  {{ child.browser }}
-                                </AButton>
-                                <!-- 评论操作按钮 -->
-                                <ADropdown trigger="click">
-                                  <AButton type="text" size="small" :icon="h(EllipsisOutlined)"
-                                           class="reply-action-btn-child"
-                                           @click.prevent>
-                                  </AButton>
-                                  <template #overlay>
-                                    <AMenu>
-                                      <AMenuItem key="report">
-                                        {{ t('comment.report') }}
-                                      </AMenuItem>
-                                      <AMenuItem key="copy">
-                                        {{ t('comment.copy') }}
-                                      </AMenuItem>
-                                      <AMenuItem key="delete">
-                                        {{ t('comment.delete') }}
-                                      </AMenuItem>
-                                    </AMenu>
-                                  </template>
-                                </ADropdown>
-                              </AFlex>
+                              <span class="reply-time-child">{{ formatTimeAgo(child.created_time) }}</span>
                             </AFlex>
-                          </ACard>
-
-                          <!-- 子评论回复输入框 -->
-                          <AFlex :vertical="true" class="reply-input-main-child"
-                                 v-if="showReplyInput && child.id === showReplyInput">
-                            <AFlex :vertical="false" align="center" class="reply-input-header-child">
-                              <span class="reply-input-title-child">{{ t('comment.reply') + '：' }}</span>
-                              <span class="reply-input-author-child">{{ child.nickname }}</span>
-                              <AButton @click="closeReplyInput" type="dashed" size="small"
-                                       :icon="h(CloseOutlined )"
-                                       class="reply-input-cancel-child">
-                                {{ t('comment.cancelReply') }}
-                              </AButton>
-                            </AFlex>
-                            <!-- 回复头像-->
-                            <AFlex :vertical="false" class="reply-input-content-child">
-                              <AFlex :vertical="true" class="reply-input-avatar-child">
-                                <AAvatar :size="40" shape="circle" src="https://api.multiavatar.com/landaiqing.svg"/>
-                              </AFlex>
-                              <!-- 评论输入框 -->
-                              <AFlex :vertical="true" class="reply-input-content-text-child">
-                                <ATextarea :rows="3" class="comment-text-reply-child"
-                                           v-model:value="replyReplyContent"
-                                           @keyup.ctrl.enter="()=>{
-                                      const params: any ={
-                                        reply_to: child.id,
-                                        reply_id: item.id,
-                                        reply_user: child.user_id
-                                        };
-                                      replyReplySubmitThrottled(params);
-                                    }"
-                                           :placeholder="commentTextAreaPlaceholder" allow-clear :showCount="false"/>
-                                <AFlex :vertical="false" align="center" justify="space-between"
-                                       class="comment-actions-reply-child"
-                                >
-                                  <AFlex :vertical="false" align="center">
-                                    <AFlex :vertical="false" align="center" class="comment-action-item-reply-child">
-                                      <APopover trigger="click" placement="bottom">
-                                        <template #content>
-                                          <div style="width: 170px;height: 200px;overflow: auto;">
-                                            <template v-for="(emoji) in EMOJI" :key="emoji">
-                                              <AButton @click="insertEmojiToReplyReplyContent(emoji)" type="text"
-                                                       size="large">{{
-                                                  emoji
-                                                }}
-                                              </AButton>
-                                            </template>
-                                          </div>
-                                        </template>
-                                        <AButton type="text" size="small" :icon="h(SmileOutlined)"
-                                                 class="comment-action-icon-reply-child">
-                                          {{ t('comment.emoji') }}
-                                        </AButton>
-                                      </APopover>
-                                    </AFlex>
-                                    <AFlex :vertical="false" align="center" class="comment-action-item-reply-child">
-                                      <AUpload
-                                          :accept="'image/jpg, image/png, image/jpeg, image/gif, image/svg+xml, image/webp'"
-                                          name="images"
-                                          :max-count="3"
-                                          :multiple="true"
-                                          method="post"
-                                          :directory="false"
-                                          :show-upload-list="false"
-                                          :custom-request="customUploadRequest"
-                                          :before-upload="beforeUpload"
-                                          :disabled="imageList.length >= 3"
-                                      >
-                                        <ABadge :count="imageList.length">
-                                          <AButton type="text" size="small" :icon="h(PictureOutlined)"
-                                                   class="comment-action-icon-reply-child">
-                                            {{ t('comment.picture') }}
-                                          </AButton>
-                                        </ABadge>
-                                      </AUpload>
-                                      <template v-if="imageList.length > 0">
-                                        <ABadge style="margin-left: 10px;" v-for="(item, index) in imageList"
-                                                :key="index">
-                                          <template #count>
-                                            <CloseCircleOutlined @click="removeBase64Image(index)"
-                                                                 style="color: #f5222d"/>
-                                          </template>
-                                          <AAvatar shape="square" size="small">
-                                            <template #icon>
-                                              <AImage v-if="item" :width="24" :height="24" :src="item"/>
-                                            </template>
-                                          </AAvatar>
-                                        </ABadge>
+                          </AFlex>
+                          <AFlex :vertical="true" align="center">
+                            <ACard class="reply-card-child" :body-style="{padding: '10px'}">
+                              <div class="reply-text-child" v-html="child.content">
+                              </div>
+                              <AFlex :vertical="false" align="center" class="reply-images" v-if="child.images">
+                                <AAvatar shape="square" size="large"
+                                         v-for="(image, index) in child.images" :key="index">
+                                  <template #icon>
+                                    <AImage :width="40" :height="40" :src="image">
+                                      <template #previewMask>
+                                        <EyeOutlined style="font-size: 18px;"/>
                                       </template>
-                                    </AFlex>
-                                  </AFlex>
+                                    </AImage>
+                                  </template>
+                                </AAvatar>
+                              </AFlex>
+                              <AFlex :vertical="false" justify="space-between" align="center">
+                                <!--评论操作按钮 -->
+                                <AFlex :vertical="false" align="center" justify="space-between"
+                                       class="reply-action-item-child">
                                   <AFlex :vertical="false" align="center">
-                                    <AButton
-                                        @click="()=>{
-                                      const params: any ={
-                                        reply_to: child.id,
-                                        reply_id: item.id,
-                                        reply_user: child.user_id
-                                        };
-                                      replyReplySubmitThrottled(params);
-                                    }"
-                                        :disabled="replyReplyContent.trim().length === 0" type="primary" size="middle"
-                                        class="comment-action-btn-reply-child">
-                                      {{ t('comment.sendComment') }}
+                                    <AButton type="text" size="small" :icon="h(LikeOutlined)"
+                                             class="reply-action-btn-child">
+                                      {{ child.likes }}
                                     </AButton>
                                   </AFlex>
+                                  <AFlex :vertical="false" align="center">
+                                    <AButton type="text" size="small" :icon="h(DislikeOutlined)"
+                                             class="reply-action-btn-child">
+                                      {{ child.dislikes }}
+                                    </AButton>
+                                  </AFlex>
+                                  <AButton
+                                      @click="handleShowReplyInput(child.id)"
+                                      type="text" size="small" :icon="h(CommentOutlined)"
+                                      class="reply-action-btn-child">
+                                    {{ t('comment.reply') }}
+                                  </AButton>
+                                </AFlex>
+                                <!-- 评论操作系统信息-->
+                                <AFlex :vertical="false" align="center" justify="flex-end"
+                                       class="reply-action-item-right-child">
+                                  <AButton type="text" disabled size="small" :icon="h(WindowsOutlined)"
+                                           class="reply-action-info-child">
+                                    {{ child.operating_system }}
+                                  </AButton>
+                                  <AButton type="text" disabled size="small" :icon="h(ChromeOutlined)"
+                                           class="reply-action-info-child">
+                                    {{ child.browser }}
+                                  </AButton>
+                                  <!-- 评论操作按钮 -->
+                                  <ADropdown trigger="click">
+                                    <AButton type="text" size="small" :icon="h(EllipsisOutlined)"
+                                             class="reply-action-btn-child"
+                                             @click.prevent>
+                                    </AButton>
+                                    <template #overlay>
+                                      <AMenu>
+                                        <AMenuItem key="report">
+                                          {{ t('comment.report') }}
+                                        </AMenuItem>
+                                        <AMenuItem key="copy">
+                                          {{ t('comment.copy') }}
+                                        </AMenuItem>
+                                        <AMenuItem key="delete">
+                                          {{ t('comment.delete') }}
+                                        </AMenuItem>
+                                      </AMenu>
+                                    </template>
+                                  </ADropdown>
+                                </AFlex>
+                              </AFlex>
+                            </ACard>
+
+                            <!-- 子评论回复输入框 -->
+                            <AFlex :vertical="true" class="reply-input-main-child"
+                                   v-if="showReplyInput && child.id === showReplyInput">
+                              <AFlex :vertical="false" align="center" class="reply-input-header-child">
+                                <span class="reply-input-title-child">{{ t('comment.reply') + '：' }}</span>
+                                <span class="reply-input-author-child">{{ child.nickname }}</span>
+                                <AButton @click="closeReplyInput" type="dashed" size="small"
+                                         :icon="h(CloseOutlined )"
+                                         class="reply-input-cancel-child">
+                                  {{ t('comment.cancelReply') }}
+                                </AButton>
+                              </AFlex>
+                              <!-- 回复头像-->
+                              <AFlex :vertical="false" class="reply-input-content-child">
+                                <AFlex :vertical="true" class="reply-input-avatar-child">
+                                  <AAvatar :size="40" shape="circle" src="https://api.multiavatar.com/landaiqing.svg"/>
+                                </AFlex>
+                                <!-- 评论输入框 -->
+                                <AFlex :vertical="true" class="reply-input-content-text-child">
+                                  <ATextarea :rows="3" class="comment-text-reply-child"
+                                             v-model:value="replyReplyContent"
+                                             @keyup.ctrl.enter="()=>{
+                                      const params: any ={
+                                        reply_to: child.id,
+                                        reply_id: item.id,
+                                        reply_user: child.user_id
+                                        };
+                                      replyReplySubmitThrottled(params);
+                                    }"
+                                             :placeholder="commentTextAreaPlaceholder" allow-clear :showCount="false"/>
+                                  <AFlex :vertical="false" align="center" justify="space-between"
+                                         class="comment-actions-reply-child"
+                                  >
+                                    <AFlex :vertical="false" align="center">
+                                      <AFlex :vertical="false" align="center" class="comment-action-item-reply-child">
+                                        <APopover trigger="click" placement="bottom">
+                                          <template #content>
+                                            <div style="width: 170px;height: 200px;overflow: auto;">
+                                              <template v-for="(emoji) in EMOJI" :key="emoji">
+                                                <AButton @click="insertEmojiToReplyReplyContent(emoji)" type="text"
+                                                         size="large">{{
+                                                    emoji
+                                                  }}
+                                                </AButton>
+                                              </template>
+                                            </div>
+                                          </template>
+                                          <AButton type="text" size="small" :icon="h(SmileOutlined)"
+                                                   class="comment-action-icon-reply-child">
+                                            {{ t('comment.emoji') }}
+                                          </AButton>
+                                        </APopover>
+                                      </AFlex>
+                                      <AFlex :vertical="false" align="center" class="comment-action-item-reply-child">
+                                        <AUpload
+                                            :accept="'image/jpg, image/png, image/jpeg, image/gif, image/svg+xml, image/webp'"
+                                            name="images"
+                                            :max-count="3"
+                                            :multiple="true"
+                                            method="post"
+                                            :directory="false"
+                                            :show-upload-list="false"
+                                            :custom-request="customUploadRequest"
+                                            :before-upload="beforeUpload"
+                                            :disabled="imageList.length >= 3"
+                                        >
+                                          <ABadge :count="imageList.length">
+                                            <AButton type="text" size="small" :icon="h(PictureOutlined)"
+                                                     class="comment-action-icon-reply-child">
+                                              {{ t('comment.picture') }}
+                                            </AButton>
+                                          </ABadge>
+                                        </AUpload>
+                                        <template v-if="imageList.length > 0">
+                                          <ABadge style="margin-left: 10px;" v-for="(item, index) in imageList"
+                                                  :key="index">
+                                            <template #count>
+                                              <CloseCircleOutlined @click="removeBase64Image(index)"
+                                                                   style="color: #f5222d"/>
+                                            </template>
+                                            <AAvatar shape="square" size="small">
+                                              <template #icon>
+                                                <AImage v-if="item" :width="24" :height="24" :src="item"/>
+                                              </template>
+                                            </AAvatar>
+                                          </ABadge>
+                                        </template>
+                                      </AFlex>
+                                    </AFlex>
+                                    <AFlex :vertical="false" align="center">
+                                      <AButton
+                                          @click="()=>{
+                                      const params: any ={
+                                        reply_to: child.id,
+                                        reply_id: item.id,
+                                        reply_user: child.user_id
+                                        };
+                                      replyReplySubmitThrottled(params);
+                                    }"
+                                          :disabled="replyReplyContent.trim().length === 0" type="primary" size="middle"
+                                          class="comment-action-btn-reply-child">
+                                        {{ t('comment.sendComment') }}
+                                      </AButton>
+                                    </AFlex>
+                                  </AFlex>
                                 </AFlex>
                               </AFlex>
                             </AFlex>
                           </AFlex>
                         </AFlex>
                       </AFlex>
+                      <APagination class="reply-pagination-child" size="small" :total="replyList.total"
+                                   :current="replyList.current" :page-size="replyList.size"
+                                   :default-page-size="replyList.size"
+                                   @change="(page: number, pageSize: number)=>{
+                                    getReplyList(item.id, page, pageSize);}"/>
                     </AFlex>
                   </ASpin>
                 </AFlex>
@@ -502,10 +519,11 @@
 
             </AFlex>
           </div>
-          <APagination class="reply-pagination" @change="(page, pageSize)=>{
-            console.log(page, pageSize)
-          }" v-model:current="commentList.current" :size="commentList.size.toString()" :total="commentList.total"
-                       show-less-items/>
+          <APagination class="reply-pagination" @change="(page: number, pageSize: number)=>{
+            getCommentList(page, pageSize);
+          }" :current="commentList.current" :page-size="commentList.size" :total="commentList.total"
+                       :default-page-size="commentList.size"
+                       :show-less-items="true"/>
         </div>
       </ASkeleton>
     </div>
@@ -552,6 +570,7 @@ const showReplyComment = ref<number | null>(null);
 const replyList = ref<Comment>({} as Comment);
 const commentLoading = ref<boolean>(true);
 const replyLoading = ref<boolean>(true);
+const topicId = ref<string>("123");
 
 /**
  * 聚焦事件
@@ -647,7 +666,7 @@ async function commentSubmit() {
 
   const commentParams: object = {
     user_id: user.user.uid,
-    topic_id: "123",
+    topic_id: topicId.value,
     content: content,
     images: imageList.value,
     author: user.user.uid,
@@ -658,6 +677,8 @@ async function commentSubmit() {
     commentContent.value = "";
     fileList.value = [];
     imageList.value = [];
+    commentList.value = {} as Comment;
+    commentLoading.value = true;
     await getCommentList();
   } else {
     message.error("评论失败");
@@ -683,9 +704,17 @@ async function replySubmit(data: ReplyCommentParams) {
   }
   const content = replyContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
 
-  const replyParams: ReplyCommentParams = {
+  const replyParams: {
+    images: any;
+    reply_id: number;
+    reply_user: string;
+    user_id: any;
+    author: any;
+    topic_id: string;
+    content: any
+  } = {
     user_id: user.user.uid,
-    topic_id: "123",
+    topic_id: topicId.value,
     content: content,
     images: imageList.value,
     author: user.user.uid,
@@ -698,6 +727,9 @@ async function replySubmit(data: ReplyCommentParams) {
     replyContent.value = "";
     fileList.value = [];
     imageList.value = [];
+    replyList.value = {} as Comment;
+    replyLoading.value = true;
+    await getReplyList(data.reply_id);
   } else {
     message.error("回复失败");
   }
@@ -706,12 +738,14 @@ async function replySubmit(data: ReplyCommentParams) {
 /**
  *  获取评论列表
  */
-async function getCommentList() {
+async function getCommentList(page: number = 1, size: number = 5) {
   const params = {
-    topic_id: "123",
-    page: 1,
-    size: 5,
+    topic_id: topicId.value,
+    page: page,
+    size: size,
   };
+  commentLoading.value = true;
+  commentList.value = {} as Comment;
   // 获取评论列表
   const result: any = await commentListApi(params);
   if (result.code === 200 && result.success && result.data) {
@@ -724,7 +758,7 @@ async function getCommentList() {
  *  格式化时间
  * @param dateString
  */
-function formatTimeAgo(dateString) {
+function formatTimeAgo(dateString: string) {
   const now: any = new Date();
   const date: any = new Date(dateString);
   const seconds = Math.floor((now - date) / 1000);
@@ -773,19 +807,22 @@ const replyListThrottled = useThrottleFn(getReplyList, 500);
 /**
  *  获取回复列表
  * @param reply_id
+ * @param page
+ * @param size
  */
-async function getReplyList(reply_id: number) {
+async function getReplyList(reply_id: number, page: number = 1, size: number = 5) {
   const params: any = {
-    topic_id: "123",
-    page: 1,
-    size: 5,
+    topic_id: topicId.value,
+    page: page,
+    size: size,
     comment_id: reply_id,
   };
+  replyLoading.value = true;
+  replyList.value = {} as Comment;
   // 获取评论列表
   const result: any = await replyListApi(params);
   if (result.code === 200 && result.success && result.data) {
     replyList.value = result.data;
-    handleShowReplyComment(reply_id);
     replyLoading.value = false;
   }
 }
@@ -812,7 +849,7 @@ async function replyReplySubmit(data: any) {
 
   const replyParams: ReplyCommentParams = {
     user_id: user.user.uid,
-    topic_id: "123",
+    topic_id: topicId.value,
     content: content,
     images: imageList.value,
     author: user.user.uid,

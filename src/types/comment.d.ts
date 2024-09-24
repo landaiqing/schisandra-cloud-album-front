@@ -27,7 +27,7 @@ interface CommentContent {
     images: string[];
 }
 
-interface ReplyCommentParams {
+export interface ReplyCommentParams {
     user_id: string,
     topic_id: string,
     content: string,
