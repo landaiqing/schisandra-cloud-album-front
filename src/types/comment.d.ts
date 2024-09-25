@@ -10,7 +10,6 @@ interface CommentContent {
     browser: string;
     content: string;
     created_time: string;
-    dislikes: number;
     id: number;
     likes: number;
     location: string;
@@ -25,6 +24,7 @@ interface CommentContent {
     nickname: string;
     level?: number;
     images: string[];
+    is_liked: boolean;
 }
 
 export interface ReplyCommentParams {
@@ -36,4 +36,6 @@ export interface ReplyCommentParams {
     reply_id: number,
     reply_user: string,
     reply_to: number,
+    point: [number, number]
+    key: string
 }

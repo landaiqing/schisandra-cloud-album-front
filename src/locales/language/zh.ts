@@ -93,6 +93,12 @@ export default {
         delete: '删除',
         copy: '复制',
         cancelReply: '取消',
+        commentContentNotEmpty: '评论内容不能为空！',
+        maxImageCount: '最多只能上传3张图片！',
+        commentSuccess: '评论成功！',
+        commentError: '评论失败！',
+        replySuccess: '回复成功！',
+        replyError: '回复失败！',
     }
 
 };

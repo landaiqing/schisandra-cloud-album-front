@@ -11,6 +11,8 @@ export const commentSubmitApi = (params: any) => {
             images: params.images,
             topic_id: params.topic_id,
             author: params.author,
+            point: params.point,
+            key: params.key,
         },
         {
             name: 'comment-submit',
@@ -33,6 +35,8 @@ export const replySubmitApi = (params: any) => {
             reply_id: params.reply_id,
             reply_user: params.reply_user,
             author: params.author,
+            point: params.point,
+            key: params.key,
         },
         {
             name: 'reply-submit',
@@ -52,6 +56,8 @@ export const commentListApi = (params: any) => {
             page: params.page,
             size: params.size,
             topic_id: params.topic_id,
+            user_id: params.user_id,
+            is_hot: params.is_hot,
         },
         {
             cacheFor: {
@@ -75,6 +81,7 @@ export const replyListApi = (params: any) => {
             size: params.size,
             comment_id: params.comment_id,
             topic_id: params.topic_id,
+            user_id: params.user_id,
         },
         {
             cacheFor: {
@@ -104,9 +111,46 @@ export const replyReplySubmitApi = (params: any) => {
             reply_id: params.reply_id,
             reply_user: params.reply_user,
             author: params.author,
+            point: params.point,
+            key: params.key,
         },
         {
             name: 'reply-reply-submit',
+            meta: {
+                ignoreToken: false,
+            },
+        }
+    );
+};
+/**
+ * @description 评论点赞
+ * @param params
+ */
+export const commentLikeApi = (params: any) => {
+    return service.Post('/api/auth/comment/like', {
+            user_id: params.user_id,
+            comment_id: params.comment_id,
+            topic_id: params.topic_id,
+        },
+        {
+            meta: {
+                ignoreToken: false,
+            },
+        }
+    );
+};
+
+/**
+ * @description 评论取消点赞
+ * @param params
+ */
+export const cancelCommentLikeApi = (params: any) => {
+    return service.Post('/api/auth/comment/cancel_like', {
+            user_id: params.user_id,
+            comment_id: params.comment_id,
+            topic_id: params.topic_id,
+        },
+        {
             meta: {
                 ignoreToken: false,
             },

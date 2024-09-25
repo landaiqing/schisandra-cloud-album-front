@@ -1,0 +1,52 @@
+.reply-input-main-child {
+    margin-top: 5px;
+
+    .reply-input-title-child {
+        font-size: 13px;
+        color: #767779;
+    }
+
+    .reply-input-author-child {
+        font-size: 13px;
+        color: #767779;
+    }
+
+    .reply-input-cancel-child {
+        margin-left: 10px;
+        font-size: 13px;
+        color: #767779;
+        cursor: pointer;
+    }
+
+    .reply-input-content-child {
+        margin-top: 10px;
+
+        .reply-input-content-text-child {
+            margin-left: 10px;
+
+            .comment-text-reply-child {
+                width: 480px;
+            }
+
+            .comment-actions-reply-child {
+                margin-top: 5px;
+
+                .comment-action-item-reply-child {
+                    cursor: pointer;
+                    color: #767779;
+
+                    .comment-action-icon-reply-child {
+                        font-size: 14px;
+                        color: #767779;
+                    }
+
+                    .comment-action-icon-reply-child:hover {
+                        color: #08a327;
+                    }
+                }
+            }
+        }
+    }
+
+
+}

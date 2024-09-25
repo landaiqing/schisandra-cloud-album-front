@@ -1,0 +1,115 @@
+.reply-item-child {
+    margin-top: 10px;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+    padding: 10px;
+
+    .reply-pagination-child {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+
+    .reply-item-child-content {
+        margin-left: 10px;
+
+        .reply-at {
+            font-size: 14px;
+            color: #767779;
+            cursor: pointer;
+        }
+
+        .reply-at:hover {
+            color: #25a9e3;
+        }
+
+        .reply-name-child {
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .reply-tag-child {
+            font-size: 10px;
+            font-weight: 800;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .reply-ip-child {
+            font-size: 12px;
+            color: #767779;
+        }
+
+        .reply-time-child {
+            font-size: 12px;
+            color: #767779;
+        }
+
+        .reply-card-child {
+            width: 530px;
+
+            .reply-action-item-child {
+                margin-top: 10px;
+
+                .reply-action-btn-child {
+                    font-size: 13px;
+                    color: #767779;
+                    cursor: pointer;
+                }
+
+                .reply-action-icon-child {
+                    font-size: 14px;
+                    color: #767779;
+                    cursor: pointer;
+
+                }
+
+                .reply-action-icon-child:hover {
+                    font-size: 14px;
+                    color: #08a327;
+                    cursor: pointer;
+
+                }
+
+                .reply-action-btn-child:hover {
+                    font-size: 13px;
+                    color: #08a327;
+                    cursor: pointer;
+
+                }
+
+                .reply-action-icon-number-child {
+                    font-size: 12px;
+                    cursor: pointer;
+                    color: #767779;
+                }
+
+            }
+
+            .reply-action-item-right-child {
+                margin-top: 10px;
+
+                .reply-action-btn-child {
+                    font-size: 15px;
+                    color: #767779;
+                    cursor: pointer;
+                }
+
+                .reply-action-btn-child:hover {
+                    font-size: 15px;
+                    color: #08a327;
+                    cursor: pointer;
+                }
+
+                .reply-action-info-child {
+                    font-size: 10px;
+                    color: #767779;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
+
+

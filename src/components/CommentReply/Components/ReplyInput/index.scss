@@ -1,0 +1,52 @@
+.reply-input-main {
+    margin-top: 5px;
+
+    .reply-input-title {
+        font-size: 13px;
+        color: #767779;
+    }
+
+    .reply-input-author {
+        font-size: 13px;
+        color: #767779;
+    }
+
+    .reply-input-cancel {
+        margin-left: 10px;
+        font-size: 13px;
+        color: #767779;
+        cursor: pointer;
+    }
+
+    .reply-input-content {
+        margin-top: 10px;
+
+        .reply-input-content-text {
+            margin-left: 10px;
+
+            .comment-text-reply {
+                width: 550px;
+            }
+
+            .comment-actions-reply {
+                margin-top: 5px;
+
+                .comment-action-item-reply {
+                    cursor: pointer;
+                    color: #767779;
+
+                    .comment-action-icon-reply {
+                        font-size: 14px;
+                        color: #767779;
+                    }
+
+                    .comment-action-icon-reply:hover {
+                        color: #08a327;
+                    }
+                }
+            }
+        }
+    }
+
+
+}

@@ -1,0 +1,119 @@
+.reply-header {
+    .reply-header-title {
+        font-size: 18px;
+        line-height: 30px;
+        font-weight: 600;
+    }
+}
+
+.reply-list {
+    margin-top: 30px;
+
+    .reply-pagination {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+
+    .reply-content {
+        margin-left: 20px;
+
+        .reply-name {
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .reply-tag {
+            font-size: 10px;
+            font-weight: 800;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .reply-ip {
+            font-size: 12px;
+            color: #767779;
+        }
+
+        .reply-time {
+            font-size: 12px;
+            color: #767779;
+        }
+
+        .reply-card {
+            width: 600px;
+            //margin-top: 5px;
+
+            .reply-images {
+                margin-top: 5px;
+            }
+
+            .reply-action-item {
+                margin-top: 10px;
+
+                .reply-action-btn {
+                    font-size: 13px;
+                    color: #767779;
+                    cursor: pointer;
+
+                }
+
+                .reply-action-icon {
+                    font-size: 14px;
+                    color: #767779;
+                    cursor: pointer;
+
+                }
+
+                .reply-action-icon:hover {
+                    font-size: 14px;
+                    color: #08a327;
+                    cursor: pointer;
+
+                }
+
+                .reply-action-btn:hover {
+                    font-size: 13px;
+                    color: #08a327;
+                    cursor: pointer;
+
+                }
+
+                .reply-action-icon-number {
+                    font-size: 12px;
+                    cursor: pointer;
+                    color: #767779;
+                }
+            }
+
+            .reply-action-item-right {
+                margin-top: 10px;
+
+                .reply-action-btn {
+                    font-size: 15px;
+                    color: #767779;
+                    cursor: pointer;
+                }
+
+                .reply-action-btn:hover {
+                    font-size: 15px;
+                    color: #08a327;
+                    cursor: pointer;
+                }
+
+                .reply-action-info {
+                    font-size: 10px;
+                    color: #767779;
+                    cursor: pointer;
+                }
+            }
+        }
+
+
+
+
+
+
+    }
+}

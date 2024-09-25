@@ -94,5 +94,11 @@ export default {
         delete: 'Delete',
         copy: 'Copy',
         cancelReply: 'Cancel Reply',
+        commentContentNotEmpty: 'Comment content cannot be empty！',
+        maxImageCount: 'Maximum image count reached！',
+        commentSuccess: 'comment success！',
+        commentError: 'comment failed！',
+        replySuccess: 'reply success！',
+        replyError: 'reply failed！',
     }
 };

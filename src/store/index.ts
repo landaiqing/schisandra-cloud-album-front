@@ -2,6 +2,7 @@ import {useAuthStore} from '@/store/modules/userStore.ts';
 import {useThemeStore} from "@/store/modules/themeStore.ts";
 import {langStore} from "@/store/modules/langStore.ts";
 import {useClientStore} from "@/store/modules/clientStore.ts";
+import {useCommentStore} from "@/store/modules/commentStore.ts";
 
 export default function useStore() {
     return {
@@ -9,5 +10,6 @@ export default function useStore() {
         theme: useThemeStore(),
         lang: langStore(),
         client: useClientStore(),
+        comment: useCommentStore(),
     };
 }
