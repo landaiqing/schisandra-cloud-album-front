@@ -1,6 +1,4 @@
-// src/utils/websocket.ts
-import {onUnmounted} from 'vue';
-
+// WebSocketService.ts
 interface WebSocketOptions {
     url: string;
     protocols?: string | string[];
@@ -10,14 +8,13 @@ interface WebSocketOptions {
 type MessageCallback = (data: any) => void;
 type EventCallback = () => void;
 
-class WebSocketService {
+export class WebSocketService {
     private ws: WebSocket | null = null;
     private callbacks: { [key: string]: (MessageCallback | EventCallback)[] } = {};
     private reconnectTimeoutMs: number = 5000; // 默认5秒重连间隔
     private heartbeatIntervalMs: number = 5000; // 默认5秒心跳间隔
 
-    constructor(private options: WebSocketOptions) {
-    }
+    constructor(private options: WebSocketOptions) {}
 
     public open(): void {
         this.ws = new WebSocket(this.options.url, this.options.protocols);
@@ -25,6 +22,7 @@ class WebSocketService {
         this.ws.addEventListener('message', this.handleMessage);
         this.ws.addEventListener('error', this.handleError);
         this.ws.addEventListener('close', this.handleClose);
+
         setInterval(() => {
             if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                 this.send("ping");
@@ -55,7 +53,6 @@ class WebSocketService {
     }
 
     private handleOpen = (): void => {
-        console.log('WebSocket连接已建立');
         if (this.callbacks.open) {
             this.callbacks.open.forEach((cb) => (cb as EventCallback)());
         }
@@ -63,7 +60,6 @@ class WebSocketService {
 
     private handleMessage = (event: MessageEvent): void => {
         const data = JSON.parse(event.data);
-        console.log('WebSocket接收到消息:', data);
         if (this.callbacks.message) {
             this.callbacks.message.forEach((cb) => (cb as MessageCallback)(data));
         }
@@ -93,20 +89,4 @@ class WebSocketService {
             console.warn('尝试发送消息时WebSocket未连接');
         }
     }
-}
-
-export default function useWebSocket(options: WebSocketOptions) {
-    const wsService = new WebSocketService(options);
-
-    onUnmounted(() => {
-        wsService.close(true);
-    });
-
-    return {
-        open: wsService.open.bind(wsService),
-        close: wsService.close.bind(wsService),
-        reconnect: wsService.reconnect.bind(wsService),
-        on: wsService.on.bind(wsService),
-        send: wsService.send.bind(wsService)
-    };
 }

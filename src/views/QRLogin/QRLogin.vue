@@ -58,9 +58,9 @@ import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
 import {generateQrCode} from "@/api/oauth/wechat.ts";
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import logo from "@/assets/svgs/logo-schisandra.svg";
-import useWebSocket from "@/utils/websocket/websocket.ts";
+
 import useStore from "@/store";
 import {message} from "ant-design-vue";
 import {generateClientId, getUserDevice} from "@/api/oauth";
@@ -71,6 +71,7 @@ const router = useRouter();
 const client = useStore().client;
 const qrcode = ref<string>('');
 const status = ref<string>('loading');
+const websocket = useStore().websocket;
 
 /**
  *  获取client_id
@@ -119,15 +120,14 @@ const wsOptions = {
   url: import.meta.env.VITE_WEB_SOCKET_URL + "?client_id=" + getLocalClientId(),
 };
 
-const {open, close, on} = useWebSocket(wsOptions);
 
 /**
  *  监听消息
  */
 async function handleListenMessage() {
-  open();
+  websocket.initialize(wsOptions);
   // 注册消息接收处理函数
-  on('message', async (data: any) => {
+  websocket.on('message', async (data: any) => {
     if (data.code === 200 && data.data) {
       const user = useStore().user;
       const {access_token, refresh_token, uid, expires_at} = data.data;
@@ -147,10 +147,6 @@ async function handleListenMessage() {
 
 onMounted(async () => {
   await getQrCode();
-});
-
-onUnmounted(async () => {
-  close(true);
 });
 </script>
 <style src="./index.scss" scoped>
