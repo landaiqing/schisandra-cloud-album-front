@@ -49,16 +49,18 @@
                   <div class="reply-text" v-html="item.content">
                   </div>
                   <AFlex :vertical="false" align="center" class="reply-images" v-if="item.images">
-                    <AAvatar shape="square" size="large"
-                             v-for="(image, index) in item.images" :key="index">
-                      <template #icon>
-                        <AImage :width="40" :height="40" :src="image">
-                          <template #previewMask>
-                            <EyeOutlined style="font-size: 18px;"/>
-                          </template>
-                        </AImage>
-                      </template>
-                    </AAvatar>
+                    <AImagePreviewGroup>
+                      <AAvatar shape="square" size="large"
+                               v-for="(image, index) in item.images" :key="index">
+                        <template #icon>
+                          <AImage :width="40" :height="40" :src="image">
+                            <template #previewMask>
+                              <EyeOutlined style="font-size: 18px;"/>
+                            </template>
+                          </AImage>
+                        </template>
+                      </AAvatar>
+                    </AImagePreviewGroup>
                   </AFlex>
                   <AFlex :vertical="false" justify="space-between" align="center">
                     <!--评论操作按钮 -->

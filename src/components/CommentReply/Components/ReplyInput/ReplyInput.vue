@@ -48,28 +48,30 @@
                   method="post"
                   :directory="false"
                   :show-upload-list="false"
-                  :custom-request="customUploadRequest"
-                  :before-upload="beforeUpload"
-                  :disabled="imageList.length >= 3"
+                  :custom-request="comment.customUploadRequest"
+                  :before-upload="comment.beforeUpload"
+                  :disabled="comment.imageList.length >= 3"
               >
-                <ABadge :count="imageList.length">
+                <ABadge :count="comment.imageList.length">
                   <AButton type="text" size="small" :icon="h(PictureOutlined)"
                            class="comment-action-icon-reply">
                     {{ t('comment.picture') }}
                   </AButton>
                 </ABadge>
               </AUpload>
-              <template v-if="imageList.length > 0">
-                <ABadge style="margin-left: 10px;" v-for="(item, index) in imageList" :key="index">
-                  <template #count>
-                    <CloseCircleOutlined @click="removeBase64Image(index)" style="color: #f5222d"/>
-                  </template>
-                  <AAvatar shape="square" size="small">
-                    <template #icon>
-                      <AImage v-if="item" :width="24" :height="24" :src="item"/>
+              <template v-if="comment.imageList.length > 0">
+                <AImagePreviewGroup>
+                  <ABadge style="margin-left: 10px;" v-for="(item, index) in comment.imageList" :key="index">
+                    <template #count>
+                      <CloseCircleOutlined @click="comment.removeBase64Image(index)" style="color: #f5222d"/>
                     </template>
-                  </AAvatar>
-                </ABadge>
+                    <AAvatar shape="square" size="small">
+                      <template #icon>
+                        <AImage v-if="item" :width="24" :height="24" :src="item"/>
+                      </template>
+                    </AAvatar>
+                  </ABadge>
+                </AImagePreviewGroup>
               </template>
             </AFlex>
           </AFlex>
@@ -98,7 +100,6 @@
 
 import {h, ref} from "vue";
 import {message} from "ant-design-vue";
-import imageCompression from "browser-image-compression";
 import {CloseOutlined, PictureOutlined, SmileOutlined} from "@ant-design/icons-vue";
 import EMOJI from "@/constant/emoji.ts";
 import {useI18n} from "vue-i18n";
@@ -110,8 +111,6 @@ const {t} = useI18n();
 const comment = useStore().comment;
 const user = useStore().user;
 const commentTextAreaPlaceholder = ref<string>(t('comment.placeholder'));
-const fileList = ref<any[]>([]);
-const imageList = ref<any[]>([]);
 const replyContent = ref<string>("");
 const topicId = ref<string>("123");
 const showSubmitCaptcha = ref<boolean>(false);
@@ -141,47 +140,6 @@ async function insertEmojiToReplyContent(emoji: string) {
   replyContent.value += emoji;
 }
 
-// 压缩图片配置
-const options = {
-  maxSizeMB: 0.4,
-  maxWidthOrHeight: 750,
-  maxIteration: 2
-};
-
-/**
- * 上传文件前置
- * @param file
- */
-async function beforeUpload(file: any) {
-  if (!window.FileReader) return false; // 判断是否支持FileReader
-  const compressedFile = await imageCompression(file, options);
-  const reader = new FileReader();
-  reader.readAsDataURL(compressedFile); // 文件转换
-  reader.onloadend = async function () {
-    if (fileList.value.length >= 5) {
-      message.error(t('comment.maxImageCount'));
-      return false;
-    }
-    fileList.value.push(reader.result);
-  };
-  return true;
-}
-
-/**
- *  自定义上传图片请求
- */
-async function customUploadRequest() {
-  imageList.value = fileList.value;
-}
-
-/**
- *  移除图片
- * @param index
- */
-async function removeBase64Image(index: number) {
-  fileList.value.splice(index, 1);
-  imageList.value.splice(index, 1);
-}
 
 /**
  *  回复提交 throttled
@@ -196,7 +154,7 @@ async function replySubmit(point: any) {
     message.error(t('comment.commentContentNotEmpty'));
     return;
   }
-  if (imageList.value.length > 3) {
+  if (comment.imageList.length > 3) {
     message.error(t('comment.maxImageCount'));
     return;
   }
@@ -216,7 +174,7 @@ async function replySubmit(point: any) {
     user_id: user.user.uid,
     topic_id: topicId.value,
     content: content,
-    images: imageList.value,
+    images: comment.imageList,
     author: user.user.uid,
     reply_id: props.item.id,
     reply_user: props.item.user_id,
@@ -226,8 +184,7 @@ async function replySubmit(point: any) {
   const result: any = await replySubmitApi(replyParams);
   if (result.code === 200 && result.success) {
     replyContent.value = "";
-    fileList.value = [];
-    imageList.value = [];
+    await comment.clearFileList();
     showSubmitCaptcha.value = false;
     await getReplyList();
     comment.closeReplyInput();

@@ -28,16 +28,18 @@
                 <div class="reply-text-child" v-html="child.content">
                 </div>
                 <AFlex :vertical="false" align="center" class="reply-images" v-if="child.images">
-                  <AAvatar shape="square" size="large"
-                           v-for="(image, index) in child.images" :key="index">
-                    <template #icon>
-                      <AImage :width="40" :height="40" :src="image">
-                        <template #previewMask>
-                          <EyeOutlined style="font-size: 18px;"/>
-                        </template>
-                      </AImage>
-                    </template>
-                  </AAvatar>
+                  <AImagePreviewGroup>
+                    <AAvatar shape="square" size="large"
+                             v-for="(image, index) in child.images" :key="index">
+                      <template #icon>
+                        <AImage :width="40" :height="40" :src="image">
+                          <template #previewMask>
+                            <EyeOutlined style="font-size: 18px;"/>
+                          </template>
+                        </AImage>
+                      </template>
+                    </AAvatar>
+                  </AImagePreviewGroup>
                 </AFlex>
                 <AFlex :vertical="false" justify="space-between" align="center">
                   <!--评论操作按钮 -->
@@ -141,9 +143,8 @@ const props = defineProps({
   }
 });
 
-
 /**
- *  格式化时间
+ * 格式化时间
  * @param dateString
  */
 function formatTimeAgo(dateString: string) {
@@ -168,6 +169,7 @@ function formatTimeAgo(dateString: string) {
 
   return `${seconds} 秒前`;
 }
+
 
 const commentLikeThrottled = useThrottleFn(commentLike, 1000);
 
