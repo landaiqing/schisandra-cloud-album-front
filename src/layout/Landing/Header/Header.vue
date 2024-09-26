@@ -65,17 +65,18 @@
 </template>
 <script setup lang="ts">
 
-import router from "@/router/router.ts";
+
 import useStore from "@/store/index.ts";
 import {ref} from "vue";
 import {DownOutlined} from '@ant-design/icons-vue';
 import {useI18n} from "vue-i18n";
 import variables from "@/assets/styles/colors.module.scss";
+import {useRouter} from "vue-router";
 
-const lang = useStore().lang;
+
 const {t, locale} = useI18n();
-
-
+const router = useRouter();
+const lang = useStore().lang;
 async function changeLang(language: any) {
   lang.lang = language;
   locale.value = language;
@@ -97,14 +98,11 @@ const toggleTheme = (event: any) => {
   );
 
   // 兼容性处理
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
   if (!document.startViewTransition) {
     app.toggleDarkMode();
     return;
   }
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-expect-error
+
   const transition = document.startViewTransition(async () => {
     app.toggleDarkMode();
   });

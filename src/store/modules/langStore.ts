@@ -14,7 +14,7 @@ export const langStore = defineStore(
         persist: {
             key: 'lang',
             storage: localStorage,
-            paths: ["lang"],
+            pick: ["lang"],
         }
     }
 );

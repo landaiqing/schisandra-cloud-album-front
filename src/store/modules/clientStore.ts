@@ -69,7 +69,7 @@ export const useClientStore = defineStore(
         persist: {
             key: 'clientId',
             storage: expiredStorage,
-            paths: ["clientId"],
+            pick: ["clientId"],
         }
     }
 );

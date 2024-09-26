@@ -40,7 +40,7 @@ export const useThemeStore = defineStore(
         persist: {
             key: 'theme',
             storage: localStorage,
-            paths: ["themeName", "darkMode"],
+            pick: ["themeName", "darkMode"],
         }
     }
 );

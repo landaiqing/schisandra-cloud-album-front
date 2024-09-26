@@ -42,4 +42,6 @@ export const useWebSocketStore = defineStore('websocket', () => {
         onEvent,
         close,
     };
+}, {
+    persist: false,
 });

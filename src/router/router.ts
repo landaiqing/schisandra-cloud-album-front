@@ -29,7 +29,7 @@ router.beforeEach((to, _from, next) => {
     start();
     const user = useStore().user;
     const token: string | undefined = user.user.refreshToken;
-    const userId: string | undefined = user.user.userId;
+    const userId: string | undefined = user.user.uid;
 
     // 检查用户是否已登录
     const isLoggedIn: boolean = token !== "" && userId !== "";

@@ -21,7 +21,7 @@ export const useAuthStore = defineStore(
         persist: {
             key: 'user',
             storage: localStorage,
-            paths: ['user'],
+            pick: ['user'],
         }
     }
 );
