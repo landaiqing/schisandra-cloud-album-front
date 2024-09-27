@@ -10,6 +10,7 @@ import {message, Modal} from "ant-design-vue";
 import i18n from "@/locales";
 import {axiosRequestAdapter} from "@alova/adapter-axios";
 import {refreshToken} from "@/api/user";
+import createMD5Signature, {generateNonce} from "@/utils/signature/signature.ts";
 
 let hasShownNetworkError: boolean = false;
 const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication<typeof VueHook,
@@ -59,6 +60,15 @@ export const service = createAlova({
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';
+        // 添加签名
+        if (method.type === 'POST') {
+            const nonce: string = generateNonce(); // 生成随机的 Nonce
+            const {signature, timestamp}: { signature: string, timestamp: number } = createMD5Signature(method, nonce);
+            method.config.headers['X-Sign'] = signature;
+            method.config.headers['X-Timestamp'] = timestamp;
+            method.config.headers['X-Nonce'] = nonce;
+        }
+
     }),
     // 响应拦截器
     responded: onResponseRefreshToken({

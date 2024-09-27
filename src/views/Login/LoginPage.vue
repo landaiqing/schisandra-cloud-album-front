@@ -193,7 +193,7 @@ import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import LoginFooter from "@/views/Login/LoginFooter.vue";
 import {useRouter} from "vue-router";
-import {checkRotatedCaptcha, getRotatedCaptchaData} from "@/api/captcha";
+import {getRotatedCaptchaData} from "@/api/captcha";
 import {message} from "ant-design-vue";
 import {accountLoginApi, phoneLoginApi, sendMessage} from "@/api/user";
 import useStore from "@/store";
@@ -206,7 +206,6 @@ const phoneLoginFormRef = ref<any>();
 const showPhoneRotateCaptcha = ref<boolean>(false);
 const showAccountRotateCaptcha = ref<boolean>(false);
 const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
-const captchaErrorCount = ref<number>(0);
 const loginLoading = ref<boolean>(false);
 const phoneLoginRotateEvent = {
   confirm: (angle: number) => {
@@ -235,6 +234,8 @@ const accountLoginForm: UnwrapRef<AccountLogin> = reactive({
   account: '',
   password: '',
   auto_login: true,
+  angle: 0,
+  key: "",
 });
 // 手机登录表单数据
 const phoneLoginForm: UnwrapRef<PhoneLogin> = reactive({
@@ -429,28 +430,15 @@ const checkPhoneLoginCaptchaDebounce = useDebounceFn(checkPhoneLoginCaptcha, 500
  * @param angle
  */
 async function checkPhoneLoginCaptcha(angle: number) {
-  if (captchaErrorCount.value >= 2) {
-    message.error(t('login.captchaError'));
-    getRotateCaptcha().then(() => {
-      captchaErrorCount.value = 0;
-    });
-  } else {
-    const result: any = await checkRotatedCaptcha(angle, captchaData.key);
-    if (result.code === 200 && result.success) {
-      showPhoneRotateCaptcha.value = false;
-      const result: boolean = await sendMessageByPhone();
-      if (result) {
-        countDown();
-      }
-    } else if (result.code === 1011) {
-      message.error(t('login.captchaExpired'));
-      getRotateCaptcha().then(() => {
-        captchaErrorCount.value = 0;
-      });
-    } else {
-      captchaErrorCount.value++;
-      message.error(t('login.captchaError'));
-    }
+  const params = {
+    phone: phoneLoginForm.phone,
+    angle: angle,
+    key: captchaData.key,
+  };
+  const result: boolean = await sendMessageByPhone(params);
+  if (result) {
+    showPhoneRotateCaptcha.value = false;
+    countDown();
   }
 }
 
@@ -464,51 +452,38 @@ const checkAccountLoginCaptchaDebounce = useDebounceFn(checkAccountLoginCaptcha,
  * @param angle
  */
 async function checkAccountLoginCaptcha(angle: number) {
-  if (captchaErrorCount.value >= 2) {
-    message.error(t('login.captchaError'));
-    getRotateCaptcha().then(() => {
-      captchaErrorCount.value = 0;
-    });
+  const params = {
+    ...accountLoginForm,
+    angle: angle,
+    key: captchaData.key,
+  };
+  loginLoading.value = true;
+  const res: any = await accountLoginApi(params);
+  if (res.code === 200 && res.success) {
+    const userStore = useStore().user;
+    const {uid, access_token, refresh_token, expires_at} = res.data;
+    userStore.user.uid = uid;
+    userStore.user.accessToken = access_token;
+    userStore.user.refreshToken = refresh_token;
+    userStore.user.expiresAt = expires_at;
+    message.success(t('login.loginSuccess'));
+    loginLoading.value = false;
+    showAccountRotateCaptcha.value = false;
+    setTimeout(() => {
+      router.push('/main');
+    }, 1000);
   } else {
-    const result: any = await checkRotatedCaptcha(angle, captchaData.key);
-    if (result.code === 200 && result.success) {
-      showAccountRotateCaptcha.value = false;
-      loginLoading.value = true;
-      const res: any = await accountLoginApi(accountLoginForm);
-      if (res.code === 200 && res.success) {
-        const userStore = useStore().user;
-        const {uid, access_token, refresh_token, expires_at} = res.data;
-        userStore.user.uid = uid;
-        userStore.user.accessToken = access_token;
-        userStore.user.refreshToken = refresh_token;
-        userStore.user.expiresAt = expires_at;
-        message.success(t('login.loginSuccess'));
-        loginLoading.value = false;
-        setTimeout(() => {
-          router.push('/main');
-        }, 1000);
-      } else {
-        loginLoading.value = false;
-        message.error(t('login.loginError'));
-      }
-    } else if (result.code === 1011) {
-      message.error(t('login.captchaExpired'));
-      getRotateCaptcha().then(() => {
-        captchaErrorCount.value = 0;
-      });
-    } else {
-      captchaErrorCount.value++;
-      message.error(t('login.captchaError'));
-    }
+    loginLoading.value = false;
+    message.error(t('login.loginError'));
   }
+
 }
 
 /**
  * 发送手机验证码
  */
-async function sendMessageByPhone(): Promise<boolean> {
-  const phone: string = phoneLoginForm.phone as string;
-  const res: any = await sendMessage(phone);
+async function sendMessageByPhone(params: any): Promise<boolean> {
+  const res: any = await sendMessage(params);
   if (res.code === 200 && res.success) {
     message.success(t('login.sendCaptchaSuccess'));
     return true;

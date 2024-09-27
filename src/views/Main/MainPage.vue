@@ -33,12 +33,12 @@ const wsOptions = {
 onMounted(() => {
   websocket.initialize(wsOptions);
   websocket.on("message", async (data: any) => {
-    notification.open({
-      message: '消息来了',
-      description:
-      data,
-      icon: () => h(SmileOutlined, {style: 'color: #108ee9'}),
-    });
+    // notification.open({
+    //   message: '消息来了',
+    //   description:
+    //   data,
+    //   icon: () => h(SmileOutlined, {style: 'color: #108ee9'}),
+    // });
   });
 });
 

@@ -114,7 +114,7 @@ import {useRouter} from "vue-router";
 import {onMounted, reactive, ref, UnwrapRef} from "vue";
 import {ResetPassword} from "@/types/user";
 import {Rule} from "ant-design-vue/lib/form";
-import {checkRotatedCaptcha, getRotatedCaptchaData} from "@/api/captcha";
+import {getRotatedCaptchaData} from "@/api/captcha";
 import {message} from "ant-design-vue";
 import {resetPasswordApi, sendMessage} from "@/api/user";
 import {useDebounceFn} from "@vueuse/core";
@@ -124,7 +124,6 @@ const {t} = useI18n();
 const resetPasswordRef = ref();
 const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
 const showRotateCaptcha = ref<boolean>(false);
-const captchaErrorCount = ref<number>(0);
 const resetPasswordRotateEvent = {
   confirm: (angle: number) => {
     checkPhoneLoginCaptcha(angle);
@@ -293,9 +292,8 @@ async function getRotateCaptcha() {
 /**
  * 发送手机验证码
  */
-async function sendMessageByPhone(): Promise<boolean> {
-  const phone: string = ResetPasswordForm.phone as string;
-  const res: any = await sendMessage(phone);
+async function sendMessageByPhone(param: any): Promise<boolean> {
+  const res: any = await sendMessage(param);
   if (res.code === 200 && res.success) {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
@@ -310,28 +308,15 @@ async function sendMessageByPhone(): Promise<boolean> {
  * @param angle
  */
 async function checkPhoneLoginCaptcha(angle: number) {
-  if (captchaErrorCount.value >= 2) {
-    message.error(t('login.captchaError'));
-    getRotateCaptcha().then(() => {
-      captchaErrorCount.value = 0;
-    });
-  } else {
-    const result: any = await checkRotatedCaptcha(angle, captchaData.key);
-    if (result.code === 200 && result.success) {
-      showRotateCaptcha.value = false;
-      const result: boolean = await sendMessageByPhone();
-      if (result) {
-        countDown();
-      }
-    } else if (result.code === 1011) {
-      message.error(t('login.captchaExpired'));
-      getRotateCaptcha().then(() => {
-        captchaErrorCount.value = 0;
-      });
-    } else {
-      captchaErrorCount.value++;
-      message.error(t('login.captchaError'));
-    }
+  const param = {
+    key: captchaData.key,
+    angle: angle,
+    phone: ResetPasswordForm.phone,
+  };
+  const result: boolean = await sendMessageByPhone(param);
+  if (result) {
+    showRotateCaptcha.value = false;
+    countDown();
   }
 }
 </script>

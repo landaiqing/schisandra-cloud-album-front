@@ -2,6 +2,8 @@ export interface AccountLogin {
     account?: string
     password?: string;
     auto_login?: boolean;
+    angle: number,
+    key: string,
 }
 
 export interface PhoneLogin {

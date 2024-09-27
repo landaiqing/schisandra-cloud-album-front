@@ -35,17 +35,20 @@ export const refreshToken = (refreshToken: string) => {
 };
 /**
  * 发送短信验证码
- * @param phone
+ * @param params
  */
-export const sendMessage = (phone: string) => {
-    return service.Get('/api/sms/test/send', {
-        params: {
-            phone: phone
+export const sendMessage = (params: any) => {
+    return service.Post('/api/sms/test/send', {
+            phone: params.phone,
+            angle: params.angle,
+            key: params.key,
         },
-        meta: {
-            ignoreToken: true
+        {
+            meta: {
+                ignoreToken: true
+            }
         }
-    });
+    );
 };
 /**
  * 手机登录
@@ -73,7 +76,9 @@ export const accountLoginApi = (param: AccountLogin) => {
     return service.Post('/api/user/login', {
             account: param.account,
             password: param.password,
-            auto_login: param.auto_login
+            auto_login: param.auto_login,
+            angle: param.angle,
+            key: param.key,
         },
         {
             meta: {
@@ -106,13 +111,14 @@ export const resetPasswordApi = (param: ResetPassword) => {
  * @param user_id
  */
 export const getUserPermissions = (user_id: string) => {
-    return service.Get('/api/auth/permission/get_user_permissions', {
-            params: {
+        return service.Post('/api/auth/permission/get_user_permissions', {
                 user_id: user_id
             },
-            meta: {
-                ignoreToken: false,
+            {
+                meta: {
+                    ignoreToken: false,
+                }
             }
-        }
-    );
-};
+        );
+    }
+;
