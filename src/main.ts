@@ -9,11 +9,14 @@ import GoCaptcha from "go-captcha-vue";
 import {createPinia, Pinia} from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import clickOutside from '@/directives/v-click-outside.ts';
+import lazyLoad from "@/directives/v-lazy-load.ts";
 import VueDOMPurifyHTML from 'vue-dompurify-html';
+
 const pinia: Pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 const app = createApp(App);
 app.directive('click-outside', clickOutside);
+app.directive('lazy-load', lazyLoad);
 app.use(pinia);
 app.use(router);
 app.use(i18n);

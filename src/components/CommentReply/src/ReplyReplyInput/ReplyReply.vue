@@ -37,10 +37,12 @@
                       </template>
                       <div style="width: 250px;height: 200px;overflow: auto;">
                         <template v-for="(item) in comment.emojiList" :key="item">
-                          <AButton @click="insertEmojiToReplyReplyContent(item.name)" type="text" shape="circle" size="large"
+                          <AButton @click="insertEmojiToReplyReplyContent(item.name)" type="text" shape="circle"
+                                   size="large"
                                    class="comment-emoji-item">
                             <template #icon>
-                              <AAvatar shape="circle" size="default" :src="item.path"/>
+                              <img :width="35" :height="35" loading="lazy" :src="item.path" v-lazy-load
+                                   :alt="item.name"/>
                             </template>
                           </AButton>
                         </template>
@@ -55,10 +57,12 @@
                       <div style="width: 250px;height: 200px;overflow: auto;">
                         <AFlex :vertical="false" align="center" justify="space-between" wrap="wrap">
                           <template v-for="(item) in comment.lottieEmojiList" :key="item">
-                            <AButton @click="insertEmojiToReplyReplyContent(item.name)" type="text" shape="default" size="large"
+                            <AButton @click="insertEmojiToReplyReplyContent(item.name)" type="text" shape="default"
+                                     size="large"
                                      class="comment-emoji-item" style="width: 75px;height: 75px;">
                               <template #icon>
-                                <AAvatar shape="square" :size="70" :src="item.path"/>
+                                <img :width="70" :height="70" loading="lazy" :src="item.path" v-lazy-load
+                                     :alt="item.name"/>
                               </template>
                             </AButton>
                           </template>
@@ -75,7 +79,7 @@
             </AFlex>
             <AFlex :vertical="false" align="center" class="comment-action-item-reply-child">
               <AUpload
-                  :accept="'image/jpg, image/png, image/jpeg, image/gif, image/svg+xml, image/webp'"
+                  :accept="'image/jpg, image/png, image/jpeg'"
                   name="images"
                   :max-count="3"
                   :multiple="true"
@@ -183,12 +187,19 @@ const emojiType = ref<string>("qq");
 async function changeEmojiType(type: string) {
   emojiType.value = type;
 }
+
 /**
  *  插入表情到回复内容
  * @param emoji
  */
 async function insertEmojiToReplyReplyContent(emoji: string) {
-  replyReplyContent.value += "[" + emoji + "]";
+  if (emojiType.value === "qq") {
+    replyReplyContent.value += "[" + emoji + "]";
+  } else if (emojiType.value === "lottie") {
+    replyReplyContent.value += ":" + emoji + ":";
+  } else {
+    return;
+  }
 
 }
 
@@ -210,20 +221,18 @@ async function replyReplySubmit(point: any) {
     return;
   }
   const content = replyReplyContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
-  const regex = /\[((1[0-6][0-6]|[1-9]?[0-9])\.gif)\]/g; // 匹配 [1.gif] 的字符串
-  const contentWithEmoji = content.replace(regex, (match, p1) => {
-    if (emojiType.value === "qq") {
-      return `<img style="width: 30px; height: 30px;" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
-    } else if (emojiType.value === "lottie") {
-      return `<img style="width: 80px; height: 80px;" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
-    } else {
-      return match;
-    }
+  const regex = /\[((1[0-6][0-6]|[1-9]?[0-9])\.gif)]/g; // 匹配 [1.gif] 的字符串
+  const contentWithEmoji = content.replace(regex, (_match, p1) => {
+    return `<img style="width: 30px; height: 30px;" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
+  });
+  const regexWithLottieEmoji = /:((1[0-0-8]|[1-9]?[0-9])\.gif):/g; // 匹配 :1.gif: 的字符串
+  const contentWithLottieEmoji = contentWithEmoji.replace(regexWithLottieEmoji, (_match, p1) => {
+    return `<img style="width: 80px; height: 80px;" loading="lazy" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
   });
   const replyParams: ReplyCommentParams = {
     user_id: user.user.uid,
     topic_id: topicId.value,
-    content: contentWithEmoji,
+    content: contentWithLottieEmoji,
     images: comment.imageList,
     author: user.user.uid,
     reply_to: props.child.id,

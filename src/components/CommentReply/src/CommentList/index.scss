@@ -9,6 +9,10 @@
 .reply-list {
     margin-top: 30px;
 
+    .reply-avatar-img {
+        cursor: pointer;
+    }
+
     .reply-pagination {
         display: flex;
         justify-content: flex-end;

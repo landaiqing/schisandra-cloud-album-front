@@ -37,7 +37,8 @@
                           <AButton @click="insertEmojiToReplyContent(item.name)" type="text" shape="circle" size="large"
                                    class="comment-emoji-item">
                             <template #icon>
-                              <AAvatar shape="circle" size="default" :src="item.path"/>
+                              <img :width="35" :height="35" loading="lazy" :src="item.path" v-lazy-load
+                                   :alt="item.name"/>
                             </template>
                           </AButton>
                         </template>
@@ -56,7 +57,8 @@
                                      size="large"
                                      class="comment-emoji-item" style="width: 75px;height: 75px;">
                               <template #icon>
-                                <AAvatar shape="square" :size="70" :src="item.path"/>
+                                <img :width="70" :height="70" loading="lazy" :src="item.path" v-lazy-load
+                                     :alt="item.name"/>
                               </template>
                             </AButton>
                           </template>
@@ -73,7 +75,7 @@
             </AFlex>
             <AFlex :vertical="false" align="center" class="comment-action-item-reply">
               <AUpload
-                  :accept="'image/jpg, image/png, image/jpeg, image/gif, image/svg+xml, image/webp'"
+                  :accept="'image/jpg, image/png, image/jpeg'"
                   name="images"
                   :max-count="3"
                   :multiple="true"
@@ -178,7 +180,13 @@ async function changeEmojiType(type: string) {
  * @param emoji
  */
 async function insertEmojiToReplyContent(emoji: string) {
-  replyContent.value += "[" + emoji + "]";
+  if (emojiType.value === "qq") {
+    replyContent.value += "[" + emoji + "]";
+  } else if (emojiType.value === "lottie") {
+    replyContent.value += ":" + emoji + ":";
+  } else {
+    return;
+  }
 }
 
 
@@ -201,14 +209,12 @@ async function replySubmit(point: any) {
   }
   const content = replyContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
   const regex = /\[((1[0-6][0-6]|[1-9]?[0-9])\.gif)\]/g; // 匹配 [1.gif] 的字符串
-  const contentWithEmoji = content.replace(regex, (match, p1) => {
-    if (emojiType.value === "qq") {
-      return `<img style="width: 30px; height: 30px;" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
-    } else if (emojiType.value === "lottie") {
-      return `<img style="width: 80px; height: 80px;" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
-    } else {
-      return match;
-    }
+  const contentWithEmoji = content.replace(regex, (_match, p1) => {
+    return `<img style="width: 30px; height: 30px;" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
+  });
+  const regexWithLottieEmoji = /\:((1[0-0-8]|[1-9]?[0-9])\.gif)\:/g; // 匹配 :1.gif: 的字符串
+  const contentWithLottieEmoji = contentWithEmoji.replace(regexWithLottieEmoji, (_match, p1) => {
+    return `<img style="width: 80px; height: 80px;" loading="lazy" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
   });
   const replyParams: {
     images: any;
@@ -223,7 +229,7 @@ async function replySubmit(point: any) {
   } = {
     user_id: user.user.uid,
     topic_id: topicId.value,
-    content: contentWithEmoji,
+    content: contentWithLottieEmoji,
     images: comment.imageList,
     author: user.user.uid,
     reply_id: props.item.id,

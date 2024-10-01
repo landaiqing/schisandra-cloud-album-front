@@ -26,7 +26,7 @@
           <AFlex :vertical="false" style="margin-top: 5px">
             <!-- 评论头像 -->
             <AFlex :vertical="true" class="reply-avatar" v-if="item.avatar">
-              <AAvatar :size="50" shape="circle" :src="item.avatar"/>
+              <AAvatar :size="50" class="reply-avatar-img" shape="circle" :src="item.avatar"/>
             </AFlex>
             <!-- 评论内容 -->
             <AFlex :vertical="true" class="reply-content">

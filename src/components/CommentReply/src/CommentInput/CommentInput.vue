@@ -2,7 +2,7 @@
   <div class="comment">
     <AFlex :vertical="false">
       <AFlex :vertical="true">
-        <AAvatar :size="50" shape="circle" src="https://api.multiavatar.com/Starcrasher.svg"/>
+        <AAvatar :size="50" class="comment-avatar" shape="circle" src="https://api.multiavatar.com/Starcrasher.svg"/>
       </AFlex>
       <AFlex :vertical="true" class="comment-content">
         <ATextarea :rows="4" class="comment-text" @focus="onFocusHandler"
@@ -28,7 +28,8 @@
                           <AButton @click="insertEmoji(item.name)" type="text" shape="circle" size="large"
                                    class="comment-emoji-item">
                             <template #icon>
-                              <AAvatar shape="circle" size="default" :src="item.path"/>
+                              <img :width="35" :height="35" loading="lazy" :src="item.path" v-lazy-load
+                                   :alt="item.name"/>
                             </template>
                           </AButton>
                         </template>
@@ -46,7 +47,8 @@
                             <AButton @click="insertEmoji(item.name)" type="text" shape="default" size="large"
                                      class="comment-emoji-item" style="width: 75px;height: 75px;">
                               <template #icon>
-                                <AAvatar shape="square" :size="70" :src="item.path"/>
+                                <img :width="70" :height="70" loading="lazy" :src="item.path" v-lazy-load
+                                     :alt="item.name"/>
                               </template>
                             </AButton>
                           </template>
@@ -62,7 +64,7 @@
             </AFlex>
             <AFlex :vertical="false" align="center" class="comment-action-item">
               <AUpload
-                  :accept="'image/jpg, image/png, image/jpeg, image/gif, image/svg+xml, image/webp'"
+                  :accept="'image/jpg, image/png, image/jpeg'"
                   name="images"
                   :max-count="3"
                   :multiple="true"
@@ -164,7 +166,13 @@ async function onFocusHandler() {
  * @param emoji
  */
 async function insertEmoji(emoji: string) {
-  commentContent.value += "[" + emoji + "]";
+  if (emojiType.value === "qq") {
+    commentContent.value += "[" + emoji + "]";
+  } else if (emojiType.value === "lottie") {
+    commentContent.value += ":" + emoji + ":";
+  } else {
+    return;
+  }
 }
 
 
@@ -186,20 +194,18 @@ async function commentSubmit(point: any) {
     return;
   }
   const content = commentContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
-  const regex = /\[((1[0-6][0-6]|[1-9]?[0-9])\.gif)\]/g; // 匹配 [1.gif] 的字符串
-  const contentWithEmoji = content.replace(regex, (match, p1) => {
-    if (emojiType.value === "qq") {
-      return `<img style="width: 30px; height: 30px;" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
-    } else if (emojiType.value === "lottie") {
-      return `<img style="width: 80px; height: 80px;" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
-    } else {
-      return match;
-    }
+  const regex = /\[((1[0-6][0-6]|[1-9]?[0-9])\.gif)]/g; // 匹配 [1.gif] 的字符串
+  const contentWithEmoji = content.replace(regex, (_match, p1) => {
+    return `<img style="width: 30px; height: 30px;" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
+  });
+  const regexWithLottieEmoji = /:((1[0-0-8]|[1-9]?[0-9])\.gif):/g; // 匹配 :1.gif: 的字符串
+  const contentWithLottieEmoji = contentWithEmoji.replace(regexWithLottieEmoji, (_match, p1) => {
+    return `<img style="width: 80px; height: 80px;" loading="lazy" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
   });
   const commentParams: object = {
     user_id: user.user.uid,
     topic_id: topicId.value,
-    content: contentWithEmoji,
+    content: contentWithLottieEmoji,
     images: comment.imageList,
     author: user.user.uid,
     point: [point.x, point.y],
