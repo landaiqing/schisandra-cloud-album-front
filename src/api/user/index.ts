@@ -111,14 +111,30 @@ export const resetPasswordApi = (param: ResetPassword) => {
  * @param user_id
  */
 export const getUserPermissions = (user_id: string) => {
-        return service.Post('/api/auth/permission/get_user_permissions', {
-                user_id: user_id
-            },
-            {
-                meta: {
-                    ignoreToken: false,
-                }
+    return service.Post('/api/auth/permission/get_user_permissions', {
+            user_id: user_id
+        },
+        {
+            meta: {
+                ignoreToken: false,
             }
-        );
-    }
-;
+        }
+    );
+};
+
+
+/**
+ * 获取用户设备信息
+ */
+export const getUserDevice = (userId: string) => {
+    return service.Get('/api/user/get_device',
+        {
+            params: {
+                user_id: userId,
+            },
+            meta: {
+                ignoreToken: true,
+            }
+        }
+    );
+};

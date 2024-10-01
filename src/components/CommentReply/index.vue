@@ -11,9 +11,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import CommentInput from "@/components/CommentReply/Components/CommentInput/CommentInput.vue";
+import CommentInput from "@/components/CommentReply/src/CommentInput/CommentInput.vue";
 import {useI18n} from "vue-i18n";
-import CommentList from "@/components/CommentReply/Components/CommentList/CommentList.vue";
+import CommentList from "@/components/CommentReply/src/CommentList/CommentList.vue";
 
 const {t} = useI18n();
 </script>

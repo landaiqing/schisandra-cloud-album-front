@@ -11,6 +11,7 @@ import AutoImport from 'unplugin-auto-import/vite';
 export default defineConfig(({mode}: { mode: string }): object => {
     const env: Record<string, string> = loadEnv(mode, process.cwd());
     return {
+        publicDir: 'public',
         base: '/',
         resolve: {
             //设置别名

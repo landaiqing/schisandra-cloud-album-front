@@ -11,9 +11,7 @@ import {useRequest} from "alova/client";
 import {getUserPermissions} from "@/api/user";
 import useStore from "@/store";
 import CommentReply from "@/components/CommentReply/index.vue";
-import {h, onMounted} from "vue";
-import {notification} from "ant-design-vue";
-import {SmileOutlined} from "@ant-design/icons-vue";
+import {onMounted} from "vue";
 
 const websocket = useStore().websocket;
 const userInfo = useStore().user;
@@ -32,7 +30,7 @@ const wsOptions = {
 
 onMounted(() => {
   websocket.initialize(wsOptions);
-  websocket.on("message", async (data: any) => {
+  websocket.on("message", async (_data: any) => {
     // notification.open({
     //   message: '消息来了',
     //   description:

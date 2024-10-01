@@ -5,6 +5,7 @@ import {cancelCommentLikeApi, commentLikeApi, commentListApi, replyListApi} from
 import {message} from "ant-design-vue";
 import {getSlideCaptchaDataApi} from "@/api/captcha";
 import imageCompression from "browser-image-compression";
+import QQ_EMOJI from "@/constant/qq_emoji.ts";
 
 export const useCommentStore = defineStore(
     'comment',
@@ -27,6 +28,9 @@ export const useCommentStore = defineStore(
         });
         const fileList = ref<any[]>([]);
         const imageList = ref<any[]>([]);
+        const uploadLoading = ref<boolean>(false);
+        const emojiMap = ref<any>({});
+        const emojiList = ref<any[]>(QQ_EMOJI);
 
         /**
          * 获取评论列表
@@ -50,7 +54,10 @@ export const useCommentStore = defineStore(
                 commentList.value.comments.forEach((item: any) => {
                     commentMap[item.id] = item;
                 });
+            } else {
+                commentLoading.value = false;
             }
+
         }
 
         /**
@@ -90,6 +97,8 @@ export const useCommentStore = defineStore(
             const result: any = await replyListApi(params);
             if (result.code === 200 && result.success && result.data) {
                 replyList.value = result.data;
+                replyLoading.value = false;
+            } else {
                 replyLoading.value = false;
             }
         }
@@ -163,7 +172,7 @@ export const useCommentStore = defineStore(
          * @param file
          */
         async function beforeUpload(file: any) {
-
+            uploadLoading.value = true;
             // 压缩图片配置
             const options = {
                 maxSizeMB: 0.4,
@@ -203,16 +212,15 @@ export const useCommentStore = defineStore(
                         const x: number = canvas.width - textWidth - 5; // 距离右边缘 5 像素
                         const y: number = canvas.height - textHeight / 2 - 5; // 距离下边缘 5 像素
 
-                        ctx.fillText('schisandra', x, y);
+                        ctx.fillText(text, x, y);
                         fileList.value.push(canvas.toDataURL());
                     };
                 } else {
                     return false;
                 }
             };
+            uploadLoading.value = false;
             return true;
-
-
         }
 
         /**
@@ -258,6 +266,11 @@ export const useCommentStore = defineStore(
             return `${seconds} 秒前`;
         }
 
+        // 初始化 emoji 表情
+        for (const item of emojiList.value) {
+            emojiMap.value[item.name] = item.path;
+        }
+
         return {
             commentList,
             commentLoading,
@@ -269,6 +282,9 @@ export const useCommentStore = defineStore(
             commentMap,
             fileList,
             imageList,
+            uploadLoading,
+            emojiList,
+            emojiMap,
             getCommentList,
             handleShowReplyInput,
             closeReplyInput,
@@ -286,6 +302,10 @@ export const useCommentStore = defineStore(
     },
     {
         // 开启数据持久化
-        persist: false,
+        persist: {
+            key: 'comment',
+            storage: localStorage,
+            pick: ["emojiList", "emojiMap"],
+        }
     }
 );

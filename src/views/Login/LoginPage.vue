@@ -488,7 +488,7 @@ async function sendMessageByPhone(params: any): Promise<boolean> {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
   } else {
-    message.error(res.data);
+    message.error(res.message);
     return false;
   }
 }

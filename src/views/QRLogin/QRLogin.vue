@@ -63,7 +63,8 @@ import logo from "@/assets/svgs/logo-schisandra.svg";
 
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import {generateClientId, getUserDevice} from "@/api/oauth";
+import {generateClientId} from "@/api/oauth";
+import {getUserDevice} from "@/api/user";
 
 const {t} = useI18n();
 
