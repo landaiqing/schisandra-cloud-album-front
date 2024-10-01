@@ -66,6 +66,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SafetyOutlined: typeof import('@ant-design/icons-vue')['SafetyOutlined']
+    StarOutlined: typeof import('@ant-design/icons-vue')['StarOutlined']
     TabletOutlined: typeof import('@ant-design/icons-vue')['TabletOutlined']
     UserOutlined: typeof import('@ant-design/icons-vue')['UserOutlined']
     WarningOutlined: typeof import('@ant-design/icons-vue')['WarningOutlined']

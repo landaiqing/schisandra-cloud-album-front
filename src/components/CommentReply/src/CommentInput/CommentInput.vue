@@ -16,16 +16,44 @@
             <AFlex :vertical="false" align="center" class="comment-action-item">
               <APopover trigger="click" placement="bottom">
                 <template #content>
-                  <div style="width: 210px;height: 200px;overflow: auto;">
-                    <template v-for="(item) in comment.emojiList" :key="item">
-                      <AButton @click="insertEmoji(item.name)" type="text" shape="circle" size="large"
-                               class="comment-emoji-item">
-                        <template #icon>
-                          <AAvatar shape="circle" size="default" :src="item.path"/>
+                  <ATabs v-model:active-key="emojiType" @change="changeEmojiType">
+                    <ATabPane key="qq">
+                      <template #tab>
+                        <AFlex :vertical="false" align="center">
+                          <SmileOutlined style="font-size: 18px;"/>
+                        </AFlex>
+                      </template>
+                      <div style="width: 250px;height: 200px;overflow: auto;">
+                        <template v-for="(item) in comment.emojiList" :key="item">
+                          <AButton @click="insertEmoji(item.name)" type="text" shape="circle" size="large"
+                                   class="comment-emoji-item">
+                            <template #icon>
+                              <AAvatar shape="circle" size="default" :src="item.path"/>
+                            </template>
+                          </AButton>
                         </template>
-                      </AButton>
-                    </template>
-                  </div>
+                      </div>
+                    </ATabPane>
+                    <ATabPane key="lottie">
+                      <template #tab>
+                        <AFlex :vertical="false" align="center">
+                          <StarOutlined style="font-size: 18px;"/>
+                        </AFlex>
+                      </template>
+                      <div style="width: 250px;height: 200px;overflow: auto;">
+                        <AFlex :vertical="false" align="center" justify="space-between" wrap="wrap">
+                          <template v-for="(item) in comment.lottieEmojiList" :key="item">
+                            <AButton @click="insertEmoji(item.name)" type="text" shape="default" size="large"
+                                     class="comment-emoji-item" style="width: 75px;height: 75px;">
+                              <template #icon>
+                                <AAvatar shape="square" :size="70" :src="item.path"/>
+                              </template>
+                            </AButton>
+                          </template>
+                        </AFlex>
+                      </div>
+                    </ATabPane>
+                  </ATabs>
                 </template>
                 <AButton type="text" size="small" :icon="h(SmileOutlined)" class="comment-action-icon">
                   {{ t('comment.emoji') }}
@@ -122,7 +150,7 @@ const commentSlideCaptchaEvent = {
     getSlideCaptchaDataThrottled();
   },
 };
-
+const emojiType = ref<string>("qq");
 
 /**
  * 聚焦事件
@@ -158,13 +186,15 @@ async function commentSubmit(point: any) {
     return;
   }
   const content = commentContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
-  const regex = /\[(\d+\.gif)\]/g; // 匹配 [1.gif] 的字符串
+  const regex = /\[((1[0-6][0-6]|[1-9]?[0-9])\.gif)\]/g; // 匹配 [1.gif] 的字符串
   const contentWithEmoji = content.replace(regex, (match, p1) => {
-    const path = comment.emojiMap[p1];
-    if (path) {
-      return `<img style="width: 30px; height: 30px;" src="${path}" alt="emoji ${p1}" />`;
+    if (emojiType.value === "qq") {
+      return `<img style="width: 30px; height: 30px;" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
+    } else if (emojiType.value === "lottie") {
+      return `<img style="width: 80px; height: 80px;" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
+    } else {
+      return match;
     }
-    return match;
   });
   const commentParams: object = {
     user_id: user.user.uid,
@@ -213,6 +243,15 @@ async function showSlideCaptcha() {
   if (res) {
     showSubmitCaptcha.value = true;
   }
+}
+
+/**
+ * 切换表情类型
+ * @param type
+ * @returns
+ */
+async function changeEmojiType(type: string) {
+  emojiType.value = type;
 }
 </script>
 

@@ -93,7 +93,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
         },
 
         esbuild: {
-            drop: ["console", "debugger"],
+            // drop: ["console", "debugger"],
         },
         build: {
             outDir: "dist", // 指定输出路径

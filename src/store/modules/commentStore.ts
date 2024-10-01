@@ -6,6 +6,7 @@ import {message} from "ant-design-vue";
 import {getSlideCaptchaDataApi} from "@/api/captcha";
 import imageCompression from "browser-image-compression";
 import QQ_EMOJI from "@/constant/qq_emoji.ts";
+import QQ_LOTTIE_EMOJI from "@/constant/qq_lottie_emoji.ts";
 
 export const useCommentStore = defineStore(
     'comment',
@@ -29,8 +30,8 @@ export const useCommentStore = defineStore(
         const fileList = ref<any[]>([]);
         const imageList = ref<any[]>([]);
         const uploadLoading = ref<boolean>(false);
-        const emojiMap = ref<any>({});
         const emojiList = ref<any[]>(QQ_EMOJI);
+        const lottieEmojiList = ref<any[]>(QQ_LOTTIE_EMOJI);
 
         /**
          * 获取评论列表
@@ -266,11 +267,6 @@ export const useCommentStore = defineStore(
             return `${seconds} 秒前`;
         }
 
-        // 初始化 emoji 表情
-        for (const item of emojiList.value) {
-            emojiMap.value[item.name] = item.path;
-        }
-
         return {
             commentList,
             commentLoading,
@@ -284,7 +280,7 @@ export const useCommentStore = defineStore(
             imageList,
             uploadLoading,
             emojiList,
-            emojiMap,
+            lottieEmojiList,
             getCommentList,
             handleShowReplyInput,
             closeReplyInput,
@@ -305,7 +301,7 @@ export const useCommentStore = defineStore(
         persist: {
             key: 'comment',
             storage: localStorage,
-            pick: ["emojiList", "emojiMap"],
+            pick: ["emojiList", "lottieEmojiList"],
         }
     }
 );
