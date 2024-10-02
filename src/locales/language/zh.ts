@@ -99,6 +99,7 @@ export default {
         commentError: '评论失败！',
         replySuccess: '回复成功！',
         replyError: '回复失败！',
+        illegalImage: ' 非法图片！',
     }
 
 };

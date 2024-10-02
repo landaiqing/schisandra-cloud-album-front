@@ -80,7 +80,7 @@ export default {
         loginExpiredDesc: "this account has been logged in elsewhere, please login again",
 
     },
-    comment:{
+    comment: {
         comment: 'Comment',
         sendComment: 'Send Comment',
         emoji: 'Emoji',
@@ -100,5 +100,6 @@ export default {
         commentError: 'comment failed！',
         replySuccess: 'reply success！',
         replyError: 'reply failed！',
+        illegalImage: 'illegal image！',
     }
 };

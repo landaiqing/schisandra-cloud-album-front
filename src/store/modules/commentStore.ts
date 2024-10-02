@@ -7,6 +7,9 @@ import {getSlideCaptchaDataApi} from "@/api/captcha";
 import imageCompression from "browser-image-compression";
 import QQ_EMOJI from "@/constant/qq_emoji.ts";
 import QQ_LOTTIE_EMOJI from "@/constant/qq_lottie_emoji.ts";
+import {initNSFWJs, predictNSFW} from "@/utils/nsfw/nsfw.ts";
+import {NSFWJS} from "nsfwjs";
+import i18n from "@/locales";
 
 export const useCommentStore = defineStore(
     'comment',
@@ -180,6 +183,8 @@ export const useCommentStore = defineStore(
                 maxWidthOrHeight: 750,
                 maxIteration: 2
             };
+
+
             if (!window.FileReader) return false; // 判断是否支持FileReader
             const compressedFile = await imageCompression(file, options);
             const reader = new FileReader();
@@ -188,7 +193,16 @@ export const useCommentStore = defineStore(
                 if (fileList.value.length < 3) {
                     const img: HTMLImageElement = document.createElement('img');
                     img.src = reader.result as string;
-                    img.onload = () => {
+                    img.onload = async () => {
+                        // 图片 NSFW 检测
+                        const nsfw: NSFWJS = await initNSFWJs();
+                        const isNSFW: boolean = await predictNSFW(nsfw, img);
+                        if (isNSFW) {
+                            message.error(i18n.global.t('comment.illegalImage'));
+                            fileList.value.pop();
+                            uploadLoading.value = false;
+                            return false;
+                        }
                         const canvas = document.createElement('canvas');
                         canvas.width = img.naturalWidth;
                         canvas.height = img.naturalHeight;
@@ -215,12 +229,13 @@ export const useCommentStore = defineStore(
 
                         ctx.fillText(text, x, y);
                         fileList.value.push(canvas.toDataURL());
+                        uploadLoading.value = false;
                     };
                 } else {
                     return false;
                 }
             };
-            uploadLoading.value = false;
+
             return true;
         }
 
