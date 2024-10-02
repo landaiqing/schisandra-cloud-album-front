@@ -45,6 +45,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
             }),
             nodePolyfills(),
             viteCompression({
+                filter: /\.(js|mjs|css|html)$/i, // 压缩的文件类型
                 verbose: true, // 是否在控制台中输出压缩结果
                 disable: false,
                 threshold: 10240, // 如果体积大于阈值，将被压缩，单位为b，体积过小时请不要压缩，以免适得其反
@@ -93,7 +94,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
         },
 
         esbuild: {
-            // drop: ["console", "debugger"],
+            drop: env.VITE_NODE_ENV === 'production' ? ['console', 'debugger'] : [],
         },
         build: {
             outDir: "dist", // 指定输出路径

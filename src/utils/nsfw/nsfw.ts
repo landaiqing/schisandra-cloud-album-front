@@ -9,7 +9,10 @@ let isInit: boolean = false;
 const initNSFWJs = async (): Promise<NSFWJS> => {
     tf.enableProdMode();
     if (!isInit) {
-        const initialLoad = await nsfwjs.load("/nsfw/model/mobilenet_v2_mid/model.json", {size: 224, type: "graph"});
+        const initialLoad: nsfwjs.NSFWJS = await nsfwjs.load("/nsfw/model/mobilenet_v2_mid/", {
+            size: 224,
+            type: "graph"
+        });
         await initialLoad.model.save("indexeddb://nsfwjs-model");
         isInit = true;
     }
@@ -22,7 +25,6 @@ const initNSFWJs = async (): Promise<NSFWJS> => {
  */
 const predictNSFW = async (model: NSFWJS, image: tf.Tensor3D | ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): Promise<boolean> => {
     const predictions = await model.classify(image, 5);
-    console.log(predictions);
     // 定义阈值与对应的类别
     const thresholds = {
         'Porn': 0.5,

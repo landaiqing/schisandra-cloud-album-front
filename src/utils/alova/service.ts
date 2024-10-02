@@ -35,9 +35,7 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
             } else {
                 message.error(i18n.global.t('error.loginExpired'));
                 localStorage.removeItem('user');
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 2000);
+                window.location.href = '/login';
             }
         }
     }

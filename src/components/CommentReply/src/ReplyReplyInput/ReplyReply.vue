@@ -13,7 +13,7 @@
     <!-- 回复头像-->
     <AFlex :vertical="false" class="reply-input-content-child">
       <AFlex :vertical="true" class="reply-input-avatar-child">
-        <AAvatar :size="40" shape="circle" src="https://api.multiavatar.com/landaiqing.svg"/>
+        <AAvatar :size="40" shape="circle" :src="user.user.userInfo.avatar"/>
       </AFlex>
       <!-- 评论输入框 -->
       <AFlex :vertical="true" class="reply-input-content-text-child">

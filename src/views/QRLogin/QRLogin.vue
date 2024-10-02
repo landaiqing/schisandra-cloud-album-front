@@ -131,11 +131,12 @@ async function handleListenMessage() {
   websocket.on('message', async (data: any) => {
     if (data.code === 200 && data.data) {
       const user = useStore().user;
-      const {access_token, refresh_token, uid, expires_at} = data.data;
+      const {access_token, refresh_token, uid, expires_at, user_info} = data.data;
       user.user.accessToken = access_token;
       user.user.refreshToken = refresh_token;
       user.user.uid = uid;
       user.user.expiresAt = expires_at;
+      user.user.userInfo = user_info;
       status.value = 'scanned';
       await getUserDevice(uid);
       message.success(t('login.loginSuccess'));

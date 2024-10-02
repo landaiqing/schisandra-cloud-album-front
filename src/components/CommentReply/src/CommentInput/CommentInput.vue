@@ -2,7 +2,7 @@
   <div class="comment">
     <AFlex :vertical="false">
       <AFlex :vertical="true">
-        <AAvatar :size="50" class="comment-avatar" shape="circle" src="https://api.multiavatar.com/Starcrasher.svg"/>
+        <AAvatar :size="50" class="comment-avatar" shape="circle" :src="user.user.userInfo.avatar"/>
       </AFlex>
       <AFlex :vertical="true" class="comment-content">
         <ATextarea :rows="4" class="comment-text" @focus="onFocusHandler"
@@ -198,7 +198,7 @@ async function commentSubmit(point: any) {
   const contentWithEmoji = content.replace(regex, (_match, p1) => {
     return `<img style="width: 30px; height: 30px;" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
   });
-  const regexWithLottieEmoji = /:((1[0-0-8]|[1-9]?[0-9])\.gif):/g; // 匹配 :1.gif: 的字符串
+  const regexWithLottieEmoji = /\:((1[0-0-8]|[1-9]?[0-9])\.gif)\:/g; // 匹配 :1.gif: 的字符串
   const contentWithLottieEmoji = contentWithEmoji.replace(regexWithLottieEmoji, (_match, p1) => {
     return `<img style="width: 80px; height: 80px;" loading="lazy" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
   });

@@ -114,11 +114,12 @@ function openGithubUrl() {
       const data: any = JSON.parse(e.data);
       if (data.code === 200 && data.data) {
         const user = useStore().user;
-        const {access_token, refresh_token, uid, expires_at} = data.data;
+        const {access_token, refresh_token, uid, expires_at, user_info} = data.data;
         user.user.accessToken = access_token;
         user.user.refreshToken = refresh_token;
         user.user.uid = uid;
         user.user.expiresAt = expires_at;
+        user.user.userInfo = user_info;
         await getUserDevice(uid);
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
@@ -157,11 +158,12 @@ function openGiteeUrl() {
       const data: any = JSON.parse(e.data);
       if (data.code === 200 && data.data) {
         const user = useStore().user;
-        const {access_token, refresh_token, uid, expires_at} = data.data;
+        const {access_token, refresh_token, uid, expires_at, user_info} = data.data;
         user.user.accessToken = access_token;
         user.user.refreshToken = refresh_token;
         user.user.uid = uid;
         user.user.expiresAt = expires_at;
+        user.user.userInfo = user_info;
         await getUserDevice(uid);
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
@@ -198,11 +200,12 @@ function openQQUrl() {
       const data: any = JSON.parse(e.data);
       if (data.code === 200 && data.data) {
         const user = useStore().user;
-        const {access_token, refresh_token, uid, expires_at} = data.data;
+        const {access_token, refresh_token, uid, expires_at, user_info} = data.data;
         user.user.accessToken = access_token;
         user.user.refreshToken = refresh_token;
         user.user.uid = uid;
         user.user.expiresAt = expires_at;
+        user.user.userInfo = user_info;
         await getUserDevice(uid);
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);

@@ -10,6 +10,16 @@ export const useAuthStore = defineStore(
             uid: '',
             refreshToken: '',
             expiresAt: 0,
+            userInfo: {
+                username: '',
+                nickname: '',
+                email: '',
+                phone: '',
+                avatar: '',
+                gender: '',
+                status: '',
+                created_at: '',
+            },
         });
 
         return {

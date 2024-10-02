@@ -377,13 +377,15 @@ async function phoneLoginSubmit() {
       .validate()
       .then(async () => {
         const res: any = await phoneLoginApi(phoneLoginForm);
+        console.log(res);
         if (res.code === 200 && res.success) {
           const userStore = useStore().user;
-          const {uid, access_token, refresh_token, expires_at} = res.data;
+          const {uid, access_token, refresh_token, expires_at, user_info} = res.data;
           userStore.user.uid = uid;
           userStore.user.accessToken = access_token;
           userStore.user.refreshToken = refresh_token;
           userStore.user.expiresAt = expires_at;
+          userStore.user.userInfo = user_info;
           message.success(t('login.loginSuccess'));
           loginLoading.value = false;
           setTimeout(() => {
@@ -461,11 +463,12 @@ async function checkAccountLoginCaptcha(angle: number) {
   const res: any = await accountLoginApi(params);
   if (res.code === 200 && res.success) {
     const userStore = useStore().user;
-    const {uid, access_token, refresh_token, expires_at} = res.data;
+    const {uid, access_token, refresh_token, expires_at, user_info} = res.data;
     userStore.user.uid = uid;
     userStore.user.accessToken = access_token;
     userStore.user.refreshToken = refresh_token;
     userStore.user.expiresAt = expires_at;
+    userStore.user.userInfo = user_info;
     message.success(t('login.loginSuccess'));
     loginLoading.value = false;
     showAccountRotateCaptcha.value = false;
