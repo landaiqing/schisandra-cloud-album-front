@@ -80,13 +80,8 @@
                       <template #overlay>
                         <AMenu>
                           <AMenuItem key="report">
+                            <WarningOutlined/>
                             {{ t('comment.report') }}
-                          </AMenuItem>
-                          <AMenuItem key="copy">
-                            {{ t('comment.copy') }}
-                          </AMenuItem>
-                          <AMenuItem key="delete">
-                            {{ t('comment.delete') }}
                           </AMenuItem>
                         </AMenu>
                       </template>

@@ -104,14 +104,6 @@
                               <WarningOutlined/>
                               {{ t('comment.report') }}
                             </AMenuItem>
-                            <AMenuItem key="copy">
-                              <CopyOutlined/>
-                              {{ t('comment.copy') }}
-                            </AMenuItem>
-                            <AMenuItem key="delete">
-                              <DeleteOutlined/>
-                              {{ t('comment.delete') }}
-                            </AMenuItem>
                           </AMenu>
                         </template>
                       </ADropdown>

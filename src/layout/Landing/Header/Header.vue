@@ -20,36 +20,13 @@
             <ADropdown>
               <template #overlay>
                 <AMenu @click="(e: any)=>{
-                  changeTheme(e.key)
-                }">
-                  <AMenuItem v-for="(color, name) in variables" :key="name" :value="color">
-                    <div
-                        v-bind:style="{ backgroundColor: name as string, width: '20px', height: '20px', borderRadius: '20%' }">
-                    </div>
-                  </AMenuItem>
-                </AMenu>
-              </template>
-              <AButton type="text" size="large">
-                <div
-                    v-bind:style="{ backgroundColor: app.themeName, width: '20px', height: '20px', borderRadius: '20%' }">
-                </div>
-              </AButton>
-            </ADropdown>
-
-          </div>
-          <div style="margin-right: 20px;">
-            <ADropdown>
-              <template #overlay>
-                <AMenu @click="(e: any)=>{
                   changeLang(e.key)
                 }">
                   <AMenuItem key="zh">{{ t("landing.chinese") }}</AMenuItem>
                   <AMenuItem key="en">{{ t("landing.english") }}</AMenuItem>
                 </AMenu>
               </template>
-              <AButton type="text" size="large">
-                {{ lang.lang === 'zh' ? '中文' : 'English' }}
-                <DownOutlined/>
+              <AButton type="text" size="large" :icon="h(TranslationOutlined)">
               </AButton>
             </ADropdown>
 
@@ -67,24 +44,20 @@
 
 
 import useStore from "@/store/index.ts";
-import {ref} from "vue";
-import {DownOutlined} from '@ant-design/icons-vue';
+import {h, ref} from "vue";
+import {TranslationOutlined} from '@ant-design/icons-vue';
 import {useI18n} from "vue-i18n";
-import variables from "@/assets/styles/colors.module.scss";
 import {useRouter} from "vue-router";
-
 
 const {t, locale} = useI18n();
 const router = useRouter();
 const lang = useStore().lang;
+
 async function changeLang(language: any) {
   lang.lang = language;
   locale.value = language;
 }
 
-async function changeTheme(theme: any) {
-  app.setThemeName(theme);
-}
 
 const app = useStore().theme;
 const isDarkMode = ref<boolean>(app.darkMode === "dark");

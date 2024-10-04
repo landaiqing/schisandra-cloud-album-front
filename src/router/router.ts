@@ -3,7 +3,6 @@ import login from './modules/login';
 
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import {close, start} from '@/components/Nprogress/nprogress.ts';
 import notFound from "./modules/notFound.ts";
 import landing from "./modules/landing.ts";
 import mainRouter from "./modules/main_router.ts";
@@ -26,7 +25,7 @@ const router: Router = createRouter({
 });
 
 router.beforeEach((to, _from, next) => {
-    start();
+    // start();
     const user = useStore().user;
     const token: string | undefined = user.user.refreshToken;
     const userId: string | undefined = user.user.uid;
@@ -59,6 +58,6 @@ router.beforeEach((to, _from, next) => {
 
 router.afterEach(() => {
     // 关闭进度条
-    close();
+    // close();
 });
 export default router;

@@ -1,28 +1,19 @@
 <template>
   <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <AButton @click="handleClick">获取登录用户角色</AButton>
-    {{ data }}
+    <Header/>
 
     <CommentReply/>
   </div>
 </template>
 <script setup lang="ts">
-import {useRequest} from "alova/client";
-import {getUserPermissions} from "@/api/user";
 import useStore from "@/store";
 import CommentReply from "@/components/CommentReply/index.vue";
 import {onMounted} from "vue";
+import Header from "@/layout/default/Header/Header.vue";
 
 const websocket = useStore().websocket;
 const userInfo = useStore().user;
-const {data, send} = useRequest(getUserPermissions, {
-  immediate: false
-});
-const handleClick = () => {
 
-  const userId: string = userInfo.user.uid;
-  send(userId);
-};
 
 const wsOptions = {
   url: import.meta.env.VITE_WEB_SOCKET_URL + "?client_id=" + userInfo.user.uid,

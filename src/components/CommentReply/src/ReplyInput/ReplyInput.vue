@@ -8,11 +8,8 @@
         {{ t('comment.cancelReply') }}
       </AButton>
     </AFlex>
-    <!-- 回复头像-->
+
     <AFlex :vertical="false" class="reply-input-content">
-      <AFlex :vertical="true" class="reply-input-avatar">
-        <AAvatar :size="40" shape="circle" :src="user.user.userInfo.avatar"/>
-      </AFlex>
       <!-- 评论输入框 -->
       <AFlex :vertical="true" class="reply-input-content-text">
         <ATextarea :rows="3" class="comment-text-reply"
@@ -33,15 +30,31 @@
                         </AFlex>
                       </template>
                       <div style="width: 250px;height: 200px;overflow: auto;">
-                        <template v-for="(item) in comment.emojiList" :key="item">
-                          <AButton @click="insertEmojiToReplyContent(item.name)" type="text" shape="circle" size="large"
-                                   class="comment-emoji-item">
-                            <template #icon>
-                              <img :width="35" :height="35" loading="lazy" :src="item.path" v-lazy-load
-                                   :alt="item.name"/>
-                            </template>
-                          </AButton>
-                        </template>
+                        <AList :grid="{ gutter: 0, column: 4 }" :data-source="currentEmojiList">
+                          <template #loadMore>
+                            <ADivider v-show="currentEmojiListSize<comment.emojiList.length">
+                              <AButton type="text" size="small" @click="loadMoreEmoji">{{
+                                  t('comment.loadingMore')
+                                }}
+                              </AButton>
+                            </ADivider>
+                            <ADivider v-show="currentEmojiListSize>=comment.emojiList.length">
+                              {{ t('comment.noMore') }}
+                            </ADivider>
+                          </template>
+                          <template #renderItem="{ item }">
+                            <AListItem style="display: flex;align-items: center;justify-content: center;">
+                              <AButton @click="insertEmojiToReplyContent(item.name)" type="text" shape="circle"
+                                       size="large"
+                                       class="comment-emoji-item">
+                                <template #icon>
+                                  <img :width="35" :height="35" loading="lazy" :src="item.path"
+                                       :alt="item.name"/>
+                                </template>
+                              </AButton>
+                            </AListItem>
+                          </template>
+                        </AList>
                       </div>
                     </ATabPane>
                     <ATabPane key="lottie">
@@ -51,18 +64,31 @@
                         </AFlex>
                       </template>
                       <div style="width: 250px;height: 200px;overflow: auto;">
-                        <AFlex :vertical="false" align="center" justify="space-between" wrap="wrap">
-                          <template v-for="(item) in comment.lottieEmojiList" :key="item">
-                            <AButton @click="insertEmojiToReplyContent(item.name)" type="text" shape="default"
-                                     size="large"
-                                     class="comment-emoji-item" style="width: 75px;height: 75px;">
-                              <template #icon>
-                                <img :width="70" :height="70" loading="lazy" :src="item.path" v-lazy-load
-                                     :alt="item.name"/>
-                              </template>
-                            </AButton>
+                        <AList :grid="{ gutter: 0, column: 3 }" :data-source="currentLottieEmojiList">
+                          <template #loadMore>
+                            <ADivider v-show="currentLottieEmojiListSize<comment.lottieEmojiList.length">
+                              <AButton type="text" size="small" @click="loadMoreLottieEmoji">{{
+                                  t('comment.loadingMore')
+                                }}
+                              </AButton>
+                            </ADivider>
+                            <ADivider v-show="currentLottieEmojiListSize>=comment.lottieEmojiList.length">
+                              {{ t('comment.noMore') }}
+                            </ADivider>
                           </template>
-                        </AFlex>
+                          <template #renderItem="{ item }">
+                            <AListItem style="display: flex;align-items: center;justify-content: center;">
+                              <AButton @click="insertEmojiToReplyContent(item.name)" type="text" shape="default"
+                                       size="large"
+                                       class="comment-emoji-item" style="width: 75px;height: 75px;">
+                                <template #icon>
+                                  <img :width="70" :height="70" loading="lazy" :src="item.path"
+                                       :alt="item.name"/>
+                                </template>
+                              </AButton>
+                            </AListItem>
+                          </template>
+                        </AList>
                       </div>
                     </ATabPane>
                   </ATabs>
@@ -166,6 +192,31 @@ const commentSlideCaptchaEvent = {
 };
 const emojiType = ref<string>("qq");
 
+const currentEmojiList = ref<any[]>(comment.emojiList.slice(0, 20));
+const currentEmojiListSize = ref<number>(20);
+const currentLottieEmojiList = ref<any[]>(comment.lottieEmojiList.slice(0, 15));
+const currentLottieEmojiListSize = ref<number>(15);
+/**
+ * 加载更多表情
+ */
+const loadMoreEmoji = async () => {
+  if (currentEmojiListSize.value >= comment.emojiList.length) {
+    return;
+  }
+  currentEmojiListSize.value += 20;
+  currentEmojiList.value = comment.emojiList.slice(0, currentEmojiListSize.value);
+};
+/**
+ * 加载更多Lottie表情
+ */
+const loadMoreLottieEmoji = async () => {
+  if (currentLottieEmojiListSize.value >= comment.lottieEmojiList.length) {
+    return;
+  }
+  currentLottieEmojiListSize.value += 15;
+  currentLottieEmojiList.value = comment.lottieEmojiList.slice(0, currentLottieEmojiListSize.value);
+};
+
 /**
  * 切换表情类型
  * @param type
@@ -210,11 +261,11 @@ async function replySubmit(point: any) {
   const content = replyContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
   const regex = /\[((1[0-6][0-6]|[1-9]?[0-9])\.gif)\]/g; // 匹配 [1.gif] 的字符串
   const contentWithEmoji = content.replace(regex, (_match, p1) => {
-    return `<img style="width: 30px; height: 30px;" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
+    return `<img width="30px" height="30px" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
   });
   const regexWithLottieEmoji = /\:((1[0-0-8]|[1-9]?[0-9])\.gif)\:/g; // 匹配 :1.gif: 的字符串
   const contentWithLottieEmoji = contentWithEmoji.replace(regexWithLottieEmoji, (_match, p1) => {
-    return `<img style="width: 80px; height: 80px;" loading="lazy" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
+    return `<img width="80px" height="80px" loading="lazy" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
   });
   const replyParams: {
     images: any;
@@ -247,6 +298,7 @@ async function replySubmit(point: any) {
     comment.commentMap[props.item.id].reply_count++;
     message.success(t('comment.replySuccess'));
   } else {
+    showSubmitCaptcha.value = false;
     message.error(t('comment.replyError'));
   }
 }
@@ -271,6 +323,14 @@ const getSlideCaptchaDataThrottled = useThrottleFn(comment.getSlideCaptchaData, 
  * 显示滑动验证码
  */
 async function showSlideCaptcha() {
+  if (replyContent.value.trim() === "") {
+    message.error(t('comment.commentContentNotEmpty'));
+    return;
+  }
+  if (comment.imageList.length > 3) {
+    message.error(t('comment.maxImageCount'));
+    return;
+  }
   const res = await comment.getSlideCaptchaData();
   if (res) {
     showSubmitCaptcha.value = true;

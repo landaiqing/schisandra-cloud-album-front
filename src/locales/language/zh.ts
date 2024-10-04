@@ -100,6 +100,8 @@ export default {
         replySuccess: '回复成功！',
         replyError: '回复失败！',
         illegalImage: ' 非法图片！',
+        loadingMore: '加载更多',
+        noMore: '没有更多了',
     }
 
 };

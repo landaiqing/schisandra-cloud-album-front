@@ -101,5 +101,7 @@ export default {
         replySuccess: 'reply success！',
         replyError: 'reply failed！',
         illegalImage: 'illegal image！',
+        loadingMore: 'loading more',
+        noMore: 'no more',
     }
 };

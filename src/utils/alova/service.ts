@@ -32,10 +32,6 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
                 user.user.accessToken = access_token;
                 user.user.refreshToken = refresh_token;
                 user.user.uid = uid;
-            } else {
-                message.error(i18n.global.t('error.loginExpired'));
-                localStorage.removeItem('user');
-                window.location.href = '/login';
             }
         }
     }
