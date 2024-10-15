@@ -63,6 +63,9 @@ import {useRouter} from "vue-router";
 
 const router = useRouter();
 
+/**
+ *  Redirect to home page after 3 seconds
+ */
 async function backHome() {
   setTimeout(() => {
     router.go(-1);

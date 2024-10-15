@@ -15,7 +15,7 @@
         <ATextarea :rows="3" class="comment-text-reply"
                    v-model:value="replyContent"
                    @keyup.ctrl.enter="showSlideCaptcha"
-                   :placeholder="commentTextAreaPlaceholder" allow-clear :showCount="false"/>
+                   :placeholder="t('comment.placeholder')" allow-clear :showCount="false"/>
         <AFlex :vertical="false" align="center" justify="space-between" class="comment-actions-reply"
         >
           <AFlex :vertical="false" align="center">
@@ -169,7 +169,6 @@ import {replySubmitApi} from "@/api/comment";
 const {t} = useI18n();
 const comment = useStore().comment;
 const user = useStore().user;
-const commentTextAreaPlaceholder = ref<string>(t('comment.placeholder'));
 const replyContent = ref<string>("");
 const topicId = ref<string>("123");
 const showSubmitCaptcha = ref<boolean>(false);

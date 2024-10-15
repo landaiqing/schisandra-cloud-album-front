@@ -17,7 +17,7 @@
         <ATextarea :rows="3" class="comment-text-reply-child"
                    v-model:value="replyReplyContent"
                    @keyup.ctrl.enter="showSlideCaptcha"
-                   :placeholder="commentTextAreaPlaceholder" allow-clear :showCount="false"/>
+                   :placeholder="t('comment.placeholder')" allow-clear :showCount="false"/>
         <AFlex :vertical="false" align="center" justify="space-between"
                class="comment-actions-reply-child"
         >
@@ -173,7 +173,6 @@ import {ReplyCommentParams} from "@/types/comment";
 import {useThrottleFn} from "@vueuse/core";
 
 const {t} = useI18n();
-const commentTextAreaPlaceholder = ref<string>(t('comment.placeholder'));
 const comment = useStore().comment;
 const replyReplyContent = ref<string>("");
 

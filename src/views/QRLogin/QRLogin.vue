@@ -18,9 +18,7 @@
               :size="280"
               :error-level="'H'"
               :status="status"
-              @refresh="() => {
-                getQrCode();
-              }"
+              @refresh="getQrCode"
               :value=qrcode
               :icon="logo"
           />

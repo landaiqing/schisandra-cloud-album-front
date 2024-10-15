@@ -39,7 +39,6 @@ declare module 'vue' {
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     AUpload: typeof import('ant-design-vue/es')['Upload']
-    BellOutlined: typeof import('@ant-design/icons-vue')['BellOutlined']
     BoxDog: typeof import('./src/components/BoxDog/BoxDog.vue')['default']
     Card3D: typeof import('./src/components/Card3D/Card3D.vue')['default']
     CloseCircleOutlined: typeof import('@ant-design/icons-vue')['CloseCircleOutlined']

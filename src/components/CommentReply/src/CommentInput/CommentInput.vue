@@ -8,7 +8,7 @@
         <ATextarea :rows="4" class="comment-text" @focus="onFocusHandler"
                    v-model:value="commentContent"
                    @keyup.ctrl.enter="showSlideCaptcha"
-                   :placeholder="commentTextAreaPlaceholder" allow-clear :showCount="false"/>
+                   :placeholder="t('comment.placeholder')" allow-clear :showCount="false"/>
 
         <AFlex :vertical="false" align="center" justify="space-between" class="comment-actions"
                v-if="showCommentActions">
@@ -164,7 +164,6 @@ const showCommentActions = ref<boolean>(false);
 const commentContent = ref<string>("");
 
 const user = useStore().user;
-const commentTextAreaPlaceholder = ref<string>(t('comment.placeholder'));
 const topicId = ref<string>("123");
 const showSubmitCaptcha = ref<boolean>(false);
 const comment = useStore().comment;
