@@ -16,74 +16,21 @@
             <AFlex :vertical="false" align="center" class="comment-action-item">
               <APopover trigger="click" placement="bottom">
                 <template #content>
-                  <ATabs v-model:active-key="emojiType" @change="changeEmojiType">
-                    <ATabPane key="qq">
-                      <template #tab>
-                        <AFlex :vertical="false" align="center">
-                          <SmileOutlined style="font-size: 18px;"/>
-                        </AFlex>
+                  <div style="width: 250px;height: 200px;overflow: auto;">
+                    <AList :grid="{ gutter: 0, column: 4 }" :data-source="comment.emojiList">
+                      <template #renderItem="{ item }">
+                        <AListItem style="display: flex;align-items: center;justify-content: center;">
+                          <AButton @click="insertEmoji(item.name)" type="text" shape="circle" size="large"
+                                   class="comment-emoji-item">
+                            <template #icon>
+                              <img :width="35" :height="35" loading="lazy" :src="item.path"
+                                   :alt="item.name"/>
+                            </template>
+                          </AButton>
+                        </AListItem>
                       </template>
-                      <div style="width: 250px;height: 200px;overflow: auto;">
-                        <AList :grid="{ gutter: 0, column: 4 }" :data-source="currentEmojiList">
-                          <template #loadMore>
-                            <ADivider v-show="currentEmojiListSize<comment.emojiList.length">
-                              <AButton type="text" size="small" @click="loadMoreEmoji">{{
-                                  t('comment.loadingMore')
-                                }}
-                              </AButton>
-                            </ADivider>
-                            <ADivider v-show="currentEmojiListSize>=comment.emojiList.length">
-                              {{ t('comment.noMore') }}
-                            </ADivider>
-                          </template>
-                          <template #renderItem="{ item }">
-                            <AListItem style="display: flex;align-items: center;justify-content: center;">
-                              <AButton @click="insertEmoji(item.name)" type="text" shape="circle" size="large"
-                                       class="comment-emoji-item">
-                                <template #icon>
-                                  <img :width="35" :height="35" loading="lazy" :src="item.path"
-                                       :alt="item.name"/>
-                                </template>
-                              </AButton>
-                            </AListItem>
-                          </template>
-                        </AList>
-                      </div>
-                    </ATabPane>
-                    <ATabPane key="lottie">
-                      <template #tab>
-                        <AFlex :vertical="false" align="center">
-                          <StarOutlined style="font-size: 18px;"/>
-                        </AFlex>
-                      </template>
-                      <div style="width: 250px;height: 200px;overflow: auto;">
-                        <AList :grid="{ gutter: 0, column: 3 }" :data-source="currentLottieEmojiList">
-                          <template #loadMore>
-                            <ADivider v-show="currentLottieEmojiListSize<comment.lottieEmojiList.length">
-                              <AButton type="text" size="small" @click="loadMoreLottieEmoji">{{
-                                  t('comment.loadingMore')
-                                }}
-                              </AButton>
-                            </ADivider>
-                            <ADivider v-show="currentLottieEmojiListSize>=comment.lottieEmojiList.length">
-                              {{ t('comment.noMore') }}
-                            </ADivider>
-                          </template>
-                          <template #renderItem="{ item }">
-                            <AListItem style="display: flex;align-items: center;justify-content: center;">
-                              <AButton @click="insertEmoji(item.name)" type="text" shape="default" size="large"
-                                       class="comment-emoji-item" style="width: 75px;height: 75px;">
-                                <template #icon>
-                                  <img :width="70" :height="70" loading="lazy" :src="item.path"
-                                       :alt="item.name"/>
-                                </template>
-                              </AButton>
-                            </AListItem>
-                          </template>
-                        </AList>
-                      </div>
-                    </ATabPane>
-                  </ATabs>
+                    </AList>
+                  </div>
                 </template>
                 <AButton type="text" size="small" :icon="h(SmileOutlined)" class="comment-action-icon">
                   {{ t('comment.emoji') }}
@@ -179,31 +126,6 @@ const commentSlideCaptchaEvent = {
     getSlideCaptchaDataThrottled();
   },
 };
-const emojiType = ref<string>("qq");
-const currentEmojiList = ref<any[]>(comment.emojiList.slice(0, 20));
-const currentEmojiListSize = ref<number>(20);
-const currentLottieEmojiList = ref<any[]>(comment.lottieEmojiList.slice(0, 15));
-const currentLottieEmojiListSize = ref<number>(15);
-/**
- * 加载更多表情
- */
-const loadMoreEmoji = async () => {
-  if (currentEmojiListSize.value >= comment.emojiList.length) {
-    return;
-  }
-  currentEmojiListSize.value += 20;
-  currentEmojiList.value = comment.emojiList.slice(0, currentEmojiListSize.value);
-};
-/**
- * 加载更多Lottie表情
- */
-const loadMoreLottieEmoji = async () => {
-  if (currentLottieEmojiListSize.value >= comment.lottieEmojiList.length) {
-    return;
-  }
-  currentLottieEmojiListSize.value += 15;
-  currentLottieEmojiList.value = comment.lottieEmojiList.slice(0, currentLottieEmojiListSize.value);
-};
 
 /**
  * 聚焦事件
@@ -217,13 +139,7 @@ async function onFocusHandler() {
  * @param emoji
  */
 async function insertEmoji(emoji: string) {
-  if (emojiType.value === "qq") {
-    commentContent.value += "[" + emoji + "]";
-  } else if (emojiType.value === "lottie") {
-    commentContent.value += ":" + emoji + ":";
-  } else {
-    return;
-  }
+  commentContent.value += "[" + emoji + "]";
 }
 
 
@@ -249,14 +165,10 @@ async function commentSubmit(point: any) {
   const contentWithEmoji = content.replace(regex, (_match, p1) => {
     return `<img width="30px" height="30px" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
   });
-  const regexWithLottieEmoji = /\:((1[0-0-8]|[1-9]?[0-9])\.gif)\:/g; // 匹配 :1.gif: 的字符串
-  const contentWithLottieEmoji = contentWithEmoji.replace(regexWithLottieEmoji, (_match, p1) => {
-    return `<img width="80px" height="80px" loading="lazy" src="/emoji/qq/lottie/${p1}" alt="emoji ${p1}" />`;
-  });
   const commentParams: object = {
     user_id: user.user.uid,
     topic_id: topicId.value,
-    content: contentWithLottieEmoji,
+    content: contentWithEmoji,
     images: comment.imageList,
     author: user.user.uid,
     point: [point.x, point.y],
@@ -311,14 +223,6 @@ async function showSlideCaptcha() {
   }
 }
 
-/**
- * 切换表情类型
- * @param type
- * @returns
- */
-async function changeEmojiType(type: string) {
-  emojiType.value = type;
-}
 </script>
 
 <style src="./index.scss" lang="scss" scoped>
