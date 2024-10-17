@@ -4,7 +4,6 @@
 
     <CommentReply/>
 
-    <AAvatar :size="100" :text="userInfo.user.username" :svgCode="svgCode"/>
   </div>
 </template>
 <script setup lang="ts">
