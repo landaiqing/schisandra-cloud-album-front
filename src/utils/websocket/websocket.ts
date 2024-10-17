@@ -11,10 +11,9 @@ type EventCallback = () => void;
 export class WebSocketService {
     private ws: WebSocket | null = null;
     private callbacks: { [key: string]: (MessageCallback | EventCallback)[] } = {};
-    private reconnectTimeoutMs: number = 5000; // 默认5秒重连间隔
-    private heartbeatIntervalMs: number = 5000; // 默认5秒心跳间隔
-
-    constructor(private options: WebSocketOptions) {}
+    private reconnectTimeoutMs: number = 10000; // 默认10秒重连间隔
+    constructor(private options: WebSocketOptions) {
+    }
 
     public open(): void {
         this.ws = new WebSocket(this.options.url, this.options.protocols);
@@ -22,18 +21,12 @@ export class WebSocketService {
         this.ws.addEventListener('message', this.handleMessage);
         this.ws.addEventListener('error', this.handleError);
         this.ws.addEventListener('close', this.handleClose);
-
-        setInterval(() => {
-            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                this.send("ping");
-            }
-        }, this.heartbeatIntervalMs);
     }
 
     public close(isActiveClose = false): void {
         if (this.ws) {
             this.ws.close();
-            if (!isActiveClose) {
+            if (isActiveClose) {
                 setTimeout(() => this.reconnect(), this.reconnectTimeoutMs);
             }
         }

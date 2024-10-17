@@ -116,7 +116,7 @@ function getLocalClientId() {
 }
 
 const wsOptions = {
-  url: import.meta.env.VITE_WEB_SOCKET_URL + "?client_id=" + getLocalClientId(),
+  url: import.meta.env.VITE_QR_SOCKET_URL + "?client_id=" + getLocalClientId(),
 };
 
 

@@ -1,6 +1,6 @@
 // useWebSocketStore.ts
 import {defineStore} from 'pinia';
-import {onUnmounted, reactive} from 'vue';
+import {reactive} from 'vue';
 import {WebSocketService} from '@/utils/websocket/websocket.ts';
 
 type MessageCallback = (data: any) => void;
@@ -10,13 +10,13 @@ export const useWebSocketStore = defineStore('websocket', () => {
         wsService: null as WebSocketService | null,
     });
 
-    function initialize(options: { url: string; protocols?: string | string[]; reconnectTimeout?: number }) {
+    function initialize(options: {
+        url: string;
+        protocols?: string | string[];
+        reconnectTimeout?: number
+    }) {
         state.wsService = new WebSocketService(options);
-        state.wsService.open();
-
-        onUnmounted(() => {
-            state.wsService?.close(true);
-        });
+        state.wsService?.open();
     }
 
     function sendMessage(data: any) {
@@ -31,8 +31,8 @@ export const useWebSocketStore = defineStore('websocket', () => {
         state.wsService?.on(event, callback);
     }
 
-    function close() {
-        state.wsService?.close();
+    function close(isActiveClose: boolean) {
+        state.wsService?.close(isActiveClose);
     }
 
     return {

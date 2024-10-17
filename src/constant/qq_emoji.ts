@@ -384,7 +384,8 @@ const QQ_EMOJI = [
         path: "/emoji/qq/gif/96.gif",
     },
     {
-        name: "97.gif", path: "/emoji/qq/gif/97.gif",
+        name: "97.gif",
+        path: "/emoji/qq/gif/97.gif",
     },
     {
         name: "98.gif",
@@ -541,14 +542,6 @@ const QQ_EMOJI = [
     {
         name: "136.gif",
         path: "/emoji/qq/gif/136.gif",
-    },
-    {
-        name: "137.gif",
-        path: "/emoji/qq/gif/137.gif",
-    },
-    {
-        name: "138.gif",
-        path: "/emoji/qq/gif/138.gif",
     }
 ];
 
