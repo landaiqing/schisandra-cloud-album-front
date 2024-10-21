@@ -7,8 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AAvatar: typeof import('ant-design-vue/es')['Avatar']
-    ABadge: typeof import('ant-design-vue/es')['Badge']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
     ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
@@ -39,7 +37,6 @@ declare module 'vue' {
     ForgetPage: typeof import('./src/views/Forget/ForgetPage.vue')['default']
     GithubOutlined: typeof import('@ant-design/icons-vue')['GithubOutlined']
     LandingPage: typeof import('./src/views/Landing/LandingPage.vue')['default']
-    LockOutlined: typeof import('@ant-design/icons-vue')['LockOutlined']
     LoginFooter: typeof import('./src/views/Login/LoginFooter.vue')['default']
     LoginPage: typeof import('./src/views/Login/LoginPage.vue')['default']
     MainPage: typeof import('./src/views/Main/MainPage.vue')['default']
