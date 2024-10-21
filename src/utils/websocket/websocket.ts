@@ -21,6 +21,7 @@ export class WebSocketService {
         this.ws.addEventListener('message', this.handleMessage);
         this.ws.addEventListener('error', this.handleError);
         this.ws.addEventListener('close', this.handleClose);
+
     }
 
     public close(isActiveClose = false): void {
@@ -81,5 +82,9 @@ export class WebSocketService {
         } else {
             console.warn('尝试发送消息时WebSocket未连接');
         }
+    }
+
+    public getReadyState(): number {
+        return this.ws ? this.ws.readyState : WebSocket.CLOSED;
     }
 }

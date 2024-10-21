@@ -35,12 +35,18 @@ export const useWebSocketStore = defineStore('websocket', () => {
         state.wsService?.close(isActiveClose);
     }
 
+    // 新增的获取 WebSocket 状态的方法
+    function getReadyState() {
+        return state.wsService ? state.wsService.getReadyState() : WebSocket.CLOSED;
+    }
+
     return {
         initialize,
         sendMessage,
         on,
         onEvent,
         close,
+        getReadyState
     };
 }, {
     persist: false,

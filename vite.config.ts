@@ -8,7 +8,47 @@ import Components from 'unplugin-vue-components/vite';
 import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
 import {chunkSplitPlugin} from 'vite-plugin-chunk-split';
+import vitePluginBundleObfuscator from 'vite-plugin-bundle-obfuscator';
 
+const defaultObfuscatorConfig:any = {
+    excludes: [],
+    enable: true,
+    log: true,
+    autoExcludeNodeModules: true,
+    threadPool: {
+        size: 4,
+        enable: true,
+    },
+    options: {
+        compact: true,
+        controlFlowFlattening: true,
+        controlFlowFlatteningThreshold: 1,
+        deadCodeInjection: false,
+        debugProtection: false,
+        debugProtectionInterval: 0,
+        disableConsoleOutput: false,
+        identifierNamesGenerator: 'hexadecimal',
+        log: false,
+        numbersToExpressions: false,
+        renameGlobals: false,
+        selfDefending: true,
+        simplify: true,
+        splitStrings: false,
+        stringArray: false,
+        stringArrayCallsTransform: false,
+        stringArrayCallsTransformThreshold: 0.5,
+        stringArrayEncoding: [],
+        stringArrayIndexShift: true,
+        stringArrayRotate: true,
+        stringArrayShuffle: true,
+        stringArrayWrappersCount: 1,
+        stringArrayWrappersChainedCalls: true,
+        stringArrayWrappersParametersMaxCount: 2,
+        stringArrayWrappersType: 'variable',
+        stringArrayThreshold: 0.75,
+        unicodeEscapeSequence: false,
+    }
+};
 export default defineConfig(({mode}: { mode: string }): object => {
         const env: Record<string, string> = loadEnv(mode, process.cwd());
         return {
@@ -22,6 +62,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
             },
             plugins: [
                 vue(),
+                vitePluginBundleObfuscator(defaultObfuscatorConfig),
                 chunkSplitPlugin({
                     strategy: "default",
                     useEntryName: true,

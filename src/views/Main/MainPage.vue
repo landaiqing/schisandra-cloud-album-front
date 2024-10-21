@@ -1,7 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
     <Header/>
-
     <CommentReply/>
 
   </div>
@@ -16,7 +15,6 @@ import {SmileOutlined} from "@ant-design/icons-vue";
 
 const websocket = useStore().websocket;
 const userInfo = useStore().user;
-
 const wsOptions = {
   url: import.meta.env.VITE_MESSAGE_SOCKET_URL + "?user_id=" + userInfo.user.uid + "&token=" + userInfo.user.accessToken,
 };
@@ -36,7 +34,6 @@ onMounted(() => {
 onUnmounted(() => {
   websocket.close(false);
 });
-
 </script>
 <style scoped>
 

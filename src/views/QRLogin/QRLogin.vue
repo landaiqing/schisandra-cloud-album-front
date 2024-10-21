@@ -87,11 +87,6 @@ async function getClientId() {
  *  获取二维码
  */
 async function getQrCode() {
-  if (!client.getClientId()) {
-    status.value = 'expired';
-    await getClientId();
-    await getQrCode();
-  } else {
     const res: any = await generateQrCode(client.getClientId() || "");
     if (res.code === 200 && res.data) {
       status.value = 'active';
@@ -100,23 +95,11 @@ async function getQrCode() {
     } else {
       status.value = 'expired';
     }
-  }
 }
 
-/**
- *  获取本地client_id
- */
-function getLocalClientId() {
-  if (client.getClientId()) {
-    return client.getClientId();
-  } else {
-    getClientId();
-    return client.getClientId();
-  }
-}
 
 const wsOptions = {
-  url: import.meta.env.VITE_QR_SOCKET_URL + "?client_id=" + getLocalClientId(),
+  url: import.meta.env.VITE_QR_SOCKET_URL + "?client_id=" + client.getClientId(),
 };
 
 
@@ -146,7 +129,9 @@ async function handleListenMessage() {
 }
 
 onMounted(async () => {
-  await getQrCode();
+  getClientId().then(async () => {
+    await getQrCode();
+  });
 });
 </script>
 <style src="./index.scss" scoped>

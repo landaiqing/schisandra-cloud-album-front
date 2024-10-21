@@ -43,8 +43,7 @@ const client = useStore().client;
  * Get the redirect url of Github OAuth
  */
 async function getGithubRedirectUrl() {
-  const clientId: string = await getLocalClientId() as string;
-  const res: any = await getGithubUrl(clientId);
+  const res: any = await getGithubUrl(client.getClientId() as string);
   if (res.code === 200 && res.data) {
     githubRedirectUrl.value = res.data;
   }
@@ -64,8 +63,7 @@ async function getGiteeRedirectUrl() {
  * Get the redirect url of QQ OAuth
  */
 async function getQQRedirectUrl() {
-  const clientId: string = await getLocalClientId() as string;
-  const res: any = await getQQUrl(clientId);
+  const res: any = await getQQUrl(client.getClientId() as string);
   if (res.code === 200 && res.data) {
     qqRedirectUrl.value = res.data;
   }
@@ -78,18 +76,6 @@ async function getClientId() {
   const res: any = await generateClientId();
   if (res.code === 200 && res.data) {
     client.setClientId(res.data);
-  }
-}
-
-/**
- *  获取本地client_id
- */
-async function getLocalClientId() {
-  if (client.getClientId()) {
-    return client.getClientId();
-  } else {
-    await getClientId();
-    return client.getClientId();
   }
 }
 
@@ -223,9 +209,11 @@ function openQQUrl() {
 }
 
 onBeforeMount(() => {
-  getGithubRedirectUrl();
-  getGiteeRedirectUrl();
-  getQQRedirectUrl();
+  getClientId().then(() => {
+    getGithubRedirectUrl();
+    getGiteeRedirectUrl();
+    getQQRedirectUrl();
+  });
 });
 </script>
 <style src="./index.scss" scoped>
