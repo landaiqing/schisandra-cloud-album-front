@@ -1,0 +1,18 @@
+.landing-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    .landing-content-title {
+        height: 100px;
+        margin-top: 50px;
+
+        .landing-content-title-text {
+            font-size: 50px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+    }
+}

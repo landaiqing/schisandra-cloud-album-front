@@ -34,6 +34,7 @@
             font-size: 32px;
             font-weight: 600;
             margin-bottom: 32px;
+            color: var(--text-color);
         }
     }
 
@@ -89,8 +90,8 @@
 
     // 背景图动画
     .area {
-        background: #b9f187;
-        background: -webkit-linear-gradient(to left, #b9f187, #90d952, #70c13a, #52a82e) !important;
+        background: var(--landing-background-color-main);
+        //background: -webkit-linear-gradient(to left, #b9f187, #90d952, #70c13a, #52a82e) !important;
         width: 100%;
         height: 100vh;
         z-index: -1;

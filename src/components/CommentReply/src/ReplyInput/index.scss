@@ -3,18 +3,18 @@
 
     .reply-input-title {
         font-size: 13px;
-        color: #767779;
+        color: var(--comment-text-color);
     }
 
     .reply-input-author {
         font-size: 13px;
-        color: #767779;
+        color: var(--comment-text-color);
     }
 
     .reply-input-cancel {
         margin-left: 10px;
         font-size: 13px;
-        color: #767779;
+        color: var(--comment-text-color);
         cursor: pointer;
     }
 
@@ -33,11 +33,11 @@
 
                 .comment-action-item-reply {
                     cursor: pointer;
-                    color: #767779;
+                    color: var(--comment-text-color);
 
                     .comment-action-icon-reply {
                         font-size: 14px;
-                        color: #767779;
+                        color: var(--comment-text-color);
                     }
 
                     .comment-action-icon-reply:hover {

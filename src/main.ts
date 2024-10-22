@@ -1,7 +1,6 @@
 import {createApp} from 'vue';
 import App from './App.vue';
-import '@/assets/styles/scroll-bar.scss';
-import '@/assets/styles/global.scss';
+import "@/assets/styles/normalize.css";
 import i18n from "@/locales/index.ts";
 import router from "@/router/router.ts";
 import "go-captcha-vue/dist/style.css";

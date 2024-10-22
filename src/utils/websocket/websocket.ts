@@ -64,6 +64,7 @@ export class WebSocketService {
         if (this.callbacks.error) {
             this.callbacks.error.forEach((cb) => (cb as EventCallback)());
         }
+        // setInterval(() => this.reconnect(), this.reconnectTimeoutMs);
     };
 
     private handleClose = (): void => {

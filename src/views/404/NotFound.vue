@@ -74,6 +74,6 @@ async function backHome() {
 
 backHome();
 </script>
-<style src="./index.scss" scoped>
+<style src="./index.scss" lang="scss" scoped>
 
 </style>

@@ -10,7 +10,7 @@ import AutoImport from 'unplugin-auto-import/vite';
 import {chunkSplitPlugin} from 'vite-plugin-chunk-split';
 import vitePluginBundleObfuscator from 'vite-plugin-bundle-obfuscator';
 
-const defaultObfuscatorConfig:any = {
+const defaultObfuscatorConfig: any = {
     excludes: [],
     enable: true,
     log: true,
@@ -127,6 +127,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
                     scss: {
                         api: "modern-compiler",
                         javascriptEnabled: true,
+                        additionalData: `@use "@/assets/styles/scroll-bar.scss"; @use "@/assets/styles/theme.scss";`
                     },
                     less: {
                         javascriptEnabled: true,

@@ -37,12 +37,12 @@
 
         .reply-ip {
             font-size: 12px;
-            color: #767779;
+            color: var(--comment-text-color);
         }
 
         .reply-time {
             font-size: 12px;
-            color: #767779;
+            color: var(--comment-text-color);
         }
 
         .reply-card {
@@ -61,14 +61,14 @@
 
                 .reply-action-btn {
                     font-size: 13px;
-                    color: #767779;
+                    color: var(--comment-text-color);
                     cursor: pointer;
 
                 }
 
                 .reply-action-icon {
                     font-size: 14px;
-                    color: #767779;
+                    color: var(--comment-text-color);
                     cursor: pointer;
 
                 }
@@ -90,7 +90,7 @@
                 .reply-action-icon-number {
                     font-size: 12px;
                     cursor: pointer;
-                    color: #767779;
+                    color: var(--comment-text-color);
                 }
             }
 
@@ -99,7 +99,7 @@
 
                 .reply-action-btn {
                     font-size: 15px;
-                    color: #767779;
+                    color: var(--comment-text-color);
                     cursor: pointer;
                 }
 
@@ -111,7 +111,7 @@
 
                 .reply-action-info {
                     font-size: 10px;
-                    color: #767779;
+                    color: var(--comment-text-color);
                     cursor: pointer;
                 }
             }

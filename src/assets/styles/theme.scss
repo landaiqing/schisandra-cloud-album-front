@@ -1,35 +1,35 @@
-@import "colors.module";
-
-$modes: (
-        "light": (
-                bgColor: transparent,
-                infoColor: #000
-        ),
-        "dark": (
-                bgColor: rgba(15, 15, 16, 0.63),
-                infoColor: #fff
-        )
-);
-$curMode: light;
-$curTheme: red;
-@mixin useTheme() {
-    @each $key1, $value1 in $modes {
-        $curMode: $key1 !global;
-        @each $key2, $value2 in $colors {
-            $curTheme: $key2 !global;
-            html[data-dark='#{$key1}'][data-theme='#{$key2}'] & {
-                @content;
-            }
-        }
-    }
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000;
+    // 着陆页背景颜色
+    --landing-background-color-main: #b9f187;
+    --comment-text-color: #767779;
 }
 
-@function getModeVar($key) {
-    $modeMap: map-get($modes, $curMode);
-    @return map-get($modeMap, $key);
+[data-dark="dark"] {
+    --background-color: #121212;
+    --text-color: #ffffff;
+    // 着陆页背景颜色
+    --landing-background-color-main: rgb(0, 0, 0);
+    --comment-text-color: #ffffff;
 }
 
-@function getColor($key) {
-    $themeMap: map-get($colors, $curTheme);
-    @return map-get($themeMap, $key);
+#app {
+    position: relative;
+    transition: background-color 0.3s,
+    color 0.3s;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
+
+
+#nprogress .bar {
+    background: #48c453 !important; //自定义颜色
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px cyan, 0 0 5px cyan !important;
+}
+
+

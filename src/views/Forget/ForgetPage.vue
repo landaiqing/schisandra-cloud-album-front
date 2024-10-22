@@ -320,6 +320,6 @@ async function checkPhoneLoginCaptcha(angle: number) {
   }
 }
 </script>
-<style src="./index.scss" scoped>
-@import "@/assets/styles/global.scss";
+<style src="./index.scss" lang="scss" scoped>
+
 </style>

@@ -1,7 +1,7 @@
 .reply-item-child {
     margin-top: 10px;
     border-radius: 10px;
-    background-color: #f5f5f5;
+    background-color: var(--background-color);
     padding: 10px;
 
     .reply-pagination-child {
@@ -15,7 +15,7 @@
 
         .reply-at {
             font-size: 14px;
-            color: #767779;
+            color: var(--comment-text-color);
             cursor: pointer;
         }
 
@@ -38,12 +38,12 @@
 
         .reply-ip-child {
             font-size: 12px;
-            color: #767779;
+            color: var(--comment-text-color);
         }
 
         .reply-time-child {
             font-size: 12px;
-            color: #767779;
+            color: var(--comment-text-color);
         }
 
         .reply-card-child {
@@ -54,13 +54,13 @@
 
                 .reply-action-btn-child {
                     font-size: 13px;
-                    color: #767779;
+                    color: var(--comment-text-color);
                     cursor: pointer;
                 }
 
                 .reply-action-icon-child {
                     font-size: 14px;
-                    color: #767779;
+                    color: var(--comment-text-color);
                     cursor: pointer;
 
                 }
@@ -82,7 +82,7 @@
                 .reply-action-icon-number-child {
                     font-size: 12px;
                     cursor: pointer;
-                    color: #767779;
+                    color: var(--comment-text-color);
                 }
 
             }
@@ -92,7 +92,7 @@
 
                 .reply-action-btn-child {
                     font-size: 15px;
-                    color: #767779;
+                    color: var(--comment-text-color);
                     cursor: pointer;
                 }
 
@@ -104,7 +104,7 @@
 
                 .reply-action-info-child {
                     font-size: 10px;
-                    color: #767779;
+                    color: var(--comment-text-color);
                     cursor: pointer;
                 }
             }

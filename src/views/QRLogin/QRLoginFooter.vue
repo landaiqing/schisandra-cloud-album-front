@@ -215,6 +215,6 @@ onBeforeMount(() => {
   });
 });
 </script>
-<style src="./index.scss" scoped>
+<style src="./index.scss"  lang="scss" scoped>
 
 </style>

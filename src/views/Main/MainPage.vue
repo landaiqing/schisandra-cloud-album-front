@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <div class="main-page">
     <Header/>
     <CommentReply/>
 
@@ -35,6 +35,6 @@ onUnmounted(() => {
   websocket.close(false);
 });
 </script>
-<style scoped>
+<style scoped lang="less" src="./index.scss">
 
 </style>

@@ -22,7 +22,7 @@
 
         .comment-action-item {
             cursor: pointer;
-            color: #767779;
+            color: var(--comment-text-color);
 
             .comment-emoji-item {
                 display: flex;
@@ -33,7 +33,7 @@
 
             .comment-action-icon {
                 font-size: 14px;
-                color: #767779;
+                color: var(--comment-text-color);
             }
 
             .comment-action-icon:hover {

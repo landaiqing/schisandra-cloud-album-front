@@ -1,7 +1,7 @@
 <template>
-  <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;">
-    <div style="height: 100px;margin-top: 50px;">
-      <span style="font-size: 50px; font-weight: bold;">{{ t('landing.title') }}</span>
+  <div class="landing-content">
+    <div class="landing-content-title">
+      <span class="landing-content-title-text">{{ t('landing.title') }}</span>
     </div>
     <Card3D/>
     <Clouds/>
@@ -15,6 +15,6 @@ import {useI18n} from "vue-i18n";
 
 const {t} = useI18n();
 </script>
-<style scoped lang="scss">
+<style scoped lang="scss" src="./index.scss">
 
 </style>

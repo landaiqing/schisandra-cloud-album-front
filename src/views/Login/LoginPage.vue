@@ -345,7 +345,7 @@ async function sendCaptcha() {
 /**
  *  账号登录  防抖
  */
-const accountLoginSubmitDebounce = useDebounceFn(accountLoginSubmit, 1000);
+const accountLoginSubmitDebounce = useDebounceFn(accountLoginSubmit, 300);
 
 /**
  * 账号登录提交
@@ -366,18 +366,17 @@ async function accountLoginSubmit() {
 /**
  * 手机登录提交  防抖
  */
-const phoneLoginSubmitDebounce = useDebounceFn(phoneLoginSubmit, 1000);
+const phoneLoginSubmitDebounce = useDebounceFn(phoneLoginSubmit, 300);
 
 /**
  * 手机登录提交
  */
 async function phoneLoginSubmit() {
-  loginLoading.value = true;
   phoneLoginFormRef.value
       .validate()
       .then(async () => {
+        loginLoading.value = true;
         const res: any = await phoneLoginApi(phoneLoginForm);
-        console.log(res);
         if (res.code === 200 && res.success) {
           const userStore = useStore().user;
           const {uid, access_token, refresh_token, expires_at, user_info} = res.data;
