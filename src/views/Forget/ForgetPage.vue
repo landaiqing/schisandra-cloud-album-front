@@ -79,7 +79,8 @@
         </ATooltip>
       </ACard>
     </div>
-    <div v-if="showRotateCaptcha" class="mask">
+    <AModal v-model:open="showRotateCaptcha" :footer="null" :closable="false" width="375" :centered="true"
+            :maskClosable="false" :bodyStyle="{padding: 0}">
       <!--    滑动验证码 -->
       <gocaptcha-rotate
           class="gocaptcha-rotate"
@@ -90,7 +91,7 @@
           }"
           :events="resetPasswordRotateEvent"
       />
-    </div>
+    </AModal>
     <div class="area">
       <ul class="circles">
         <li></li>
@@ -171,7 +172,7 @@ const rules: Record<string, Rule[]> = {
     },
   ],
   repassword: [
-    {validator: validateRepassword, trigger: 'blur'}
+    {required: true,validator: validateRepassword, trigger: 'blur'}
   ],
   phone: [
     {required: true, message: t('login.phoneValidate'), trigger: 'blur'},

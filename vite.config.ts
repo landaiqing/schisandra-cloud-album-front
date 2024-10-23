@@ -92,7 +92,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 }),
                 nodePolyfills(),
                 viteCompression({
-                    filter: /\.(js|mjs|css|html)$/i, // 压缩的文件类型
+                    filter: /\.(js|mjs|css|html)$/, // 压缩的文件类型
                     verbose: true, // 是否在控制台中输出压缩结果
                     disable: false,
                     threshold: 10240, // 如果体积大于阈值，将被压缩，单位为b，体积过小时请不要压缩，以免适得其反
@@ -154,7 +154,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 write: true, // 启用将构建后的文件写入磁盘
                 emptyOutDir: true, // 构建时清空该目录
                 brotliSize: true, // 启用 brotli 压缩大小报告
-                chunkSizeWarningLimit: 6000, // chunk 大小警告的限制
+                chunkSizeWarningLimit: 10000, // chunk 大小警告的限制
                 watch: null, // 设置为 {} 则会启用 rollup 的监听器
                 rollupOptions: {  // 自定义底层的 Rollup 打包配置
                     output: {
