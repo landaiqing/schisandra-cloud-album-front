@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --mode development --host",
     "build": "vue-tsc -b && vite build --mode production",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker-build": "docker build -t schisandra/schisandra-cloud-album-front ."
   },
   "dependencies": {
     "@alova/adapter-axios": "^2.0.9",
