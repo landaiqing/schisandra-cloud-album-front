@@ -182,7 +182,7 @@ async function commentSubmit(point: any) {
     showSubmitCaptcha.value = false;
     await getCommentList();
   } else {
-    showSubmitCaptcha.value = false;
+    await comment.getSlideCaptchaData();
     message.error(result.message || t('comment.commentError'));
   }
 }

@@ -1,101 +1,86 @@
 <template>
-  <div>
-    <ASteps :current="current" :status="current==2?'finish':'process'" @change="handleCurrentChange">
-      <AStep title="类型">
-      </AStep>
-      <AStep title="说明">
-      </AStep>
-      <AStep title="材料">
-      </AStep>
-    </ASteps>
-    <div class="steps-content">
-      <div v-if="current === 0">
-        <a-radio-group v-model:value="value">
-          <a-radio :style="radioStyle" :value="1">Option A</a-radio>
-          <a-radio :style="radioStyle" :value="2">Option B</a-radio>
-          <a-radio :style="radioStyle" :value="3">Option C</a-radio>
-          <a-radio :style="radioStyle" :value="4">
-            More...
-            <a-input v-if="value === 4" style="width: 100px; margin-left: 10px"/>
-          </a-radio>
-        </a-radio-group>
-      </div>
-      <div v-if="current === 1">
-        <a-textarea :rows="8" placeholder="maxlength is 6" :maxlength="6"/>
-      </div>
-      <div v-if="current === 2">
-        <a-upload-dragger
-            v-model:fileList="fileList"
-            name="file"
-            :multiple="true"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            @change="handleChange"
-            @drop="handleDrop"
-        >
-          <p class="ant-upload-drag-icon">
-            <inbox-outlined></inbox-outlined>
-          </p>
-          <p class="ant-upload-text">Click or drag file to this area to upload</p>
-          <p class="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibit from uploading company data or other
-            band files
-          </p>
-        </a-upload-dragger>
-      </div>
+  <!--举报窗口-->
+  <AModal draggable="true" v-model:open="comment.showMessageReport" :title="t('comment.reportSeletion')" :width="600"
+          @cancel="comment.closeReportMessage"
+          @ok="handleReport">
+    <div class="message-report-main">
+      <ARadioGroup v-model:value="comment.reportType">
+        <AFlex :vertical="true">
+          <ASpace direction="vertical">
+            <span class="message-report-title">违反法律法规</span>
+            <div class="message-report-content">
+              <ARadio :style="radioStyle" :value="1">违法违规</ARadio>
+              <ARadio :style="radioStyle" :value="2">色情</ARadio>
+              <ARadio :style="radioStyle" :value="3">低俗</ARadio>
+              <ARadio :style="radioStyle" :value="4">赌博诈骗</ARadio>
+              <ARadio :style="radioStyle" :value="5">违法信息外链</ARadio>
+            </div>
+          </ASpace>
+          <ASpace direction="vertical">
+            <span class="message-report-title">谣言类不实信息</span>
+            <div class="message-report-content">
+              <ARadio :style="radioStyle" :value="6">涉政谣言</ARadio>
+              <ARadio :style="radioStyle" :value="7">虚假不实信息</ARadio>
+              <ARadio :style="radioStyle" :value="8">涉社会事件谣言</ARadio>
+            </div>
+          </ASpace>
+          <ASpace direction="vertical">
+            <span class="message-report-title">侵犯个人权益</span>
+            <div class="message-report-content">
+              <ARadio :style="radioStyle" :value="9">人身攻击</ARadio>
+              <ARadio :style="radioStyle" :value="10">侵犯隐私</ARadio>
+            </div>
+          </ASpace>
+          <ASpace direction="vertical">
+            <span class="message-report-title">有害社区环境</span>
+            <div class="message-report-content">
+              <ARadio :style="radioStyle" :value="11">垃圾广告</ARadio>
+              <ARadio :style="radioStyle" :value="12">引战</ARadio>
+              <ARadio :style="radioStyle" :value="13">刷屏</ARadio>
+              <ARadio :style="radioStyle" :value="14">作品不相关</ARadio>
+              <ARadio :style="radioStyle" :value="15">违规抽奖</ARadio>
+              <ARadio :style="radioStyle" :value="16">青少年不良信息</ARadio>
+            </div>
+          </ASpace>
+          <ASpace direction="vertical">
+            <span class="message-report-title">其他</span>
+            <div class="message-report-content">
+              <ARadio :style="radioStyle" :value="17">
+                其他
+              </ARadio>
+              <ATextarea style="margin-top: 10px" v-if="comment.reportType === 17" v-model:value="comment.reportContent"
+                         placeholder="请填写举报内容" :rows="1"/>
+            </div>
+          </ASpace>
+        </AFlex>
+      </ARadioGroup>
     </div>
-    <div class="steps-action">
-      <AButton v-if="current > 0 && current <= 2" @click="prev">上一步</AButton>
-      <AButton v-if="current >= 0 && current < 2" type="primary" style="margin-left: 8px" @click="next">下一步</AButton>
-      <AButton
-          style="margin-left: 8px"
-          v-if="current == 2"
-          type="primary"
-          @click="message.success('Processing complete!')"
-      >
-        完成
-      </AButton>
+  </AModal>
 
-    </div>
-  </div>
 </template>
 <script lang="ts" setup>
-import {reactive, ref} from 'vue';
-import type {UploadChangeParam} from 'ant-design-vue';
-import {message} from 'ant-design-vue';
+import {reactive} from "vue";
+import {useI18n} from "vue-i18n";
+import useStore from "@/store";
 
-const current = ref<number>(0);
-const next = () => {
-  current.value++;
-};
-const prev = () => {
-  current.value--;
-};
-function handleCurrentChange(index: number) {
-  current.value = index;
-}
-const value = ref<number>(1);
+const {t} = useI18n();
+const comment = useStore().comment;
 const radioStyle = reactive({
-  display: 'flex',
-  height: '30px',
-  lineHeight: '30px',
+  color: 'rgba(15,15,16,0.66)',
+  fontSize: '13px',
+  fontWeight: 'bold'
 });
 
-
-const fileList = ref([]);
-const handleChange = (info: UploadChangeParam) => {
-  const status = info.file.status;
-  if (status !== 'uploading') {
-    console.log(info.file, info.fileList);
-  }
-  if (status === 'done') {
-    message.success(`${info.file.name} file uploaded successfully.`);
-  } else if (status === 'error') {
-    message.error(`${info.file.name} file upload failed.`);
-  }
-};
-
-function handleDrop(e: DragEvent) {
-  console.log(e);
+/**
+ * 提交举报信息
+ */
+function handleReport() {
+  const data: any = {
+    comment_id: comment.commentId,
+    report_type: comment.reportType,
+    report_content: comment.reportContent
+  };
+  console.log(data);
 }
 </script>
 <style scoped lang="less" src="./index.scss">

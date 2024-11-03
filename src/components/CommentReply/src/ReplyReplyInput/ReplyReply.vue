@@ -200,7 +200,7 @@ async function replyReplySubmit(point: any) {
     comment.commentMap[props.item.id].reply_count++;
     message.success(t('comment.replySuccess'));
   } else {
-    showSubmitCaptcha.value = false;
+    await comment.getSlideCaptchaData();
     message.error(t('comment.replyError'));
   }
 }

@@ -100,7 +100,7 @@
                         </AButton>
                         <template #overlay>
                           <AMenu>
-                            <AMenuItem key="report" @click="showMessageReport = true">
+                            <AMenuItem key="report" @click="comment.openReportMessage(item.id)">
                               <WarningOutlined/>
                               {{ t('comment.report') }}
                             </AMenuItem>
@@ -128,10 +128,7 @@
       <AEmpty :description="null" v-show="!comment.commentList.comments"/>
     </ASkeleton>
 
-    <!--举报窗口-->
-    <AModal v-model:open="showMessageReport" :title="t('comment.report')" :width="600" :footer="null">
-      <MessageReport/>
-    </AModal>
+    <MessageReport/>
   </div>
 </template>
 
@@ -164,7 +161,6 @@ const user = useStore().user;
 
 const topicId = ref<string>("123");
 
-const showMessageReport = ref<boolean>(false);
 
 /**
  *  获取评论列表

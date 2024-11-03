@@ -102,6 +102,7 @@ export default {
         illegalImage: ' 非法图片！',
         loadingMore: '加载更多',
         noMore: '没有更多了',
+        reportSeletion: '请选择举报原因',
     }
 
 };

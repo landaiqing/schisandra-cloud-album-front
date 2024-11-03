@@ -33,7 +33,10 @@ export const useCommentStore = defineStore(
         const imageList = ref<any[]>([]);
         const uploadLoading = ref<boolean>(false);
         const emojiList = ref<any[]>(QQ_EMOJI);
-
+        const commentId = ref<number | null>(null);
+        const showMessageReport = ref<boolean>(false);
+        const reportType = ref<number>(0);
+        const reportContent = ref<string>("");
 
         /**
          * 获取评论列表
@@ -256,6 +259,25 @@ export const useCommentStore = defineStore(
             return `${seconds} 秒前`;
         }
 
+        /**
+         *  打开举报弹窗
+         * @param id
+         */
+        function openReportMessage(id: number) {
+            commentId.value = id;
+            showMessageReport.value = true;
+        }
+
+        /**
+         *  关闭举报弹窗
+         */
+        function closeReportMessage() {
+            commentId.value = null;
+            showMessageReport.value = false;
+            reportType.value = 0;
+            reportContent.value = "";
+        }
+
         return {
             commentList,
             commentLoading,
@@ -269,6 +291,10 @@ export const useCommentStore = defineStore(
             imageList,
             uploadLoading,
             emojiList,
+            commentId,
+            showMessageReport,
+            reportType,
+            reportContent,
             getCommentList,
             handleShowReplyInput,
             closeReplyInput,
@@ -282,6 +308,8 @@ export const useCommentStore = defineStore(
             removeBase64Image,
             clearFileList,
             formatTimeAgo,
+            openReportMessage,
+            closeReportMessage
         };
     },
     {
