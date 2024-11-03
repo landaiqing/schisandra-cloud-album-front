@@ -338,7 +338,7 @@ async function sendCaptcha() {
         });
       })
       .catch((error: any) => {
-        console.log('error', error);
+        console.error('error', error);
       });
 }
 
@@ -359,7 +359,7 @@ async function accountLoginSubmit() {
         });
       })
       .catch((error: any) => {
-        console.log('error', error);
+        console.error('error', error);
       });
 }
 
@@ -476,7 +476,7 @@ async function checkAccountLoginCaptcha(angle: number) {
     }, 1000);
   } else {
     loginLoading.value = false;
-    message.error(t('login.loginError'));
+    message.error(res.message);
   }
 
 }

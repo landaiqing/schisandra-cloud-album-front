@@ -94,13 +94,13 @@
                         {{ item.browser }}
                       </AButton>
                       <!-- 评论操作按钮 -->
-                      <ADropdown trigger="click">
+                      <ADropdown trigger="click" @click.prevent>
                         <AButton type="text" size="small" :icon="h(EllipsisOutlined)" class="reply-action-btn"
                                  @click.prevent>
                         </AButton>
                         <template #overlay>
                           <AMenu>
-                            <AMenuItem key="report">
+                            <AMenuItem key="report" @click="showMessageReport = true">
                               <WarningOutlined/>
                               {{ t('comment.report') }}
                             </AMenuItem>
@@ -127,6 +127,11 @@
       </div>
       <AEmpty :description="null" v-show="!comment.commentList.comments"/>
     </ASkeleton>
+
+    <!--举报窗口-->
+    <AModal v-model:open="showMessageReport" :title="t('comment.report')" :width="600" :footer="null">
+      <MessageReport/>
+    </AModal>
   </div>
 </template>
 
@@ -149,6 +154,7 @@ import useStore from "@/store";
 import {useRouter} from "vue-router";
 import ReplyInput from "@/components/CommentReply/src/ReplyInput/ReplyInput.vue";
 import ReplyList from "@/components/CommentReply/src/ReplyList/ReplyList.vue";
+import MessageReport from "@/components/CommentReply/src/MessageReport/MessageReport.vue";
 
 
 const {t} = useI18n();
@@ -158,6 +164,7 @@ const user = useStore().user;
 
 const topicId = ref<string>("123");
 
+const showMessageReport = ref<boolean>(false);
 
 /**
  *  获取评论列表

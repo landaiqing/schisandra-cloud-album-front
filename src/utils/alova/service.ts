@@ -50,7 +50,6 @@ export const service = createAlova({
         if (!method.meta?.ignoreToken) {
             const user = useStore().user;
             method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.user.accessToken}`;
-            method.config.headers['X-UID'] = user.user.uid;
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';
@@ -77,11 +76,15 @@ export const service = createAlova({
                     title: i18n.global.t('error.loginExpired'),
                     content: i18n.global.t('error.authTokenExpired'),
                     onOk() {
-                        window.location.href = '/login';
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        },2000);
                     },
-                    onCancel() {
-                        window.location.href = '/login';
-                    }
+                    // onCancel() {
+                    //     setTimeout(() => {
+                    //         window.location.href = '/login';
+                    //     },2000);
+                    // }
                 });
                 return Promise.reject(response.data);
             }

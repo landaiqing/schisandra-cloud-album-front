@@ -13,6 +13,7 @@ import Header from "@/layout/default/Header/Header.vue";
 import {notification} from "ant-design-vue";
 import {SmileOutlined} from "@ant-design/icons-vue";
 
+
 const websocket = useStore().websocket;
 const userInfo = useStore().user;
 const wsOptions = {
@@ -30,7 +31,6 @@ onMounted(() => {
     });
   });
 });
-
 onUnmounted(() => {
   websocket.close(false);
 });

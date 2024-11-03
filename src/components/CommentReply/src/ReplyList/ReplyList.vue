@@ -79,7 +79,7 @@
                       </AButton>
                       <template #overlay>
                         <AMenu>
-                          <AMenuItem key="report">
+                          <AMenuItem key="report" @click="showMessageReport = true">
                             <WarningOutlined/>
                             {{ t('comment.report') }}
                           </AMenuItem>
@@ -106,6 +106,9 @@
       </AFlex>
       <AEmpty :description="null" v-show="!comment.replyList.comments"/>
     </ASpin>
+    <AModal v-model:open="showMessageReport" :title="t('comment.report')" :width="600" :footer="null">
+      <MessageReport/>
+    </AModal>
   </AFlex>
 </template>
 <script lang="ts" setup>
@@ -123,6 +126,7 @@ import {useI18n} from "vue-i18n";
 import useStore from "@/store";
 import ReplyReply from "@/components/CommentReply/src/ReplyReplyInput/ReplyReply.vue";
 import {useThrottleFn} from "@vueuse/core";
+import MessageReport from "@/components/CommentReply/src/MessageReport/MessageReport.vue";
 
 const {t} = useI18n();
 
@@ -135,7 +139,7 @@ const props = defineProps({
     required: true
   }
 });
-
+const showMessageReport = ref<boolean>(false);
 /**
  * 格式化时间
  * @param dateString

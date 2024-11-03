@@ -210,7 +210,6 @@ const getSlideCaptchaDataThrottled = useThrottleFn(comment.getSlideCaptchaData, 
  */
 async function showSlideCaptcha() {
   if (commentContent.value.trim() === "") {
-    message.error(t('comment.commentContentNotEmpty'));
     return;
   }
   if (comment.imageList.length > 3) {

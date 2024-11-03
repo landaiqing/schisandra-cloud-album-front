@@ -166,7 +166,6 @@ const replyReplySubmitThrottled = useThrottleFn(replyReplySubmit, 1000);
  */
 async function replyReplySubmit(point: any) {
   if (replyReplyContent.value.trim() === "") {
-    message.error(t('comment.commentContentNotEmpty'));
     return;
   }
   if (comment.imageList.length > 3) {

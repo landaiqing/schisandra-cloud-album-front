@@ -3,7 +3,10 @@
     --text-color: #000000;
     // 着陆页背景颜色
     --landing-background-color-main: #b9f187;
+    // 评论文字颜色
     --comment-text-color: #767779;
+    // 评论子评论背景颜色
+    --comment-child-background-color: #f5f5f5;
 }
 
 [data-dark="dark"] {
@@ -11,7 +14,10 @@
     --text-color: #ffffff;
     // 着陆页背景颜色
     --landing-background-color-main: rgb(0, 0, 0);
+    // 评论文字颜色
     --comment-text-color: #ffffff;
+    // 评论子评论背景颜色
+    --comment-child-background-color: rgb(0, 0, 0);
 }
 
 #app {

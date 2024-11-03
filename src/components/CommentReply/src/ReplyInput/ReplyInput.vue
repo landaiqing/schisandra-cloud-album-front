@@ -155,7 +155,6 @@ const replySubmitDebounced = useDebounceFn(replySubmit, 500);
  */
 async function replySubmit(point: any) {
   if (replyContent.value.trim() === "") {
-    message.error(t('comment.commentContentNotEmpty'));
     return;
   }
   if (comment.imageList.length > 3) {
