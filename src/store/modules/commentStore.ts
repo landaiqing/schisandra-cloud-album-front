@@ -4,7 +4,6 @@ import {Comment} from "@/types/comment";
 import {cancelCommentLikeApi, commentLikeApi, commentListApi, replyListApi} from "@/api/comment";
 import {message} from "ant-design-vue";
 import {getSlideCaptchaDataApi} from "@/api/captcha";
-import imageCompression from "browser-image-compression";
 import QQ_EMOJI from "@/constant/qq_emoji.ts";
 import {initNSFWJs, predictNSFW} from "@/utils/nsfw/nsfw.ts";
 import {NSFWJS} from "nsfwjs";
@@ -180,17 +179,15 @@ export const useCommentStore = defineStore(
         async function beforeUpload(file: any) {
             uploadLoading.value = true;
             // 压缩图片配置
-            const options = {
-                maxSizeMB: 0.4,
-                maxWidthOrHeight: 750,
-                maxIteration: 2
-            };
-
-
+            // const options = {
+            //     maxSizeMB: 0.4,
+            //     maxWidthOrHeight: 750,
+            //     maxIteration: 2
+            // };
             if (!window.FileReader) return false; // 判断是否支持FileReader
-            const compressedFile = await imageCompression(file, options);
+            // const compressedFile = await imageCompression(file, options);
             const reader = new FileReader();
-            reader.readAsDataURL(compressedFile); // 文件转换
+            reader.readAsDataURL(file); // 文件转换
             reader.onloadend = async function () {
                 if (fileList.value.length < 3) {
                     const img: HTMLImageElement = document.createElement('img');

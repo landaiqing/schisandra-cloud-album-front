@@ -3,11 +3,16 @@
     border-radius: 10px;
     background-color: var(--comment-child-background-color);
     padding: 10px;
+    border-left: var(--comment-child-box-border-color) 2px solid;
 
     .reply-pagination-child {
         display: flex;
         justify-content: flex-end;
         margin-top: 10px;
+    }
+
+    .reply-item-child-avatar {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
     .reply-item-child-content {
@@ -29,6 +34,10 @@
             cursor: pointer;
         }
 
+        .reply-name-child:hover {
+            color: rgba(15, 15, 16, 0.68);
+        }
+
         .reply-tag-child {
             font-size: 10px;
             font-weight: 800;
@@ -47,6 +56,7 @@
         }
 
         .reply-card-child {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 530px;
 
             .reply-action-item-child {

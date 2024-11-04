@@ -8,12 +8,12 @@
         </AFlex>
         <AFlex :vertical="false" justify="flex-end">
           <AButton type="text" size="small" @click="getHotCommentList" :icon="h(FireOutlined)"
-                   :style="{color: router.currentRoute.value.query.type === 'hot'? '#08a327' : '#000'}"
+                   :style="{color: router.currentRoute.value.query.type === 'hot'? '#08a327' : 'var(--text-color)'}"
                    class="reply-header-hot">
             {{ t('comment.hot') }}
           </AButton>
           <AButton type="text" size="small" @click="getLatestCommentList" :icon="h(ClockCircleOutlined)"
-                   :style="{color: router.currentRoute.value.query.type === 'latest'? '#08a327' : '#000'}"
+                   :style="{color: router.currentRoute.value.query.type === 'latest'? '#08a327' : 'var(--text-color)'}"
                    class="reply-header-latest">
             {{ t('comment.latest') }}
           </AButton>
@@ -25,16 +25,22 @@
         <div class="reply-item" v-for="(item, index) in comment.commentList.comments" :key="index">
           <AFlex :vertical="false" style="margin-top: 5px">
             <!-- 评论头像 -->
-            <AFlex :vertical="true" class="reply-avatar" v-if="item.avatar">
-              <AAvatar :size="50" class="reply-avatar-img" shape="circle" :src="item.avatar"/>
-            </AFlex>
+            <ABadge :offset="[0,0]" :dot="false">
+              <template #count v-if="true">
+                <img src="/level_icon/up.svg" style="width: 20px;height: 20px;"  alt="lv2">
+              </template>
+              <AFlex :vertical="true" class="reply-avatar" v-if="item.avatar">
+                <AAvatar :size="50" class="reply-avatar-img" shape="circle" :src="item.avatar"/>
+              </AFlex>
+            </ABadge>
             <!-- 评论内容 -->
             <AFlex :vertical="true" class="reply-content">
               <AFlex :vertical="true">
                 <AFlex :vertical="false" align="flex-start">
                   <span class="reply-name">{{ item.nickname }}</span>
-                  <a-tag color="cyan" class="reply-tag" size="small">Lv.5</a-tag>
-                  <a-tag color="red" class="reply-tag" size="small" v-if="item.author===1">UP</a-tag>
+                  <img src="/level_icon/3/lv5.png" class="reply-level-icon" alt="lv1">
+                  <img src="/level_icon/4/4.png" class="reply-level-icon" alt="lv2">
+
                 </AFlex>
                 <AFlex :vertical="false" align="flex-end" justify="space-between">
                   <AFlex :vertical="false" align="center" justify="space-between">
@@ -75,8 +81,10 @@
                           comment.handleShowCommentReply(item.id);
                           replyListThrottled(item.id)}" type="text" size="small"
                                :icon="h(MessageOutlined)"
+                               :disabled="item.reply_count === 0"
+                               v-show="item.reply_count > 0"
                                class="reply-action-btn">
-                        {{ item.reply_count }}
+                        查看{{ item.reply_count >= 99 ? '99+' : item.reply_count }}条回复
                       </AButton>
                       <AButton
                           @click="comment.handleShowReplyInput(item.id)"
@@ -113,13 +121,13 @@
 
               </AFlex>
               <!-- 回复输入框 -->
-              <ReplyInput :item="item" v-if="comment.showReplyInput && item.id === comment.showReplyInput"/>
+              <ReplyInput :item="item" v-show="comment.showReplyInput && item.id === comment.showReplyInput"/>
               <!-- 子回复列表 -->
-              <ReplyList :item="item" v-if="comment.showCommentReply && item.id === comment.showCommentReply"/>
+              <ReplyList :item="item" v-show="comment.showCommentReply && item.id === comment.showCommentReply"/>
             </AFlex>
           </AFlex>
         </div>
-        <APagination v-if="comment.commentList.total > 0" class="reply-pagination" @change="paginationCommentChange"
+        <APagination v-if="comment.commentList.total > 5" class="reply-pagination" @change="paginationCommentChange"
                      :current="Number(router.currentRoute.value.query.page) ||  comment.commentList.current"
                      :page-size="comment.commentList.size" :total="comment.commentList.total"
                      :default-page-size="comment.commentList.size"
@@ -152,6 +160,8 @@ import {useRouter} from "vue-router";
 import ReplyInput from "@/components/CommentReply/src/ReplyInput/ReplyInput.vue";
 import ReplyList from "@/components/CommentReply/src/ReplyList/ReplyList.vue";
 import MessageReport from "@/components/CommentReply/src/MessageReport/MessageReport.vue";
+import {Comment} from "@/types/comment";
+import Badge from "@/components/MyUI/Badge/Badge.vue";
 
 
 const {t} = useI18n();
@@ -171,7 +181,7 @@ async function getCommentList(page: number = 1, size: number = 5, hot: boolean =
     topic_id: topicId.value,
     page: page,
     size: size,
-    is_hot: router.currentRoute.value.query.type === "hot" || hot,
+    is_hot: router.currentRoute.value.query.type === "hot" ? hot : false,
   };
   await comment.getCommentList(params);
 }
@@ -284,28 +294,38 @@ async function paginationCommentChange(page: number, pageSize: number) {
  *  热门评论
  */
 async function getHotCommentList() {
-  await getCommentList(1, 5, true);
-  await router.push({
-    path: "/main",
-    query: {
-      type: "hot",
-      page: router.currentRoute.value.query.page,
-    }
+  comment.commentList = {} as Comment;
+  comment.commentLoading = true;
+  getCommentList(1, 5, true).then(() => {
+    router.push({
+      path: "/main",
+      query: {
+        type: "hot",
+        page: router.currentRoute.value.query.page,
+      }
+    });
+    comment.commentLoading = false;
   });
+
 }
 
 /**
  *  最新评论
  */
 async function getLatestCommentList() {
-  await getCommentList(1, 5, false);
-  await router.push({
-    path: "/main",
-    query: {
-      type: "latest",
-      page: router.currentRoute.value.query.page,
-    }
+  comment.commentList = {} as Comment;
+  comment.commentLoading = true;
+  getCommentList(1, 5, false).then(() => {
+    router.push({
+      path: "/main",
+      query: {
+        type: "latest",
+        page: router.currentRoute.value.query.page,
+      }
+    });
+    comment.commentLoading = false;
   });
+
 }
 
 onMounted(() => {

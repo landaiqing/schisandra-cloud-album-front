@@ -45,6 +45,7 @@ declare module 'vue' {
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     AUpload: typeof import('ant-design-vue/es')['Upload']
     AUploadDragger: typeof import('ant-design-vue/es')['UploadDragger']
+    Badge: typeof import('./src/components/MyUI/Badge/Badge.vue')['default']
     BoxDog: typeof import('./src/components/BoxDog/BoxDog.vue')['default']
     Card3D: typeof import('./src/components/Card3D/Card3D.vue')['default']
     CloseCircleOutlined: typeof import('@ant-design/icons-vue')['CloseCircleOutlined']

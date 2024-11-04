@@ -4,8 +4,8 @@
       <AFlex :vertical="true" v-if="comment.replyList.comments">
         <AFlex :vertical="false" style="margin-top: 5px" v-for="(child, index) in comment.replyList.comments"
                :key="index">
-          <AFlex :vertical="true" class="reply-item-child-avatar">
-            <AAvatar :size="40" shape="circle" :src="child.avatar"/>
+          <AFlex :vertical="true" >
+            <AAvatar :size="40" shape="circle" class="reply-item-child-avatar" :src="child.avatar"/>
           </AFlex>
           <AFlex :vertical="true" class="reply-item-child-content">
             <AFlex :vertical="true">
@@ -96,7 +96,7 @@
             </AFlex>
           </AFlex>
         </AFlex>
-        <APagination v-if="comment.replyList.total > 0" class="reply-pagination-child" size="small"
+        <APagination v-if="comment.replyList.total > 5" class="reply-pagination-child" size="small"
                      :total="comment.replyList.total"
                      :current="comment.replyList.current" :page-size="comment.replyList.size"
                      :default-page-size="comment.replyList.size"

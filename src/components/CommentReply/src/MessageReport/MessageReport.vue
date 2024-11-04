@@ -66,7 +66,7 @@ import useStore from "@/store";
 const {t} = useI18n();
 const comment = useStore().comment;
 const radioStyle = reactive({
-  color: 'rgba(15,15,16,0.66)',
+  color: 'var(--comment-report-text-color)',
   fontSize: '13px',
   fontWeight: 'bold'
 });
