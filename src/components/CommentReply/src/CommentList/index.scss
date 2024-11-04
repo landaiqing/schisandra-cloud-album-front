@@ -21,6 +21,10 @@
     .reply-avatar {
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         border-radius: 50%;
+
+        .reply-popover{
+            padding: 0;
+        }
     }
 
     .reply-avatar-img {
@@ -53,7 +57,7 @@
         }
 
         .reply-level-icon {
-            width: 40px;
+            width: 30px;
             margin-left: 5px;
             cursor: pointer;
         }

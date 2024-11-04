@@ -9,7 +9,6 @@
                    v-model:value="commentContent"
                    @keyup.ctrl.enter="showSlideCaptcha"
                    :placeholder="t('comment.placeholder')" allow-clear :showCount="false"/>
-
         <AFlex :vertical="false" align="center" justify="space-between" class="comment-actions"
                v-if="showCommentActions">
           <AFlex :vertical="false" align="center">
@@ -188,8 +187,12 @@ async function commentSubmit(point: any) {
       likes: result.data.likes,
       author: result.data.author,
       location: result.data.location,
-      is_liked:false,
+      is_liked: false,
     };
+
+    if (!comment.commentList.comments) {
+      comment.commentList.comments = []; // 初始化 comments 数组
+    }
     comment.commentList.comments.unshift(tmpData);
     commentContent.value = "";
     await comment.clearFileList();

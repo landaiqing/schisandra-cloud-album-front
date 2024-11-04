@@ -4,17 +4,36 @@
       <AFlex :vertical="true" v-if="comment.replyList.comments">
         <AFlex :vertical="false" style="margin-top: 5px" v-for="(child, index) in comment.replyList.comments"
                :key="index">
-          <AFlex :vertical="true" >
-            <AAvatar :size="40" shape="circle" class="reply-item-child-avatar" :src="child.avatar"/>
+          <AFlex :vertical="true">
+            <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
+              <template #content>
+                <UserInfoCard :user="child" :padding="0"/>
+              </template>
+              <ABadge :offset="[0,35]" :dot="false">
+                <template #count v-if="true">
+                  <img src="/level_icon/up.svg" style="width: 20px;height: 20px;" alt="up">
+                </template>
+                <AAvatar :size="40" shape="circle" class="reply-item-child-avatar" :src="child.avatar"/>
+              </ABadge>
+            </Popover>
           </AFlex>
           <AFlex :vertical="true" class="reply-item-child-content">
             <AFlex :vertical="true">
               <AFlex :vertical="false" align="center">
-                <span class="reply-name-child">{{ child.nickname }}</span>
-                <span
-                    class="reply-at">@{{ child.reply_username }}</span>
+                <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
+                  <template #content>
+                    <UserInfoCard :user="child" :padding="0"/>
+                  </template>
+                  <span class="reply-name-child">{{ child.nickname }}</span>
+                </Popover>
+                <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
+                  <template #content>
+                    <UserInfoCard :user="child" :padding="0"/>
+                  </template>
+                  <span
+                      class="reply-at">@{{ child.reply_username }}</span>
+                </Popover>
                 <a-tag color="cyan" class="reply-tag-child" size="small">Lv.5</a-tag>
-                <!--                      <a-tag color="red" class="reply-tag" size="small">UP</a-tag>-->
               </AFlex>
               <AFlex :vertical="false" align="flex-end" justify="space-between">
                 <AFlex :vertical="false" align="center" justify="space-between">
@@ -30,11 +49,14 @@
                 <AFlex :vertical="false" align="center" class="reply-images" v-if="child.images">
                   <AImagePreviewGroup>
                     <AImagePreviewGroup>
-                      <AImage :width="80" :height="80" v-for="(image, index) in child.images" :key="index" :src="image">
-                        <template #previewMask>
-                          <EyeOutlined style="font-size: 20px;"/>
-                        </template>
-                      </AImage>
+                      <ASpace direction="horizontal">
+                        <AImage :width="80" :height="80" v-for="(image, index) in child.images" :key="index"
+                                :src="image">
+                          <template #previewMask>
+                            <EyeOutlined style="font-size: 20px;"/>
+                          </template>
+                        </AImage>
+                      </ASpace>
                     </AImagePreviewGroup>
                   </AImagePreviewGroup>
                 </AFlex>
@@ -123,6 +145,7 @@ import {useI18n} from "vue-i18n";
 import useStore from "@/store";
 import ReplyReply from "@/components/CommentReply/src/ReplyReplyInput/ReplyReply.vue";
 import {useThrottleFn} from "@vueuse/core";
+import UserInfoCard from "@/components/CommentReply/src/UserInfoCard/UserInfoCard.vue";
 
 const {t} = useI18n();
 

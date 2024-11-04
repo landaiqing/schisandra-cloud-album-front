@@ -25,22 +25,33 @@
         <div class="reply-item" v-for="(item, index) in comment.commentList.comments" :key="index">
           <AFlex :vertical="false" style="margin-top: 5px">
             <!-- 评论头像 -->
-            <ABadge :offset="[0,0]" :dot="false">
+            <ABadge :offset="[0,40]" :dot="false">
               <template #count v-if="true">
-                <img src="/level_icon/up.svg" style="width: 20px;height: 20px;" alt="lv2">
+                <img src="/level_icon/up.svg" style="width: 25px;height: 25px;" alt="up">
               </template>
+
               <AFlex :vertical="true" class="reply-avatar" v-if="item.avatar">
-                <AAvatar :size="50" class="reply-avatar-img" shape="circle" :src="item.avatar"/>
+                <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}" @openChange="(open: boolean)=>{
+                  console.log(open);
+                }">
+                  <template #content>
+                    <UserInfoCard :user="item" :padding="0"/>
+                  </template>
+                  <AAvatar :size="50" class="reply-avatar-img" shape="circle" :src="item.avatar"/>
+                </Popover>
               </AFlex>
             </ABadge>
             <!-- 评论内容 -->
             <AFlex :vertical="true" class="reply-content">
               <AFlex :vertical="true">
                 <AFlex :vertical="false" align="center" justify="flex-start">
-                  <span class="reply-name">{{ item.nickname }}</span>
-                  <img src="/level_icon/3/lv5.png" class="reply-level-icon" alt="lv1">
-                  <img src="/level_icon/4/4.png" class="reply-level-icon" alt="lv2">
-
+                  <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
+                    <template #content>
+                      <UserInfoCard :user="item" :padding="0"/>
+                    </template>
+                    <span class="reply-name">{{ item.nickname }}</span>
+                  </Popover>
+                  <img src="/level_icon/icon/lv1.png" class="reply-level-icon" alt="level">
                 </AFlex>
                 <AFlex :vertical="false" align="flex-end" justify="space-between">
                   <AFlex :vertical="false" align="center" justify="space-between">
@@ -56,11 +67,14 @@
                   </div>
                   <AFlex :vertical="false" align="center" class="reply-images" v-if="item.images">
                     <AImagePreviewGroup>
-                      <AImage :width="80" :height="80" v-for="(image, index) in item.images" :key="index" :src="image">
-                        <template #previewMask>
-                          <EyeOutlined style="font-size: 20px;"/>
-                        </template>
-                      </AImage>
+                      <ASpace direction="horizontal">
+                        <AImage :width="80" :height="80" v-for="(image, index) in item.images" :key="index"
+                                :src="image">
+                          <template #previewMask>
+                            <EyeOutlined style="font-size: 20px;"/>
+                          </template>
+                        </AImage>
+                      </ASpace>
                     </AImagePreviewGroup>
                   </AFlex>
                   <AFlex :vertical="false" justify="space-between" align="center">
@@ -160,6 +174,7 @@ import {useRouter} from "vue-router";
 import ReplyInput from "@/components/CommentReply/src/ReplyInput/ReplyInput.vue";
 import ReplyList from "@/components/CommentReply/src/ReplyList/ReplyList.vue";
 import MessageReport from "@/components/CommentReply/src/MessageReport/MessageReport.vue";
+import UserInfoCard from "@/components/CommentReply/src/UserInfoCard/UserInfoCard.vue";
 
 
 const {t} = useI18n();

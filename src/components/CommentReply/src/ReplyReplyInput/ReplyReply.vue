@@ -211,6 +211,9 @@ async function replyReplySubmit(point: any) {
       reply_username: props.item.nickname,
       reply_to: result.data.reply_to,
     };
+    if (!comment.replyList.comments) {
+      comment.replyList.comments = []; // 初始化 comments 数组
+    }
     comment.replyList.comments.unshift(tmpData);
     comment.commentMap[props.item.id].reply_count++;
     replyReplyContent.value = "";
