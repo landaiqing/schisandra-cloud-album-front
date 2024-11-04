@@ -191,13 +191,34 @@ async function replyReplySubmit(point: any) {
   };
   const result: any = await replyReplySubmitApi(replyParams);
   if (result.code === 200 && result.success) {
-
+    const tmpData: any = {
+      id: result.data.id,
+      content: result.data.content,
+      images: comment.imageList,
+      reply_id: result.data.reply_id,
+      user_id: result.data.user_id,
+      author: result.data.author,
+      created_time: result.data.created_time,
+      browser: result.data.browser,
+      operating_system: result.data.operating_system,
+      location: result.data.location,
+      likes: result.data.likes,
+      reply_count: result.data.reply_count,
+      reply_user: result.data.reply_user,
+      nickname: user.user.userInfo.nickname,
+      avatar: user.user.userInfo.avatar,
+      is_liked: false,
+      reply_username: props.item.nickname,
+      reply_to: result.data.reply_to,
+    };
+    comment.replyList.comments.unshift(tmpData);
+    comment.commentMap[props.item.id].reply_count++;
     replyReplyContent.value = "";
     await comment.clearFileList();
     showSubmitCaptcha.value = false;
-    await getReplyList();
+    // await getReplyList();
     comment.closeReplyInput();
-    comment.commentMap[props.item.id].reply_count++;
+
     message.success(t('comment.replySuccess'));
   } else {
     await comment.getSlideCaptchaData();
@@ -225,19 +246,19 @@ async function showSlideCaptcha() {
   }
 }
 
-/**
- *  获取回复列表
- */
-async function getReplyList() {
-  const params: any = {
-    topic_id: topicId.value,
-    page: 1,
-    size: 5,
-    comment_id: props.item.id,
-    user_id: user.user.uid,
-  };
-  await comment.getReplyList(params);
-}
+// /**
+//  *  获取回复列表
+//  */
+// async function getReplyList() {
+//   const params: any = {
+//     topic_id: topicId.value,
+//     page: 1,
+//     size: 5,
+//     comment_id: props.item.id,
+//     user_id: user.user.uid,
+//   };
+//   await comment.getReplyList(params);
+// }
 </script>
 <style scoped lang="scss" src="./index.scss">
 

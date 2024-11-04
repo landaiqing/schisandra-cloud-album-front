@@ -144,7 +144,9 @@ function formatTimeAgo(dateString: string) {
   const now: any = new Date();
   const date: any = new Date(dateString);
   const seconds = Math.floor((now - date) / 1000);
-
+  if (seconds < 60) {
+    return '刚刚';
+  }
   const intervals = [
     {label: '年', seconds: 31536000},
     {label: '个月', seconds: 2592000},

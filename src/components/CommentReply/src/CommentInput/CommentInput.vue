@@ -103,8 +103,6 @@ import {message} from "ant-design-vue";
 import {commentSubmitApi} from "@/api/comment";
 import {useDebounceFn, useThrottleFn} from "@vueuse/core";
 
-import {useRouter} from "vue-router";
-
 const {t} = useI18n();
 
 const showCommentActions = ref<boolean>(false);
@@ -114,7 +112,7 @@ const user = useStore().user;
 const topicId = ref<string>("123");
 const showSubmitCaptcha = ref<boolean>(false);
 const comment = useStore().comment;
-const router = useRouter();
+
 const commentSlideCaptchaEvent = {
   confirm: async (point: any) => {
     await commentSubmitDebounced(point);
@@ -176,29 +174,31 @@ async function commentSubmit(point: any) {
   };
   const result: any = await commentSubmitApi(commentParams);
   if (result.code === 200 && result.success) {
-    message.success(t('comment.commentSuccess'));
+    const tmpData: any = {
+      user_id: user.user.uid,
+      content: result.data.content,
+      images: comment.imageList,
+      nickname: user.user.userInfo.nickname,
+      avatar: user.user.userInfo.avatar,
+      id: result.data.id,
+      created_time: result.data.created_time,
+      browser: result.data.browser,
+      operating_system: result.data.operating_system,
+      reply_count: result.data.reply_count,
+      likes: result.data.likes,
+      author: result.data.author,
+      location: result.data.location,
+      is_liked:false,
+    };
+    comment.commentList.comments.unshift(tmpData);
     commentContent.value = "";
     await comment.clearFileList();
     showSubmitCaptcha.value = false;
-    await getCommentList();
+    message.success(t('comment.commentSuccess'));
   } else {
     await comment.getSlideCaptchaData();
     message.error(result.message || t('comment.commentError'));
   }
-}
-
-/**
- *  获取评论列表
- */
-async function getCommentList(page: number = 1, size: number = 5, hot: boolean = true) {
-  const params = {
-    user_id: user.user.uid,
-    topic_id: topicId.value,
-    page: page,
-    size: size,
-    is_hot: router.currentRoute.value.query.type === "hot" || hot,
-  };
-  await comment.getCommentList(params);
 }
 
 

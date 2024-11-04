@@ -27,7 +27,7 @@
             <!-- 评论头像 -->
             <ABadge :offset="[0,0]" :dot="false">
               <template #count v-if="true">
-                <img src="/level_icon/up.svg" style="width: 20px;height: 20px;"  alt="lv2">
+                <img src="/level_icon/up.svg" style="width: 20px;height: 20px;" alt="lv2">
               </template>
               <AFlex :vertical="true" class="reply-avatar" v-if="item.avatar">
                 <AAvatar :size="50" class="reply-avatar-img" shape="circle" :src="item.avatar"/>
@@ -36,7 +36,7 @@
             <!-- 评论内容 -->
             <AFlex :vertical="true" class="reply-content">
               <AFlex :vertical="true">
-                <AFlex :vertical="false" align="flex-start">
+                <AFlex :vertical="false" align="center" justify="flex-start">
                   <span class="reply-name">{{ item.nickname }}</span>
                   <img src="/level_icon/3/lv5.png" class="reply-level-icon" alt="lv1">
                   <img src="/level_icon/4/4.png" class="reply-level-icon" alt="lv2">
@@ -160,8 +160,6 @@ import {useRouter} from "vue-router";
 import ReplyInput from "@/components/CommentReply/src/ReplyInput/ReplyInput.vue";
 import ReplyList from "@/components/CommentReply/src/ReplyList/ReplyList.vue";
 import MessageReport from "@/components/CommentReply/src/MessageReport/MessageReport.vue";
-import {Comment} from "@/types/comment";
-import Badge from "@/components/MyUI/Badge/Badge.vue";
 
 
 const {t} = useI18n();
@@ -181,7 +179,7 @@ async function getCommentList(page: number = 1, size: number = 5, hot: boolean =
     topic_id: topicId.value,
     page: page,
     size: size,
-    is_hot: router.currentRoute.value.query.type === "hot" ? hot : false,
+    is_hot: hot,
   };
   await comment.getCommentList(params);
 }
@@ -195,6 +193,9 @@ function formatTimeAgo(dateString: string) {
   const date: any = new Date(dateString);
   const seconds = Math.floor((now - date) / 1000);
 
+  if (seconds < 60) {
+    return '刚刚';
+  }
   const intervals = [
     {label: '年', seconds: 31536000},
     {label: '个月', seconds: 2592000},
@@ -294,7 +295,6 @@ async function paginationCommentChange(page: number, pageSize: number) {
  *  热门评论
  */
 async function getHotCommentList() {
-  comment.commentList = {} as Comment;
   comment.commentLoading = true;
   getCommentList(1, 5, true).then(() => {
     router.push({
@@ -313,7 +313,6 @@ async function getHotCommentList() {
  *  最新评论
  */
 async function getLatestCommentList() {
-  comment.commentList = {} as Comment;
   comment.commentLoading = true;
   getCommentList(1, 5, false).then(() => {
     router.push({
