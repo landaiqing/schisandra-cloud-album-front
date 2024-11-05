@@ -28,7 +28,6 @@ interface CommentContent {
 }
 
 export interface ReplyCommentParams {
-    user_id: string,
     topic_id: string,
     content: string,
     images: string[],

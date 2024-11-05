@@ -50,8 +50,6 @@ declare module 'vue' {
     CommentInput: typeof import('./src/components/CommentReply/src/CommentInput/CommentInput.vue')['default']
     CommentList: typeof import('./src/components/CommentReply/src/CommentList/CommentList.vue')['default']
     CommentReply: typeof import('./src/components/CommentReply/index.vue')['default']
-    DivTextarea: typeof import('./src/components/MyUI/Textarea/DivTextarea.vue')['default']
-    DownloadOutlined: typeof import('@ant-design/icons-vue')['DownloadOutlined']
     DynamicTitle: typeof import('./src/components/DynamicTitle/DynamicTitle.vue')['default']
     EffectsCard: typeof import('./src/components/EffectsCard/EffectsCard.vue')['default']
     Ellipsis: typeof import('./src/components/MyUI/Ellipsis/Ellipsis.vue')['default']
