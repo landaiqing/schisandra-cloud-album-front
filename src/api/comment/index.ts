@@ -6,7 +6,6 @@ import {service} from "@/utils/alova/service.ts";
  */
 export const commentSubmitApi = (params: any) => {
     return service.Post('/api/auth/comment/submit', {
-            user_id: params.user_id,
             content: params.content,
             images: params.images,
             topic_id: params.topic_id,
@@ -28,7 +27,6 @@ export const commentSubmitApi = (params: any) => {
  */
 export const replySubmitApi = (params: any) => {
     return service.Post('/api/auth/reply/submit', {
-            user_id: params.user_id,
             content: params.content,
             images: params.images,
             topic_id: params.topic_id,
@@ -56,7 +54,6 @@ export const commentListApi = (params: any) => {
             page: params.page,
             size: params.size,
             topic_id: params.topic_id,
-            user_id: params.user_id,
             is_hot: params.is_hot,
         },
         {
@@ -81,7 +78,6 @@ export const replyListApi = (params: any) => {
             size: params.size,
             comment_id: params.comment_id,
             topic_id: params.topic_id,
-            user_id: params.user_id,
         },
         {
             cacheFor: {
@@ -102,7 +98,6 @@ export const replyListApi = (params: any) => {
  */
 export const replyReplySubmitApi = (params: any) => {
     return service.Post('/api/auth/reply/reply/submit', {
-            user_id: params.user_id,
             content: params.content,
             images: params.images,
             topic_id: params.topic_id,
@@ -128,7 +123,6 @@ export const replyReplySubmitApi = (params: any) => {
  */
 export const commentLikeApi = (params: any) => {
     return service.Post('/api/auth/comment/like', {
-            user_id: params.user_id,
             comment_id: params.comment_id,
             topic_id: params.topic_id,
         },
@@ -146,7 +140,7 @@ export const commentLikeApi = (params: any) => {
  */
 export const cancelCommentLikeApi = (params: any) => {
     return service.Post('/api/auth/comment/cancel_like', {
-            user_id: params.user_id,
+
             comment_id: params.comment_id,
             topic_id: params.topic_id,
         },

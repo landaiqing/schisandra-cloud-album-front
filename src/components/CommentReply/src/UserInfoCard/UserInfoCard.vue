@@ -6,7 +6,7 @@
       </div>
       <AFlex :vertical="false" class="user-info-card-name" style="">
         <AFlex :vertical="true" justify="flex-start">
-          <AAvatar :size="48" :src="users.user.userInfo.avatar" class="user-info-card-avatar"/>
+          <AAvatar :size="48" :src="users.user.avatar" class="user-info-card-avatar"/>
         </AFlex>
         <AFlex :vertical="true" justify="flex-start" class="user-info-card-content-container">
           <AFlex :vertical="false" align="center">

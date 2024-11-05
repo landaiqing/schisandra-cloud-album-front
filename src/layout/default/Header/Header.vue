@@ -26,7 +26,7 @@
         </ADropdown>
       </AFlex>
       <AFlex :vertical="false" align="center" justify="flex-start" class="header-user-container">
-        <AAvatar :size="35" class="header-user-avatar" :src="user.user.userInfo.avatar"/>
+        <AAvatar :size="35" class="header-user-avatar" :src="user.user.avatar"/>
         <AButton type="text" size="small" class="header-user-btn">landaiqing</AButton>
       </AFlex>
     </AFlex>

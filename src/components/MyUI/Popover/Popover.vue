@@ -40,6 +40,10 @@ const showContent = computed(() => {
         borderRadius: '8px',
         textAlign: 'start',
         transform: `translate(${props.offsetX}px, 0)`,
+        backgroundColor: 'var(--background-color)',
+        color: 'var(--text-color)',
+        border: '1px solid var(--text-color)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
         ...tooltipStyle
       }"
       :transition-duration="200"

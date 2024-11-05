@@ -6,20 +6,12 @@ export const useAuthStore = defineStore(
     'user',
     () => {
         const user: any = reactive({
-            accessToken: '',
+            access_token: '',
             uid: '',
-            refreshToken: '',
-            expiresAt: 0,
-            userInfo: {
-                username: '',
-                nickname: '',
-                email: '',
-                phone: '',
-                avatar: '',
-                gender: '',
-                status: '',
-                created_at: '',
-            },
+            username: '',
+            nickname: '',
+            avatar: '',
+            status: '',
         });
 
         return {

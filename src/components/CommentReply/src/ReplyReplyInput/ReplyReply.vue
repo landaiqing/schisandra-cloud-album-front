@@ -178,7 +178,6 @@ async function replyReplySubmit(point: any) {
     return `<img width="30px" height="30px" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
   });
   const replyParams: ReplyCommentParams = {
-    user_id: user.user.uid,
     topic_id: topicId.value,
     content: contentWithEmoji,
     images: comment.imageList,
@@ -205,8 +204,8 @@ async function replyReplySubmit(point: any) {
       likes: result.data.likes,
       reply_count: result.data.reply_count,
       reply_user: result.data.reply_user,
-      nickname: user.user.userInfo.nickname,
-      avatar: user.user.userInfo.avatar,
+      nickname: user.user.nickname,
+      avatar: user.user.avatar,
       is_liked: false,
       reply_username: props.item.nickname,
       reply_to: result.data.reply_to,

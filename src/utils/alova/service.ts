@@ -26,12 +26,9 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
         handler: async () => {
             // 刷新token
             const user = useStore().user;
-            const res: any = await refreshToken(user.user?.refreshToken);
+            const res: any = await refreshToken();
             if (res.code === 200 && res.data) {
-                const {access_token, refresh_token, uid} = res.data;
-                user.user.accessToken = access_token;
-                user.user.refreshToken = refresh_token;
-                user.user.uid = uid;
+                user.user.access_token = res.data;
             }
         }
     }
@@ -49,7 +46,7 @@ export const service = createAlova({
     beforeRequest: onAuthRequired(async (method: any) => {
         if (!method.meta?.ignoreToken) {
             const user = useStore().user;
-            method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.user.accessToken}`;
+            method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.user.access_token}`;
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';
@@ -78,7 +75,7 @@ export const service = createAlova({
                     onOk() {
                         setTimeout(() => {
                             window.location.href = '/login';
-                        },2000);
+                        }, 1000);
                     },
                     // onCancel() {
                     //     setTimeout(() => {

@@ -207,6 +207,7 @@ const showPhoneRotateCaptcha = ref<boolean>(false);
 const showAccountRotateCaptcha = ref<boolean>(false);
 const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
 const loginLoading = ref<boolean>(false);
+const userStore = useStore().user;
 const phoneLoginRotateEvent = {
   confirm: (angle: number) => {
     checkPhoneLoginCaptchaDebounce(angle);
@@ -378,13 +379,12 @@ async function phoneLoginSubmit() {
         loginLoading.value = true;
         const res: any = await phoneLoginApi(phoneLoginForm);
         if (res.code === 200 && res.success) {
-          const userStore = useStore().user;
-          const {uid, access_token, refresh_token, expires_at, user_info} = res.data;
-          userStore.user.uid = uid;
-          userStore.user.accessToken = access_token;
-          userStore.user.refreshToken = refresh_token;
-          userStore.user.expiresAt = expires_at;
-          userStore.user.userInfo = user_info;
+          userStore.user.uid = res.data.uid;
+          userStore.user.access_token = res.data.access_token;
+          userStore.user.username = res.data.username;
+          userStore.user.avatar = res.data.avatar;
+          userStore.user.nickname = res.data.nickname;
+          userStore.user.status = res.data.status;
           message.success(t('login.loginSuccess'));
           loginLoading.value = false;
           setTimeout(() => {
@@ -461,13 +461,12 @@ async function checkAccountLoginCaptcha(angle: number) {
   loginLoading.value = true;
   const res: any = await accountLoginApi(params);
   if (res.code === 200 && res.success) {
-    const userStore = useStore().user;
-    const {uid, access_token, refresh_token, expires_at, user_info} = res.data;
-    userStore.user.uid = uid;
-    userStore.user.accessToken = access_token;
-    userStore.user.refreshToken = refresh_token;
-    userStore.user.expiresAt = expires_at;
-    userStore.user.userInfo = user_info;
+    userStore.user.uid = res.data.uid;
+    userStore.user.access_token = res.data.access_token;
+    userStore.user.username = res.data.username;
+    userStore.user.avatar = res.data.avatar;
+    userStore.user.nickname = res.data.nickname;
+    userStore.user.status = res.data.status;
     message.success(t('login.loginSuccess'));
     loginLoading.value = false;
     showAccountRotateCaptcha.value = false;

@@ -180,7 +180,7 @@ import UserInfoCard from "@/components/CommentReply/src/UserInfoCard/UserInfoCar
 const {t} = useI18n();
 const router = useRouter();
 const comment = useStore().comment;
-const user = useStore().user;
+
 
 const topicId = ref<string>("123");
 
@@ -190,7 +190,6 @@ const topicId = ref<string>("123");
  */
 async function getCommentList(page: number = 1, size: number = 5, hot: boolean = true) {
   const params = {
-    user_id: user.user.uid,
     topic_id: topicId.value,
     page: page,
     size: size,
@@ -247,7 +246,6 @@ async function getReplyList(reply_id: number, page: number = 1, size: number = 5
     page: page,
     size: size,
     comment_id: reply_id,
-    user_id: user.user.uid,
   };
   await comment.getReplyList(params);
 }
@@ -261,7 +259,6 @@ const commentLikeThrottled = useThrottleFn(commentLike, 1000);
 async function commentLike(item: any) {
   const params: any = {
     comment_id: item.id,
-    user_id: user.user.uid,
     topic_id: topicId.value,
   };
   const res: boolean = await comment.commentLike(params);
@@ -280,7 +277,6 @@ const cancelCommentLikeThrottled = useThrottleFn(cancelCommentLike, 1000);
 async function cancelCommentLike(item: any) {
   const params: any = {
     comment_id: item.id,
-    user_id: user.user.uid,
     topic_id: topicId.value,
   };
   const res: boolean = await comment.cancelCommentLike(params);

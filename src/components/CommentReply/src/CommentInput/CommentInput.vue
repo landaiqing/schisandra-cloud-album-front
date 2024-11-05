@@ -2,7 +2,7 @@
   <div class="comment">
     <AFlex :vertical="false">
       <AFlex :vertical="true">
-        <AAvatar :size="50" class="comment-avatar" shape="circle" :src="user.user.userInfo.avatar"/>
+        <AAvatar :size="50" class="comment-avatar" shape="circle" :src="user.user.avatar"/>
       </AFlex>
       <AFlex :vertical="true" class="comment-content">
         <ATextarea :rows="4" class="comment-text" @focus="onFocusHandler"
@@ -163,7 +163,6 @@ async function commentSubmit(point: any) {
     return `<img width="30px" height="30px" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
   });
   const commentParams: object = {
-    user_id: user.user.uid,
     topic_id: topicId.value,
     content: contentWithEmoji,
     images: comment.imageList,
@@ -177,8 +176,8 @@ async function commentSubmit(point: any) {
       user_id: user.user.uid,
       content: result.data.content,
       images: comment.imageList,
-      nickname: user.user.userInfo.nickname,
-      avatar: user.user.userInfo.avatar,
+      nickname: user.user.nickname,
+      avatar: user.user.avatar,
       id: result.data.id,
       created_time: result.data.created_time,
       browser: result.data.browser,

@@ -170,14 +170,12 @@ async function replySubmit(point: any) {
     images: any;
     reply_id: number;
     reply_user: string;
-    user_id: any;
     author: any;
     topic_id: string;
     content: any;
     point: [number, number];
     key: any;
   } = {
-    user_id: user.user.uid,
     topic_id: topicId.value,
     content: contentWithEmoji,
     images: comment.imageList,
@@ -203,8 +201,8 @@ async function replySubmit(point: any) {
       likes: result.data.likes,
       reply_count: result.data.reply_count,
       reply_user: result.data.reply_user,
-      nickname: user.user.userInfo.nickname,
-      avatar: user.user.userInfo.avatar,
+      nickname: user.user.nickname,
+      avatar: user.user.avatar,
       is_liked: false,
       reply_username: props.item.nickname,
     };

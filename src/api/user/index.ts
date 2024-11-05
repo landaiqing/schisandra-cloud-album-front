@@ -21,12 +21,9 @@ export const getUserInfo = () => {
 };
 /**
  * 刷新token
- * @param refreshToken
  */
-export const refreshToken = (refreshToken: string) => {
-    return service.Post('/api/token/refresh', {
-        refresh_token: refreshToken
-    }, {
+export const refreshToken = () => {
+    return service.Post('/api/token/refresh', {}, {
         meta: {
             authRole: 'refreshToken',
             ignoreToken: false
@@ -126,12 +123,10 @@ export const getUserPermissions = (user_id: string) => {
 /**
  * 获取用户设备信息
  */
-export const getUserDevice = (userId: string) => {
+export const getUserDevice = () => {
     return service.Get('/api/user/get_device',
         {
-            params: {
-                user_id: userId,
-            },
+            params: {},
             meta: {
                 ignoreToken: true,
             }

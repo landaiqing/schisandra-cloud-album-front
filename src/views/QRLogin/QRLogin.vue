@@ -71,6 +71,7 @@ const client = useStore().client;
 const qrcode = ref<string>('');
 const status = ref<string>('loading');
 const websocket = useStore().websocket;
+const userStore = useStore().user;
 
 /**
  *  获取client_id
@@ -87,14 +88,14 @@ async function getClientId() {
  *  获取二维码
  */
 async function getQrCode() {
-    const res: any = await generateQrCode(client.getClientId() || "");
-    if (res.code === 200 && res.data) {
-      status.value = 'active';
-      qrcode.value = res.data;
-      await handleListenMessage();
-    } else {
-      status.value = 'expired';
-    }
+  const res: any = await generateQrCode(client.getClientId() || "");
+  if (res.code === 200 && res.data) {
+    status.value = 'active';
+    qrcode.value = res.data;
+    await handleListenMessage();
+  } else {
+    status.value = 'expired';
+  }
 }
 
 
@@ -109,17 +110,16 @@ const wsOptions = {
 async function handleListenMessage() {
   websocket.initialize(wsOptions);
   // 注册消息接收处理函数
-  websocket.on('message', async (data: any) => {
-    if (data.code === 200 && data.data) {
-      const user = useStore().user;
-      const {access_token, refresh_token, uid, expires_at, user_info} = data.data;
-      user.user.accessToken = access_token;
-      user.user.refreshToken = refresh_token;
-      user.user.uid = uid;
-      user.user.expiresAt = expires_at;
-      user.user.userInfo = user_info;
+  websocket.on('message', async (res: any) => {
+    if (res.code === 200 && res.data) {
+      userStore.user.uid = res.data.uid;
+      userStore.user.access_token = res.data.access_token;
+      userStore.user.username = res.data.username;
+      userStore.user.avatar = res.data.avatar;
+      userStore.user.nickname = res.data.nickname;
+      userStore.user.status = res.data.status;
       status.value = 'scanned';
-      await getUserDevice(uid);
+      await getUserDevice();
       message.success(t('login.loginSuccess'));
       setTimeout(() => {
         router.push('/main');

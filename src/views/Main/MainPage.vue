@@ -17,7 +17,7 @@ import {SmileOutlined} from "@ant-design/icons-vue";
 const websocket = useStore().websocket;
 const userInfo = useStore().user;
 const wsOptions = {
-  url: import.meta.env.VITE_MESSAGE_SOCKET_URL + "?user_id=" + userInfo.user.uid + "&token=" + userInfo.user.accessToken,
+  url: import.meta.env.VITE_MESSAGE_SOCKET_URL + "?user_id=" + userInfo.user.uid + "&token=" + userInfo.user.access_token,
 };
 
 onMounted(() => {

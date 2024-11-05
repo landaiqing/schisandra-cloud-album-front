@@ -43,7 +43,6 @@ export const useCommentStore = defineStore(
          */
         async function getCommentList(params: any) {
             const data: any = {
-                user_id: params.user_id,
                 topic_id: params.topic_id,
                 page: params.page,
                 size: params.size,
@@ -94,7 +93,6 @@ export const useCommentStore = defineStore(
                 page: data.page,
                 size: data.size,
                 comment_id: data.comment_id,
-                user_id: data.user_id,
             };
             replyLoading.value = true;
             replyList.value = {} as Comment;
@@ -115,7 +113,6 @@ export const useCommentStore = defineStore(
         async function commentLike(data: any): Promise<boolean> {
             const params: any = {
                 comment_id: data.comment_id,
-                user_id: data.user_id,
                 topic_id: data.topic_id,
             };
             const result: any = await commentLikeApi(params);
@@ -133,7 +130,6 @@ export const useCommentStore = defineStore(
         async function cancelCommentLike(data: any): Promise<boolean> {
             const params: any = {
                 comment_id: data.comment_id,
-                user_id: data.user_id,
                 topic_id: data.topic_id,
             };
             const result: any = await cancelCommentLikeApi(params);

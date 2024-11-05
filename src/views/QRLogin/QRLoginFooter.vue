@@ -39,7 +39,7 @@ const {t} = useI18n();
 const githubRedirectUrl = ref<string>('');
 const giteeRedirectUrl = ref<string>('');
 const qqRedirectUrl = ref<string>('');
-
+const userStore = useStore().user;
 /**
  * Get the redirect url of Github OAuth
  */
@@ -98,16 +98,15 @@ function openGithubUrl() {
 
   const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
-      const data: any = JSON.parse(e.data);
-      if (data.code === 200 && data.data) {
-        const user = useStore().user;
-        const {access_token, refresh_token, uid, expires_at, user_info} = data.data;
-        user.user.accessToken = access_token;
-        user.user.refreshToken = refresh_token;
-        user.user.uid = uid;
-        user.user.expiresAt = expires_at;
-        user.user.userInfo = user_info;
-        await getUserDevice(uid);
+      const res: any = JSON.parse(e.data);
+      if (res.code === 200 && res.data) {
+        userStore.user.uid = res.data.uid;
+        userStore.user.access_token = res.data.access_token;
+        userStore.user.username = res.data.username;
+        userStore.user.avatar = res.data.avatar;
+        userStore.user.nickname = res.data.nickname;
+        userStore.user.status = res.data.status;
+        await getUserDevice();
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
         setTimeout(() => {
@@ -141,16 +140,15 @@ function openGiteeUrl() {
 
   const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
-      const data: any = JSON.parse(e.data);
-      if (data.code === 200 && data.data) {
-        const user = useStore().user;
-        const {access_token, refresh_token, uid, expires_at, user_info} = data.data;
-        user.user.accessToken = access_token;
-        user.user.refreshToken = refresh_token;
-        user.user.uid = uid;
-        user.user.expiresAt = expires_at;
-        user.user.userInfo = user_info;
-        await getUserDevice(uid);
+      const res: any = JSON.parse(e.data);
+      if (res.code === 200 && res.data) {
+        userStore.user.uid = res.data.uid;
+        userStore.user.access_token = res.data.access_token;
+        userStore.user.username = res.data.username;
+        userStore.user.avatar = res.data.avatar;
+        userStore.user.nickname = res.data.nickname;
+        userStore.user.status = res.data.status;
+        await getUserDevice();
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
         setTimeout(() => {
@@ -183,16 +181,15 @@ function openQQUrl() {
 
   const messageHandler = async (e: any) => {
     if (typeof e.data === 'string') {
-      const data: any = JSON.parse(e.data);
-      if (data.code === 200 && data.data) {
-        const user = useStore().user;
-        const {access_token, refresh_token, uid, expires_at, user_info} = data.data;
-        user.user.accessToken = access_token;
-        user.user.refreshToken = refresh_token;
-        user.user.uid = uid;
-        user.user.expiresAt = expires_at;
-        user.user.userInfo = user_info;
-        await getUserDevice(uid);
+      const res: any = JSON.parse(e.data);
+      if (res.code === 200 && res.data) {
+        userStore.user.uid = res.data.uid;
+        userStore.user.access_token = res.data.access_token;
+        userStore.user.username = res.data.username;
+        userStore.user.avatar = res.data.avatar;
+        userStore.user.nickname = res.data.nickname;
+        userStore.user.status = res.data.status;
+        await getUserDevice();
         message.success(t('login.loginSuccess'));
         window.removeEventListener("message", messageHandler);
         setTimeout(() => {
