@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {CSSProperties} from 'vue';
 import {computed, onMounted, ref} from 'vue';
-import {debounce, useEventListener, useMutationObserver} from '../utils';
+import {debounce, useEventListener, useMutationObserver} from '../Utils';
 
 interface Props {
   contentClass?: string // 内容 div 的类名

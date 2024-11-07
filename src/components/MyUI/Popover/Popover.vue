@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {CSSProperties} from 'vue';
 import {computed} from 'vue';
-import {useSlotsExist} from '../utils';
+import {useSlotsExist} from '../Utils';
 
 interface Props {
   title?: string // 卡片标题 string | slot
@@ -42,7 +42,7 @@ const showContent = computed(() => {
         transform: `translate(${props.offsetX}px, 0)`,
         backgroundColor: 'var(--background-color)',
         color: 'var(--text-color)',
-        border: '1px solid var(--text-color)',
+        border: '1px solid var(--white-color)',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
         ...tooltipStyle
       }"

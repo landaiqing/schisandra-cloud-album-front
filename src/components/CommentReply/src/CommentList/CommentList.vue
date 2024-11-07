@@ -31,7 +31,7 @@
               </template>
 
               <AFlex :vertical="true" class="reply-avatar" v-if="item.avatar">
-                <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}" @openChange="(open: boolean)=>{
+                <Popover trigger="click" :arrow="false" :offset-x="170" :contentStyle="{padding: 0}" @openChange="(open: boolean)=>{
                   console.log(open);
                 }">
                   <template #content>
@@ -45,7 +45,7 @@
             <AFlex :vertical="true" class="reply-content">
               <AFlex :vertical="true">
                 <AFlex :vertical="false" align="center" justify="flex-start">
-                  <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
+                  <Popover trigger="click" :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
                     <template #content>
                       <UserInfoCard :user="item" :padding="0"/>
                     </template>
@@ -331,7 +331,7 @@ async function getLatestCommentList() {
       query: {
         type: "latest",
         page: router.currentRoute.value.query.page,
-      }
+      } 
     });
     comment.commentLoading = false;
   });

@@ -1,17 +1,29 @@
 .header-main {
     height: 60px;
     width: 100%;
-    min-width: 1200px;
-    min-height: 60px;
+    min-height: 70px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     background-color: rgba(255, 255, 255, 0.38);
     backdrop-filter: blur(20px);
     transition: background-color 0.3s;
     z-index: 3;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
     //border-radius: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+
+
+    .header-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 1200px;
+        max-width: 1200px;
+    }
 
     .header-logo-container {
         min-width: 280px;

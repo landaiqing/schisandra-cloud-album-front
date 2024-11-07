@@ -1,7 +1,11 @@
 <template>
   <div class="main-page">
     <Header/>
-    <CommentReply/>
+
+    <div style="margin-top: 100px">
+      <CommentReply/>
+    </div>
+
 
   </div>
 </template>

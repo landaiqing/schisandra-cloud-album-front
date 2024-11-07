@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {CSSProperties} from 'vue';
 import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {cancelRaf, rafTimeout, useEventListener, useSlotsExist} from '../utils';
+import {cancelRaf, rafTimeout, useEventListener, useSlotsExist} from '../Utils';
 
 interface Props {
   maxWidth?: string | number // 弹出提示最大宽度，单位 px

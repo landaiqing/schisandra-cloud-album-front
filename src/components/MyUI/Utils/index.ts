@@ -344,4 +344,82 @@ export function useMutationObserver(
 }
 
 
+/**
+ * 消除 js 加减精度问题的加法函数
+ *
+ * 该函数旨在添加两个数字，考虑到它们可能是整数或小数；对于整数，直接返回它们的和
+ * 对于小数，为了确保精确计算，将小数转换为相同长度的字符串进行处理，然后将结果转换回小数
+ *
+ * @param num1 第一个数字
+ * @param num2 第二个数字
+ * @returns 返回两个数字的和
+ */
+export function add(num1: number, num2: number): number {
+    // 验证输入是否为有效的数字
+    // Number.isNaN() 不会尝试将参数转换为数字；全局 isNaN() 函数会将参数强制转换为数字
+    if (Number.isNaN(num1) || Number.isNaN(num2)) {
+        throw new Error('Both num1 and num2 must be valid numbers.');
+    }
+    // 检查输入是否为小数
+    const isDecimalNum1 = num1 % 1 !== 0;
+    const isDecimalNum2 = num2 % 1 !== 0;
+    if (!isDecimalNum1 && !isDecimalNum2) {
+        return num1 + num2; // 如果两个数字都是整数，则直接返回它们的和
+    }
+    const num1DeciStr = String(num1).split('.')[1] ?? '';
+    const num2DeciStr = String(num2).split('.')[1] ?? '';
+    const maxLen = Math.max(num1DeciStr.length, num2DeciStr.length);
+    const factor = Math.pow(10, maxLen);
+    const num1Str = num1.toFixed(maxLen);
+    const num2Str = num2.toFixed(maxLen);
+    // 将小数点移除并转换为整数相加
+    const result = (+num1Str.replace('.', '') + +num2Str.replace('.', '')) / factor;
+    return result;
+}
 
+
+/**
+ * 数字格式化函数
+ *
+ * 该函数提供了一种灵活的方式将数字格式化为字符串，包括设置精度、千位分隔符、小数点字符、前缀和后缀
+ *
+ * @param value 要格式化的数字或数字字符串
+ * @param precision 小数点后的位数，默认为 2
+ * @param separator 千分位分隔符，默认为 ','
+ * @param decimal 小数点字符，默认为 '.'
+ * @param prefix 数字前的字符串，默认为 undefined
+ * @param suffix 数字后的字符串，默认为 undefined
+ * @returns 格式化后的字符串；如果输入值不是数字或字符串，则抛出类型错误
+ */
+export function formatNumber(
+    value: number | string,
+    precision: number = 2,
+    separator: string = ',',
+    decimal: string = '.',
+    prefix?: string,
+    suffix?: string
+): string {
+    // 类型检查
+    if (typeof value !== 'number' && typeof value !== 'string') {
+        console.warn('Expected value to be of type number or string');
+    }
+    if (typeof precision !== 'number') {
+        console.warn('Expected precision to be of type number');
+    }
+    // 处理非数值或NaN的情况
+    const numValue = Number(value);
+    if (isNaN(numValue) || !isFinite(numValue)) {
+        return '';
+    }
+    if (numValue === 0) {
+        return numValue.toFixed(precision);
+    }
+    let formatValue = numValue.toFixed(precision);
+    // 如果 separator 是数值而非字符串，会导致错误，此处进行检查
+    if (typeof separator === 'string' && separator !== '') {
+        const [integerPart, decimalPart] = formatValue.split('.');
+        formatValue =
+            integerPart.replace(/(\d)(?=(\d{3})+$)/g, '$1' + separator) + (decimalPart ? decimal + decimalPart : '');
+    }
+    return (prefix || '') + formatValue + (suffix || '');
+}

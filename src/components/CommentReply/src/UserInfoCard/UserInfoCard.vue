@@ -38,7 +38,7 @@
             </span>
           </AFlex>
           <AFlex :vertical="false" align="center" justify="flex-start">
-            <AButton type="primary">
+            <AButton type="primary" >
               <template #icon>
                 <PlusOutlined/>
               </template>

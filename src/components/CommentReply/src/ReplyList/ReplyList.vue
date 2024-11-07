@@ -5,7 +5,7 @@
         <AFlex :vertical="false" style="margin-top: 5px" v-for="(child, index) in comment.replyList.comments"
                :key="index">
           <AFlex :vertical="true">
-            <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
+            <Popover trigger="click" :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
               <template #content>
                 <UserInfoCard :user="child" :padding="0"/>
               </template>
@@ -20,13 +20,13 @@
           <AFlex :vertical="true" class="reply-item-child-content">
             <AFlex :vertical="true">
               <AFlex :vertical="false" align="center">
-                <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
+                <Popover trigger="click" :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
                   <template #content>
                     <UserInfoCard :user="child" :padding="0"/>
                   </template>
                   <span class="reply-name-child">{{ child.nickname }}</span>
                 </Popover>
-                <Popover :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
+                <Popover trigger="click" :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
                   <template #content>
                     <UserInfoCard :user="child" :padding="0"/>
                   </template>
