@@ -1,7 +1,7 @@
 import {service} from "@/utils/alova/service.ts";
 
 export const getQQUrl = (state: string) => {
-    return service.Get('/api/oauth/qq/get_url',
+    return service.Get('/api/oauth/qq/url',
         {
             params: {
                 state: state

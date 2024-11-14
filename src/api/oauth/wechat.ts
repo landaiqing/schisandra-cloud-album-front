@@ -5,7 +5,7 @@ import {service} from "@/utils/alova/service.ts";
  * @param clientId
  */
 export const generateQrCode = (clientId: string) => {
-    return service.Get('/api/oauth/wechat/get_temp_qrcode',
+    return service.Get('/api/oauth/wechat/qrcode',
         {
             params: {
                 client_id: clientId

@@ -378,7 +378,7 @@ async function phoneLoginSubmit() {
       .then(async () => {
         loginLoading.value = true;
         const res: any = await phoneLoginApi(phoneLoginForm);
-        if (res.code === 200 && res.success) {
+        if (res.code === 200 && res.data) {
           userStore.user.uid = res.data.uid;
           userStore.user.access_token = res.data.access_token;
           userStore.user.username = res.data.username;
@@ -460,7 +460,7 @@ async function checkAccountLoginCaptcha(angle: number) {
   };
   loginLoading.value = true;
   const res: any = await accountLoginApi(params);
-  if (res.code === 200 && res.success) {
+  if (res.code === 200 && res.data) {
     userStore.user.uid = res.data.uid;
     userStore.user.access_token = res.data.access_token;
     userStore.user.username = res.data.username;
@@ -485,7 +485,7 @@ async function checkAccountLoginCaptcha(angle: number) {
  */
 async function sendMessageByPhone(params: any): Promise<boolean> {
   const res: any = await sendMessage(params);
-  if (res.code === 200 && res.success) {
+  if (res.code === 200) {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
   } else {

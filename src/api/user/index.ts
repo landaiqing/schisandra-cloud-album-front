@@ -52,7 +52,7 @@ export const sendMessage = (params: any) => {
  * @param param
  */
 export const phoneLoginApi = (param: PhoneLogin) => {
-    return service.Post('/api/user/phone_login', {
+    return service.Post('/api/user/phone/login', {
             phone: param.phone,
             captcha: param.captcha,
             auto_login: param.auto_login
@@ -90,7 +90,7 @@ export const accountLoginApi = (param: AccountLogin) => {
  * @param param
  */
 export const resetPasswordApi = (param: ResetPassword) => {
-    return service.Post('/api/user/reset_password', {
+    return service.Post('/api/user/reset/password', {
             phone: param.phone,
             captcha: param.captcha,
             password: param.password,
@@ -103,28 +103,13 @@ export const resetPasswordApi = (param: ResetPassword) => {
         }
     );
 };
-/**
- * 获取用户权限
- * @param user_id
- */
-export const getUserPermissions = (user_id: string) => {
-    return service.Post('/api/auth/permission/get_user_permissions', {
-            user_id: user_id
-        },
-        {
-            meta: {
-                ignoreToken: false,
-            }
-        }
-    );
-};
 
 
 /**
  * 获取用户设备信息
  */
 export const getUserDevice = () => {
-    return service.Get('/api/user/get_device',
+    return service.Get('/api/user/device',
         {
             params: {},
             meta: {

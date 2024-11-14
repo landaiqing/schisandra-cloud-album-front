@@ -4,7 +4,7 @@ import {service} from "@/utils/alova/service.ts";
  * Get Github OAuth URL
  */
 export const getGithubUrl = (state: string) => {
-    return service.Get('/api/oauth/github/get_url',
+    return service.Get('/api/oauth/github/url',
         {
             params: {
                 state: state

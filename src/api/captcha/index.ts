@@ -4,7 +4,7 @@ import {service} from "@/utils/alova/service.ts";
  * 获取旋转验证码图片数据
  */
 export const getRotatedCaptchaData = () => {
-    return service.Get('/api/captcha/rotate/get', {
+    return service.Get('/api/captcha/rotate/generate', {
         meta: {
             ignoreToken: true
         },

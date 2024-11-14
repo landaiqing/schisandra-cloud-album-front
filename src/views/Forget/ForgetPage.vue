@@ -257,7 +257,7 @@ async function resetPasswordSubmit() {
       .validate()
       .then(async () => {
         const res: any = await resetPasswordApi(ResetPasswordForm);
-        if (res.code === 200 && res.success) {
+        if (res.code === 200 && res.data) {
           message.success(t('login.resetPasswordSuccess'));
           await router.push('/login');
         } else {
@@ -295,7 +295,7 @@ async function getRotateCaptcha() {
  */
 async function sendMessageByPhone(param: any): Promise<boolean> {
   const res: any = await sendMessage(param);
-  if (res.code === 200 && res.success) {
+  if (res.code === 200 && res.data) {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
   } else {
