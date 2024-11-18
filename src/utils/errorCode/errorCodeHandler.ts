@@ -1,6 +1,6 @@
 import {message} from "ant-design-vue";
 import i18n from "@/locales";
-export function handleCode(code: number): void {
+export function handleErrorCode(code: number): void {
     switch (code) {
         case 400:
             message

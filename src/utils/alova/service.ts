@@ -5,14 +5,14 @@ import useStore from "@/store";
 import {localforageStorageAdapter} from "@/utils/alova/adapter/localforageStorageAdapter.ts";
 import {createServerTokenAuthentication} from "alova/client";
 import {AxiosError, AxiosResponse} from "axios";
-import {handleCode} from "@/utils/errorCode/errorCodeHandler.ts";
 import {message, Modal} from "ant-design-vue";
 import i18n from "@/locales";
 import {axiosRequestAdapter} from "@alova/adapter-axios";
 import {refreshToken} from "@/api/user";
-import createMD5Signature, {generateNonce} from "@/utils/signature/signature.ts";
+import generateKeySecretSignature from "@/utils/signature/signature.ts";
+import {handleErrorCode} from "@/utils/errorCode/errorCodeHandler.ts";
 
-let hasShownNetworkError: boolean = false;
+
 const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication<typeof VueHook,
     typeof axiosRequestAdapter>({
     refreshTokenOnSuccess: {
@@ -34,7 +34,7 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
     }
 });
 export const service = createAlova({
-    timeout: 5000,
+    timeout: 10000,
     baseURL: import.meta.env.VITE_APP_BASE_API,
     statesHook: VueHook,
     // 请求适配器
@@ -50,15 +50,9 @@ export const service = createAlova({
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';
-        // 添加签名
-        if (method.type === 'POST') {
-            const nonce: string = generateNonce(); // 生成随机的 Nonce
-            const {signature, timestamp}: { signature: string, timestamp: number } = createMD5Signature(method, nonce);
-            method.config.headers['X-Sign'] = signature;
-            method.config.headers['X-Timestamp'] = timestamp;
-            method.config.headers['X-Nonce'] = nonce;
+        if (method.meta?.signature) {
+            method.config.headers['X-Content-Security'] = generateKeySecretSignature(0, method.type, method.url, method.config.params, method.data);
         }
-
     }),
     // 响应拦截器
     responded: onResponseRefreshToken({
@@ -77,11 +71,6 @@ export const service = createAlova({
                             window.location.href = '/login';
                         }, 1000);
                     },
-                    // onCancel() {
-                    //     setTimeout(() => {
-                    //         window.location.href = '/login';
-                    //     },2000);
-                    // }
                 });
                 return Promise.reject(response.data);
             }
@@ -92,9 +81,8 @@ export const service = createAlova({
         onError:
             (error: AxiosError, _method: any) => {
                 const {response} = error;
-                if (response && !hasShownNetworkError) {
-                    hasShownNetworkError = true;
-                    handleCode(response.status);
+                if (response) {
+                    handleErrorCode(response.status);
                 }
                 if (!window.navigator.onLine) {
                     message.error(i18n.global.t('error.networkError')).then();

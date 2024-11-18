@@ -2,31 +2,14 @@ import {service} from "@/utils/alova/service.ts";
 import {AccountLogin, PhoneLogin, ResetPassword} from "@/types/user";
 
 /**
- * 获取用户信息
- */
-export const getUserInfo = () => {
-    return service.Get('/api/auth/user/list', {
-        meta: {
-            ignoreToken: false
-        },
-        cacheFor: {
-            // 设置缓存模式为持久化模式
-            mode: 'restore',
-            // 缓存时间
-            expire: 1000 * 10,
-            tag: 'v1'
-        }
-    });
-
-};
-/**
  * 刷新token
  */
 export const refreshToken = () => {
-    return service.Post('/api/token/refresh', {}, {
+    return service.Post('/api/auth/token/refresh', {}, {
         meta: {
             authRole: 'refreshToken',
-            ignoreToken: false
+            ignoreToken: false,
+            signature: true
         }
     });
 };
@@ -60,7 +43,8 @@ export const phoneLoginApi = (param: PhoneLogin) => {
         {
             meta: {
                 ignoreToken: true,
-                authRole: 'login'
+                authRole: 'login',
+                signature: true
             }
         }
     );
@@ -80,7 +64,8 @@ export const accountLoginApi = (param: AccountLogin) => {
         {
             meta: {
                 ignoreToken: true,
-                authRole: 'login'
+                authRole: 'login',
+                signature: true
             }
         }
     );
@@ -99,6 +84,7 @@ export const resetPasswordApi = (param: ResetPassword) => {
         {
             meta: {
                 ignoreToken: true,
+                signature: true
             }
         }
     );
@@ -114,6 +100,7 @@ export const getUserDevice = () => {
             params: {},
             meta: {
                 ignoreToken: true,
+                signature: true
             }
         }
     );

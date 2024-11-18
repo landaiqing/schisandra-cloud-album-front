@@ -8,6 +8,7 @@ declare interface ImportMetaEnv {
     readonly VITE_APP_TOKEN_KEY: string;
     readonly VITE_QR_SOCKET_URL: string;
     readonly VITE_MESSAGE_SOCKET_URL: string;
+    readonly VITE_FINGERPRINT_KEY: string;
 }
 
 interface ImportMeta {

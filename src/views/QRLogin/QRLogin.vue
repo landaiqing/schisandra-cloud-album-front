@@ -56,12 +56,12 @@ import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
 import {generateQrCode} from "@/api/oauth/wechat.ts";
-import {onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import logo from "@/assets/svgs/logo-schisandra.svg";
 
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import {generateClientId} from "@/api/oauth";
+import {generateClientId} from "@/api/client";
 import {getUserDevice} from "@/api/user";
 
 const {t} = useI18n();
@@ -132,6 +132,9 @@ onMounted(async () => {
   getClientId().then(async () => {
     await getQrCode();
   });
+});
+onBeforeUnmount(() => {
+  websocket.close(false);
 });
 </script>
 <style src="./index.scss" lang="scss" scoped>

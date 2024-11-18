@@ -29,7 +29,7 @@ import {message} from "ant-design-vue";
 import gitee from "@/assets/svgs/gitee.svg";
 import {getQQUrl} from "@/api/oauth/qq.ts";
 import {useDebounceFn} from "@vueuse/core";
-import {generateClientId} from "@/api/oauth";
+import {generateClientId} from "@/api/client";
 import {getUserDevice} from "@/api/user";
 
 const client = useStore().client;

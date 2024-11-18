@@ -292,7 +292,7 @@ async function cancelCommentLike(item: any) {
  * @param pageSize
  */
 async function paginationCommentChange(page: number, pageSize: number) {
-  await router.push({
+  router.push({
     path: "/main",
     query: {
       type: router.currentRoute.value.query.type,
@@ -331,7 +331,7 @@ async function getLatestCommentList() {
       query: {
         type: "latest",
         page: router.currentRoute.value.query.page,
-      } 
+      }
     });
     comment.commentLoading = false;
   });
