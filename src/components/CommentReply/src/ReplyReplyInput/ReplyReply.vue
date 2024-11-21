@@ -189,7 +189,7 @@ async function replyReplySubmit(point: any) {
     key: comment.slideCaptchaData.key,
   };
   const result: any = await replyReplySubmitApi(replyParams);
-  if (result.code === 200 && result.success) {
+  if (result.code === 200) {
     const tmpData: any = {
       id: result.data.id,
       content: result.data.content,

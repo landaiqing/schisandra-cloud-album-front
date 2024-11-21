@@ -15,7 +15,7 @@ interface CommentContent {
     location: string;
     operating_system: string;
     reply_count: number;
-    reply_username: string;
+    reply_nickname: string;
     reply_id: string;
     reply_user: string;
     topic_id: string;

@@ -26,7 +26,7 @@ export const commentSubmitApi = (params: any) => {
  * @param params
  */
 export const replySubmitApi = (params: any) => {
-    return service.Post('/api/auth/reply/submit', {
+    return service.Post('/api/auth/comment/reply/submit', {
             content: params.content,
             images: params.images,
             topic_id: params.topic_id,
@@ -73,7 +73,7 @@ export const commentListApi = (params: any) => {
  * @param params
  */
 export const replyListApi = (params: any) => {
-    return service.Post('/api/auth/reply/list', {
+    return service.Post('/api/auth/comment/reply/list', {
             page: params.page,
             size: params.size,
             comment_id: params.comment_id,
@@ -97,7 +97,7 @@ export const replyListApi = (params: any) => {
  * @param params
  */
 export const replyReplySubmitApi = (params: any) => {
-    return service.Post('/api/auth/reply/reply/submit', {
+    return service.Post('/api/auth/comment/reply/reply/submit', {
             content: params.content,
             images: params.images,
             topic_id: params.topic_id,
@@ -139,7 +139,7 @@ export const commentLikeApi = (params: any) => {
  * @param params
  */
 export const cancelCommentLikeApi = (params: any) => {
-    return service.Post('/api/auth/comment/cancel_like', {
+    return service.Post('/api/auth/comment/dislike', {
 
             comment_id: params.comment_id,
             topic_id: params.topic_id,

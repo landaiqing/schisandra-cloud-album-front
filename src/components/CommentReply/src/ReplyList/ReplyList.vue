@@ -31,7 +31,7 @@
                     <UserInfoCard :user="child" :padding="0"/>
                   </template>
                   <span
-                      class="reply-at">@{{ child.reply_username }}</span>
+                      class="reply-at">@{{ child.reply_nickname }}</span>
                 </Popover>
                 <a-tag color="cyan" class="reply-tag-child" size="small">Lv.5</a-tag>
               </AFlex>

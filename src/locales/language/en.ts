@@ -104,5 +104,7 @@ export default {
         loadingMore: 'loading more',
         noMore: 'no more',
         reportSeletion: 'Please select the reason for reporting the comment',
+        view: 'look',
+        replies: 'replies',
     }
 };

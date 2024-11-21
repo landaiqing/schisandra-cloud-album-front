@@ -98,7 +98,9 @@
                                :disabled="item.reply_count === 0"
                                v-show="item.reply_count > 0"
                                class="reply-action-btn">
-                        查看{{ item.reply_count >= 99 ? '99+' : item.reply_count }}条回复
+                        {{ t('comment.view') }}{{
+                          item.reply_count >= 99 ? '99+' : item.reply_count
+                        }}{{ t("comment.replies") }}
                       </AButton>
                       <AButton
                           @click="comment.handleShowReplyInput(item.id)"

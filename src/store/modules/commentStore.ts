@@ -52,7 +52,7 @@ export const useCommentStore = defineStore(
             commentList.value = {} as Comment;
             // 获取评论列表
             const result: any = await commentListApi(data);
-            if (result.code === 200 && result.success && result.data) {
+            if (result.code === 200 && result.data) {
                 commentList.value = result.data;
                 commentLoading.value = false;
                 commentList.value.comments.forEach((item: any) => {
@@ -98,7 +98,7 @@ export const useCommentStore = defineStore(
             replyList.value = {} as Comment;
             // 获取评论列表
             const result: any = await replyListApi(params);
-            if (result.code === 200 && result.success && result.data) {
+            if (result.code === 200 && result.data) {
                 replyList.value = result.data;
                 replyLoading.value = false;
             } else {
@@ -116,7 +116,7 @@ export const useCommentStore = defineStore(
                 topic_id: data.topic_id,
             };
             const result: any = await commentLikeApi(params);
-            if (result.code !== 200 || !result.success) {
+            if (result.code !== 200) {
                 message.error(result.message);
                 return false;
             }
@@ -133,7 +133,7 @@ export const useCommentStore = defineStore(
                 topic_id: data.topic_id,
             };
             const result: any = await cancelCommentLikeApi(params);
-            if (result.code !== 200 || !result.success) {
+            if (result.code !== 200) {
                 message.error(result.message);
                 return false;
             }

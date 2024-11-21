@@ -103,6 +103,8 @@ export default {
         loadingMore: '加载更多',
         noMore: '没有更多了',
         reportSeletion: '请选择举报原因',
+        view : '查看',
+        replies: '条回复',
     }
 
 };
