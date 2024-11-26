@@ -2,39 +2,44 @@
   <div class="landing-footer">
     <div class="landing-footer-content">
       <div class="landing-footer-content-left">
-        <div class="landing-footer-content-left-top">
-          <a href="#" class="landing-footer-content-a">{{t('landing.userAgreement')}}</a>
+        <AFlex align="center">
+          <img src="@/assets/svgs/logo-album.svg" :width="50" alt="" class="landing-logo">
+          <span class="landing-footer-title">S.Album</span>
+        </AFlex>
+        <p class="landing-footer-text">
+          S.Album ，{{ t('landing.footerDesc')}}
+        </p>
 
-          <a class="landing-footer-content-a">{{t('landing.privacyPolicy')}}</a>
-
-          <a class="landing-footer-content-a">{{t('landing.termsOfService')}}</a>
-
-          <a class="landing-footer-content-a">{{t('landing.contactUs')}}</a>
-
-          <a class="landing-footer-content-a">{{t('landing.friends')}}</a>
-
-          <a class="landing-footer-content-a">{{ t('landing.helpCenter')}}</a>
-        </div>
-        <div class="landing-footer-content-left-bottom">
-          <p class="landing-footer-content-p">{{t('landing.copyright')}}</p>
-          <p class="landing-footer-content-p">京ICP备19053963号-1</p>
-          <p class="landing-footer-content-p">京公网安备11010502037888号</p>
-        </div>
       </div>
       <div class="landing-footer-content-right">
-        <div style="width: 200px; display: flex; justify-content: space-between; align-items: center;">
-          <GithubOutlined class="landing-footer-content-icon"/>
-          <QqOutlined class="landing-footer-content-icon"/>
-          <WechatOutlined class="landing-footer-content-icon"/>
+        <div class="landing-footer-content-right-left">
+          <AQrcode :value="'https://git.landaiqing.cn'" :size="120" :bordered="false"
+                   :icon="qq"
+                   :iconSize="20"
+          />
+          <AQrcode :value="'https://git.landaiqing.cn'" :size="120" :bordered="false" :icon="wechat" :iconSize="20"/>
+        </div>
+        <div class="landing-footer-content-right-right">
+          <AFlex :vertical="true" style="width: 300px;height: 150px;" align="flex-start" justify="space-evenly">
+            <span class="landing-footer-text">
+            京ICP备19053591号-1
+            </span>
+            <span class="landing-footer-text">
+            京ICP备19053591号-1
+            </span>
+            ©2024 Schisandra All Rights Reserved
+          </AFlex>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import qq from "@/assets/svgs/icon-qq.svg";
+import wechat from "@/assets/svgs/icon-wechat.svg";
 import {useI18n} from "vue-i18n";
 
-const { t } = useI18n();
+const {t} = useI18n();
 </script>
 <style src="./index.scss" scoped>
 

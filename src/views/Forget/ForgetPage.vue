@@ -1,6 +1,10 @@
 <template>
   <div class="forget-main">
     <div class="forget-left">
+      <AFlex style="margin-left: 20px;" :vertical="false" align="center" justify="flex-start">
+        <img class="forget-header-logo" src="@/assets/svgs/logo-album.svg" alt="logo" @click="router.push('/')">
+        <span class="forget-header-logo-text" @click="router.push('/')">S.Album</span>
+      </AFlex>
       <BoxDog/>
     </div>
     <div class="forget-right">

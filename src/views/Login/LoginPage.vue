@@ -2,14 +2,15 @@
   <a-spin :spinning="loginLoading" tip="Login..." size="large">
     <div class="login-main">
       <div class="login-left">
+        <AFlex style="margin-left: 20px;" :vertical="false" align="center" justify="flex-start">
+          <img class="login-header-logo" src="@/assets/svgs/logo-album.svg" alt="logo" @click="router.push('/')">
+          <span class="login-header-logo-text" @click="router.push('/')">S.Album</span>
+        </AFlex>
         <BoxDog/>
       </div>
       <div class="login-right">
 
       <span class="login-right-title">
-        <img src="@/assets/images/logo-schisandra.png" @click="()=>{
-          router.push('/')
-        }" style="width: 30px; height: 30px;cursor: pointer;" alt="">
         {{ t("login.title") }}
       </span>
         <ACard class="login-card" bordered :hoverable="false">

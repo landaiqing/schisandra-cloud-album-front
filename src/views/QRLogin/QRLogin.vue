@@ -1,6 +1,10 @@
 <template>
   <div class="qrlogin-main">
     <div class="qrlogin-left">
+      <AFlex style="margin-left: 20px;" :vertical="false" align="center" justify="flex-start">
+        <img class="qrlogin-header-logo" src="@/assets/svgs/logo-album.svg" alt="logo" @click="router.push('/')">
+        <span class="qrlogin-header-logo-text" @click="router.push('/')">S.Album</span>
+      </AFlex>
       <BoxDog/>
     </div>
     <div class="qrlogin-right">

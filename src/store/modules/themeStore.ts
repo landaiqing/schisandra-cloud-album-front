@@ -9,7 +9,7 @@ import variables from '@/assets/styles/colors.module.scss';
 export const useThemeStore = defineStore(
     'theme',
     () => {
-        const themeName = ref<string>('green'); // 主题名称
+        const themeName = ref<string>('blue'); // 主题名称
         const darkMode = ref<string>('light'); // 颜色模式
         const themeConfig = computed(() => {
             document.documentElement.setAttribute('data-theme', themeName.value);
@@ -17,12 +17,12 @@ export const useThemeStore = defineStore(
             // 主题配置
             return {
                 token: {
-                    colorPrimary: variables[themeName.value] || '#27ba9b',
+                    colorPrimary: variables[themeName.value] || 'rgba(96,165,250,.9)',
                     borderRadius: 10,
                     colorSuccess: '#1dc779',
                     colorWarning: '#ffb302',
                     colorError: '#cf4444',
-                    colorInfo: variables[themeName.value] || '#27ba9b',
+                    colorInfo: variables[themeName.value] || 'rgba(96,165,250,.9)',
                     wireframe: true
                 },
                 algorithm: darkMode.value === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm

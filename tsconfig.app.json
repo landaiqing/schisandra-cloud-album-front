@@ -42,5 +42,6 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
+    "auto-import.d.ts"
   ]
 }

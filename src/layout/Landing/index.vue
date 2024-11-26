@@ -1,7 +1,7 @@
 <template>
   <AFlex :vertical="true" align="center" justify-content="center" v-cloak>
-    <Header style="position: fixed;"/>
-    <Content style="margin-top: 100px;z-index: 2;"/>
+    <Header />
+    <Content/>
     <Footer/>
     <div class="area">
       <ul class="circles">

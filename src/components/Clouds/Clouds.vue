@@ -12,7 +12,9 @@
       <div class="card-content">
         <h1>{{ t("landing.title") }}</h1>
         <p>{{ t("landing.description") }}</p>
-        <AButton class="button-text" type="primary">{{ t("landing.learnMore") }}</AButton>
+        <AButton href="/login" type="primary" size="large" style="width: 150px;border-radius: 30px">
+          {{ t("landing.learnMore") }}
+        </AButton>
       </div>
       <div class="background-container"></div>
     </section>

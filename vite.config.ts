@@ -60,6 +60,10 @@ export default defineConfig(({mode}: { mode: string }): object => {
                     '@': path.resolve(__dirname, 'src')
                 }
             },
+            optimizeDeps: {
+                exclude: ["vite"],
+                force: true,
+            },
             plugins: [
                 vue(),
                 vitePluginBundleObfuscator(defaultObfuscatorConfig),
