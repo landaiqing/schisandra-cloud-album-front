@@ -1,13 +1,4 @@
-<script lang="ts">
-import {defineComponent} from 'vue';
-
-export default defineComponent({
-  name: "BoxDog"
-});
-</script>
-
 <template>
-  <body translate="no">
   <div class="container">
     <div class="box">
       <div class="sign"></div>
@@ -91,9 +82,10 @@ export default defineComponent({
       <div class="yellow-shape"></div>
     </div>
   </div>
-  </body>
 </template>
+<script lang="ts" setup>
 
-<style src="./index.scss" scoped>
+</script>
+<style src="./index.scss" lang="scss" scoped>
 
 </style>

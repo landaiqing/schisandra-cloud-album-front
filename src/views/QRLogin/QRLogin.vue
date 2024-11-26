@@ -65,34 +65,23 @@ import logo from "@/assets/svgs/logo-schisandra.svg";
 
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import {generateClientId} from "@/api/client";
 import {getUserDevice} from "@/api/user";
 
 const {t} = useI18n();
 
 const router = useRouter();
-const client = useStore().client;
+
 const qrcode = ref<string>('');
 const status = ref<string>('loading');
 const websocket = useStore().websocket;
 const userStore = useStore().user;
-
-/**
- *  获取client_id
- */
-async function getClientId() {
-  const res: any = await generateClientId();
-  if (res.code === 200 && res.data) {
-    client.setClientId(res.data);
-  }
-}
 
 
 /**
  *  获取二维码
  */
 async function getQrCode() {
-  const res: any = await generateQrCode(client.getClientId() || "");
+  const res: any = await generateQrCode(userStore.clientId);
   if (res.code === 200 && res.data) {
     status.value = 'active';
     qrcode.value = res.data;
@@ -104,7 +93,7 @@ async function getQrCode() {
 
 
 const wsOptions = {
-  url: import.meta.env.VITE_QR_SOCKET_URL + "?client_id=" + client.getClientId(),
+  url: import.meta.env.VITE_QR_SOCKET_URL + "?client_id=" + userStore.clientId,
 };
 
 
@@ -133,7 +122,7 @@ async function handleListenMessage() {
 }
 
 onMounted(async () => {
-  getClientId().then(async () => {
+  userStore.getClientId().then(async () => {
     await getQrCode();
   });
 });

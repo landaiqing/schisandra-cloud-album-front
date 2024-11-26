@@ -358,7 +358,7 @@ svg:not(:root) {
   left: 15%;
   transform: translateY(-50%);
   padding: 12px 16px;
-  font-family: "Montserrat";
+  font-family: "Montserrat",serif;
   text-transform: uppercase;
   font-size: 1.1em;
   letter-spacing: 0.1em;

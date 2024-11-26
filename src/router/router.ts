@@ -27,7 +27,7 @@ const router: Router = createRouter({
 router.beforeEach((to, _from, next) => {
     // start();
     const user = useStore().user;
-    const token: string | undefined = user.user.refreshToken;
+    const token: string | undefined = user.user.access_token;
     const userId: string | undefined = user.user.uid;
 
     // 检查用户是否已登录
@@ -44,7 +44,7 @@ router.beforeEach((to, _from, next) => {
         if (isLoggedIn) {
             next();
         } else {
-            message.warn(i18n.global.t('login.pleaseLogin')).then();
+            message.warn(i18n.global.t('login.pleaseLogin'));
             next({
                 path: '/login',
                 query: {redirect: to.fullPath}

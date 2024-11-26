@@ -72,7 +72,9 @@ async function backHome() {
   }, 3000);
 }
 
-backHome();
+onMounted(async () => {
+  await backHome();
+});
 </script>
 <style src="./index.scss" lang="scss" scoped>
 

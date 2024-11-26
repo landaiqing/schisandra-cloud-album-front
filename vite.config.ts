@@ -61,7 +61,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 }
             },
             optimizeDeps: {
-                exclude: ["vite"],
+                exclude: ["vite", ".vite"],
                 force: true,
             },
             plugins: [
