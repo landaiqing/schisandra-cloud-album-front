@@ -168,7 +168,7 @@ async function commentSubmit(point: any) {
     images: comment.imageList,
     author: user.user.uid,
     point: [point.x, point.y],
-    key: comment.slideCaptchaData.key,
+    key: comment.slideCaptchaData.captKey,
   };
   const result: any = await commentSubmitApi(commentParams);
   if (result.code === 200) {
@@ -182,8 +182,8 @@ async function commentSubmit(point: any) {
       created_time: result.data.created_time,
       browser: result.data.browser,
       operating_system: result.data.operating_system,
-      reply_count: result.data.reply_count,
-      likes: result.data.likes,
+      reply_count: 0,
+      likes: 0,
       author: result.data.author,
       location: result.data.location,
       is_liked: false,
@@ -193,13 +193,15 @@ async function commentSubmit(point: any) {
       comment.commentList.comments = []; // 初始化 comments 数组
     }
     comment.commentList.comments.unshift(tmpData);
+    comment.commentMap[result.data.id] = tmpData;
+
     commentContent.value = "";
     await comment.clearFileList();
     showSubmitCaptcha.value = false;
     message.success(t('comment.commentSuccess'));
   } else {
     await comment.getSlideCaptchaData();
-    message.error(result.message || t('comment.commentError'));
+    message.warning(result.message || t('comment.commentError'));
   }
 }
 
@@ -215,7 +217,7 @@ async function showSlideCaptcha() {
     return;
   }
   if (comment.imageList.length > 3) {
-    message.error(t('comment.maxImageCount'));
+    message.warning(t('comment.maxImageCount'));
     return;
   }
   const res = await comment.getSlideCaptchaData();

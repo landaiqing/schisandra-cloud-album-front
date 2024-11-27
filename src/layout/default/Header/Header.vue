@@ -2,8 +2,8 @@
   <header class="header-main">
     <div class="header-container">
       <AFlex :vertical="false" align="center" justify="flex-end" class="header-logo-container">
-        <AAvatar :size="50" :src="logo"/>
-        <img style="width: 200px;" src="@/assets/images/logo.png" alt="logo">
+        <AAvatar :size="50" shape="square" :src="logo" @click="router.push('/')"/>
+        <span class="header-logo-text" @click="router.push('/')">S.Album</span>
       </AFlex>
       <AFlex :vertical="false" align="center" justify="flex-end" class="header-menu-container">
         <AFlex :vertical="false" align="center" justify="flex-start" class="header-menu-item">
@@ -34,7 +34,7 @@
   </header>
 </template>
 <script lang="ts" setup>
-import logo from "@/assets/svgs/logo-schisandra.svg";
+import logo from "@/assets/svgs/logo-album.svg";
 import useStore from "@/store";
 import {BellOutlined, TranslationOutlined} from "@ant-design/icons-vue";
 import {h} from "vue";
@@ -43,6 +43,7 @@ import {useI18n} from "vue-i18n";
 const user = useStore().user;
 const {t, locale} = useI18n();
 const lang = useStore().lang;
+const router = useRouter();
 
 /**
  *  切换语言

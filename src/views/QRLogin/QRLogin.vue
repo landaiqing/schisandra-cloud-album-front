@@ -61,7 +61,7 @@ import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
 import {generateQrCode} from "@/api/oauth/wechat.ts";
 import {onBeforeUnmount, onMounted, ref} from "vue";
-import logo from "@/assets/svgs/logo-schisandra.svg";
+import logo from "@/assets/svgs/logo-album.svg";
 
 import useStore from "@/store";
 import {message} from "ant-design-vue";

@@ -153,6 +153,8 @@
                   title: t('login.rotateCaptchaTitle'),
                 }"
             :events="phoneLoginRotateEvent"
+            :ref="phoneLoginRotateRef"
+
         />
       </AModal>
       <AModal v-model:open="showAccountRotateCaptcha" :footer="null" :closable="false" width="375" :centered="true"
@@ -166,6 +168,7 @@
             title: t('login.rotateCaptchaTitle'),
           }"
             :events="accountLoginRotateEvent"
+            :ref="accountLoginRotateRef"
         />
       </AModal>
 
@@ -206,11 +209,14 @@ const accountLoginFormRef = ref<any>();
 const phoneLoginFormRef = ref<any>();
 const showPhoneRotateCaptcha = ref<boolean>(false);
 const showAccountRotateCaptcha = ref<boolean>(false);
-const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
+const captchaData = reactive({image: "", thumb: "", captKey: ""});
 const loginLoading = ref<boolean>(false);
 const userStore = useStore().user;
+
+const phoneLoginRotateRef = ref<any>(null);
+const accountLoginRotateRef = ref<any>(null);
 const phoneLoginRotateEvent = {
-  confirm: (angle: number) => {
+  confirm: (angle: number, _reset: () => void) => {
     checkPhoneLoginCaptchaDebounce(angle);
   },
   close: () => {
@@ -410,13 +416,18 @@ const refreshCaptcha = useThrottleFn(getRotateCaptcha, 3000);
  * 获取旋转验证码数据
  */
 async function getRotateCaptcha() {
+  if (phoneLoginRotateRef.value) {
+    phoneLoginRotateRef.value?.clear();
+  }
+  if (accountLoginRotateRef.value) {
+    accountLoginRotateRef.value?.clear();
+  }
   const data: any = await getRotatedCaptchaData();
   if (data.code === 200 && data.data) {
-    const {angle, image, thumb, key} = data.data;
-    captchaData.angle = angle;
+    const {image, thumb, key} = data.data;
     captchaData.image = image;
     captchaData.thumb = thumb;
-    captchaData.key = key;
+    captchaData.captKey = key;
   } else {
     message.error(t('login.systemError'));
   }
@@ -435,7 +446,7 @@ async function checkPhoneLoginCaptcha(angle: number) {
   const params = {
     phone: phoneLoginForm.phone,
     angle: angle,
-    key: captchaData.key,
+    key: captchaData.captKey,
   };
   const result: boolean = await sendMessageByPhone(params);
   if (result) {
@@ -457,7 +468,7 @@ async function checkAccountLoginCaptcha(angle: number) {
   const params = {
     ...accountLoginForm,
     angle: angle,
-    key: captchaData.key,
+    key: captchaData.captKey,
   };
   loginLoading.value = true;
   const res: any = await accountLoginApi(params);

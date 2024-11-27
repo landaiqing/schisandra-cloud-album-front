@@ -158,7 +158,7 @@ async function replySubmit(point: any) {
     return;
   }
   if (comment.imageList.length > 3) {
-    message.error(t('comment.maxImageCount'));
+    message.warning(t('comment.maxImageCount'));
     return;
   }
   const content = replyContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
@@ -183,7 +183,7 @@ async function replySubmit(point: any) {
     reply_id: props.item.id,
     reply_user: props.item.user_id,
     point: [point.x, point.y],
-    key: comment.slideCaptchaData.key,
+    key: comment.slideCaptchaData.captKey,
   };
   const result: any = await replySubmitApi(replyParams);
   if (result.code === 200) {
@@ -198,8 +198,8 @@ async function replySubmit(point: any) {
       browser: result.data.browser,
       operating_system: result.data.operating_system,
       location: result.data.location,
-      likes: result.data.likes,
-      reply_count: result.data.reply_count,
+      reply_count: 0,
+      likes: 0,
       reply_user: result.data.reply_user,
       nickname: user.user.nickname,
       avatar: user.user.avatar,
@@ -218,7 +218,7 @@ async function replySubmit(point: any) {
     message.success(t('comment.replySuccess'));
   } else {
     await comment.getSlideCaptchaData();
-    message.error(t('comment.replyError'));
+    message.warning(t('comment.replyError'));
   }
 }
 
@@ -229,11 +229,11 @@ const getSlideCaptchaDataThrottled = useThrottleFn(comment.getSlideCaptchaData, 
  */
 async function showSlideCaptcha() {
   if (replyContent.value.trim() === "") {
-    message.error(t('comment.commentContentNotEmpty'));
+    message.warning(t('comment.commentContentNotEmpty'));
     return;
   }
   if (comment.imageList.length > 3) {
-    message.error(t('comment.maxImageCount'));
+    message.warning(t('comment.maxImageCount'));
     return;
   }
   const res = await comment.getSlideCaptchaData();

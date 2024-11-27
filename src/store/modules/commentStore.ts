@@ -20,7 +20,7 @@ export const useCommentStore = defineStore(
         const replyList = ref<Comment>({} as Comment);
         const commentMap = reactive<any>({});
         const slideCaptchaData = reactive({
-            key: "",
+            captKey: "",
             image: "",
             thumb: "",
             thumbWidth: 0,
@@ -55,9 +55,11 @@ export const useCommentStore = defineStore(
             if (result.code === 200 && result.data) {
                 commentList.value = result.data;
                 commentLoading.value = false;
-                commentList.value.comments.forEach((item: any) => {
-                    commentMap[item.id] = item;
-                });
+                if (Array.isArray(commentList.value.comments)) {
+                    commentList.value.comments.map((item: any) => {
+                        commentMap[item.id] = item;
+                    });
+                }
             } else {
                 commentLoading.value = false;
             }
@@ -147,7 +149,7 @@ export const useCommentStore = defineStore(
             const res: any = await getSlideCaptchaDataApi();
             if (res.code == 200 && res.data) {
                 const {key, image, thumb, thumb_width, thumb_height, thumb_x, thumb_y} = res.data;
-                slideCaptchaData.key = key;
+                slideCaptchaData.captKey = key;
                 slideCaptchaData.image = image;
                 slideCaptchaData.thumb = thumb;
                 slideCaptchaData.thumbWidth = thumb_width;

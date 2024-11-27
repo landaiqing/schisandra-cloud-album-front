@@ -23,6 +23,13 @@
         justify-content: space-between;
         width: 1200px;
         max-width: 1200px;
+
+        .header-logo-text {
+            margin-left: 10px;
+            font-size: 25px;
+            font-family: "Comic Sans MS", cursive;
+            font-weight: bolder;
+        }
     }
 
     .header-logo-container {

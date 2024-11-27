@@ -13,7 +13,7 @@
       </div>
       <div class="landing-footer-content-right">
         <div class="landing-footer-content-right-left">
-          <AQrcode :value="'https://git.landaiqing.cn'" :size="120" :bordered="false"
+          <AQrcode :value="'3517283258'" :size="120" :bordered="false"
                    :icon="qq"
                    :iconSize="20"
           />

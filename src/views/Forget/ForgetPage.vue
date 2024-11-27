@@ -94,6 +94,7 @@
             title: t('login.rotateCaptchaTitle'),
           }"
           :events="resetPasswordRotateEvent"
+          :ref="resetPasswordRotate"
       />
     </AModal>
     <div class="area">
@@ -127,10 +128,11 @@ import {useDebounceFn} from "@vueuse/core";
 const router = useRouter();
 const {t} = useI18n();
 const resetPasswordRef = ref();
-const captchaData = reactive({angle: 0, image: "", thumb: "", key: ""});
+const captchaData = reactive({image: "", thumb: "", captKey: ""});
 const showRotateCaptcha = ref<boolean>(false);
+const resetPasswordRotate = ref<any>(null);
 const resetPasswordRotateEvent = {
-  confirm: (angle: number) => {
+  confirm: (angle: number, _reset: () => void) => {
     checkPhoneLoginCaptcha(angle);
   },
   close: () => {
@@ -176,7 +178,7 @@ const rules: Record<string, Rule[]> = {
     },
   ],
   repassword: [
-    {required: true,validator: validateRepassword, trigger: 'blur'}
+    {required: true, validator: validateRepassword, trigger: 'blur'}
   ],
   phone: [
     {required: true, message: t('login.phoneValidate'), trigger: 'blur'},
@@ -263,7 +265,7 @@ async function resetPasswordSubmit() {
         const res: any = await resetPasswordApi(ResetPasswordForm);
         if (res.code === 200 && res.data) {
           message.success(t('login.resetPasswordSuccess'));
-          await router.push('/login');
+          router.push('/login');
         } else {
           message.error(t('login.resetPasswordError'));
         }
@@ -284,11 +286,10 @@ const refreshCaptcha = useDebounceFn(getRotateCaptcha, 3000);
 async function getRotateCaptcha() {
   const data: any = await getRotatedCaptchaData();
   if (data.code === 200 && data.data) {
-    const {angle, image, thumb, key} = data.data;
-    captchaData.angle = angle;
+    const {image, thumb, key} = data.data;
     captchaData.image = image;
     captchaData.thumb = thumb;
-    captchaData.key = key;
+    captchaData.captKey = key;
   } else {
     message.error(t('login.systemError'));
   }
@@ -314,7 +315,7 @@ async function sendMessageByPhone(param: any): Promise<boolean> {
  */
 async function checkPhoneLoginCaptcha(angle: number) {
   const param = {
-    key: captchaData.key,
+    key: captchaData.captKey,
     angle: angle,
     phone: ResetPasswordForm.phone,
   };

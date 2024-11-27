@@ -5,13 +5,13 @@
       <AButton href="/qrlogin" class="login-form-bottom-button" :icon="h(QrcodeOutlined)">{{ t("login.qrLogin") }}
       </AButton>
       <AButton @click="userStore.openQQUrl" class="login-form-bottom-button" :icon="h(QqOutlined)"></AButton>
-      <AButton @click="userStore.openGithubUrl" class="login-form-bottom-button"
+      <AButton @click="userStore.openGiteeUrl" class="login-form-bottom-button"
                style="display: flex; align-items: center;justify-content: center;">
         <template #icon>
           <img :src=gitee alt="gitee" class="gitee-icon" style="width: 16px; height: 16px;"/>
         </template>
       </AButton>
-      <AButton @click="userStore.openGiteeUrl" class="login-form-bottom-button" :icon="h(GithubOutlined)"></AButton>
+      <AButton @click="userStore.openGithubUrl" class="login-form-bottom-button" :icon="h(GithubOutlined)"></AButton>
     </AFlex>
   </div>
 </template>
