@@ -61,8 +61,9 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 }
             },
             optimizeDeps: {
-                exclude: [".vite"],
-                force: true,
+                exclude: ['.vite'],
+                force: false,
+                needsInterop: [".vite"],
             },
             plugins: [
                 vue(),
