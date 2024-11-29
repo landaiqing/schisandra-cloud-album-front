@@ -91,9 +91,7 @@
                           {{ item.likes }}
                         </AButton>
                       </AFlex>
-                      <AButton @click="()=>{
-                          comment.handleShowCommentReply(item.id);
-                          replyListThrottled(item.id)}" type="text" size="small"
+                      <AButton @click="comment.toggleReplyVisibility(topicId,1,5,item.id)" type="text" size="small"
                                :icon="h(MessageOutlined)"
                                :disabled="item.reply_count === 0"
                                v-show="item.reply_count > 0"
@@ -139,7 +137,9 @@
               <!-- 回复输入框 -->
               <ReplyInput :item="item" v-show="comment.showReplyInput && item.id === comment.showReplyInput"/>
               <!-- 子回复列表 -->
-              <ReplyList :item="item" v-show="comment.showCommentReply && item.id === comment.showCommentReply"/>
+              <transition name="fade">
+                <ReplyList :item="item" v-if="comment.replyVisibility[item.id]?.visible"/>
+              </transition>
             </AFlex>
           </AFlex>
         </div>
@@ -230,27 +230,6 @@ function formatTimeAgo(dateString: string) {
   return `${seconds} 秒前`;
 }
 
-
-/**
- *  获取回复列表 throttled
- */
-const replyListThrottled = useThrottleFn(getReplyList, 1000);
-
-/**
- *  获取回复列表
- * @param reply_id
- * @param page
- * @param size
- */
-async function getReplyList(reply_id: number, page: number = 1, size: number = 5) {
-  const params: any = {
-    topic_id: topicId.value,
-    page: page,
-    size: size,
-    comment_id: reply_id,
-  };
-  await comment.getReplyList(params);
-}
 
 const commentLikeThrottled = useThrottleFn(commentLike, 1000);
 

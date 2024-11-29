@@ -207,13 +207,13 @@ async function replyReplySubmit(point: any) {
       nickname: user.user.nickname,
       avatar: user.user.avatar,
       is_liked: false,
-      reply_username: props.item.nickname,
+      reply_nickname: props.item.nickname,
       reply_to: result.data.reply_to,
     };
-    if (!comment.replyList.comments) {
-      comment.replyList.comments = []; // 初始化 comments 数组
+    if (!comment.replyVisibility[props.item.id].data.comments) {
+      comment.replyVisibility[props.item.id].data.comments = []; // 初始化 comments 数组
     }
-    comment.replyList.comments.unshift(tmpData);
+    comment.replyVisibility[props.item.id].data.comments.unshift(tmpData);
     comment.commentMap[props.item.id].reply_count++;
     replyReplyContent.value = "";
     await comment.clearFileList();

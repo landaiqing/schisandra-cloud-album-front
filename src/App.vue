@@ -19,5 +19,16 @@ const app = useStore().theme;
 const lang = useStore().lang;
 </script>
 <style scoped lang="scss">
-
+.animation-enter {
+  opacity: 0; /* 初始透明 */
+}
+.animation-enter-active {
+  transition: opacity 0.2s; /* 渐入效果 */
+}
+.animation-leave-active {
+  transition: opacity 0.2s; /* 渐出效果 */
+}
+.animation-leave-to {
+  opacity: 0; /* 离开时透明 */
+}
 </style>

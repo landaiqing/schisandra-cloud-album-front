@@ -40,6 +40,22 @@
     .reply-content {
         margin-left: 20px;
 
+        .fade-enter {
+            opacity: 0;
+        }
+
+        .fade-enter-active {
+            transition: opacity 0.3s;
+        }
+
+        .fade-leave-to {
+            opacity: 0;
+        }
+
+        .fade-leave-active {
+            transition: opacity 0.3s;
+        }
+
         .reply-name {
             font-size: 14px;
             font-weight: 600;

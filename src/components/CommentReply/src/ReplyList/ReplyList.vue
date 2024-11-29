@@ -1,8 +1,9 @@
 <template>
   <AFlex :vertical="true" class="reply-item-child">
-    <ASpin :spinning="comment.replyLoading" size="default">
-      <AFlex :vertical="true" v-if="comment.replyList.comments">
-        <AFlex :vertical="false" style="margin-top: 5px" v-for="(child, index) in comment.replyList.comments"
+    <ASpin :spinning="comment.replyLoading[item.id]" size="default">
+      <AFlex :vertical="true" v-if="comment.replyVisibility[item.id]?.data.comments">
+        <AFlex :vertical="false" style="margin-top: 5px"
+               v-for="(child, index) in comment.replyVisibility[item.id]?.data.comments"
                :key="index">
           <AFlex :vertical="true">
             <Popover trigger="click" :arrow="false" :offset-x="170" :contentStyle="{padding: 0}">
@@ -118,15 +119,16 @@
             </AFlex>
           </AFlex>
         </AFlex>
-        <APagination v-if="comment.replyList.total > 5" class="reply-pagination-child" size="small"
-                     :total="comment.replyList.total"
-                     :current="comment.replyList.current" :page-size="comment.replyList.size"
-                     :default-page-size="comment.replyList.size"
+        <APagination v-if="comment.replyVisibility[item.id]?.data.total > 5" class="reply-pagination-child" size="small"
+                     :total="comment.replyVisibility[item.id]?.data.total"
+                     :current="comment.replyVisibility[item.id]?.data.current"
+                     :page-size="comment.replyVisibility[item.id]?.data.size"
+                     :default-page-size="comment.replyVisibility[item.id]?.data.size"
                      @change="replyListThrottled"
 
         />
       </AFlex>
-      <AEmpty :description="null" v-show="!comment.replyList.comments"/>
+      <AEmpty :description="null" v-show="!comment.replyVisibility[item.id]?.data.comments"/>
     </ASpin>
   </AFlex>
 </template>

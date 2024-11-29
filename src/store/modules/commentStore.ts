@@ -14,10 +14,10 @@ export const useCommentStore = defineStore(
     () => {
         const commentList = ref<Comment>({} as Comment);
         const commentLoading = ref<boolean>(true);
-        const replyLoading = ref<boolean>(true);
+        const replyLoading = reactive<{ [key: number]: boolean }>({});
         const showReplyInput = ref<number | null>(null);
         const showCommentReply = ref<number | null>(null);
-        const replyList = ref<Comment>({} as Comment);
+        const replyVisibility = ref<{ [key: number]: { visible: boolean; data: Comment } }>({});
         const commentMap = reactive<any>({});
         const slideCaptchaData = reactive({
             captKey: "",
@@ -54,16 +54,14 @@ export const useCommentStore = defineStore(
             const result: any = await commentListApi(data);
             if (result.code === 200 && result.data) {
                 commentList.value = result.data;
-                commentLoading.value = false;
                 if (Array.isArray(commentList.value.comments)) {
                     commentList.value.comments.map((item: any) => {
                         commentMap[item.id] = item;
+                        replyLoading[item.id] = false;
                     });
                 }
-            } else {
-                commentLoading.value = false;
             }
-
+            commentLoading.value = false;
         }
 
         /**
@@ -78,34 +76,52 @@ export const useCommentStore = defineStore(
         const closeReplyInput = () => {
             showReplyInput.value = null;
         };
+
         /**
-         *  是否显示回复
+         *  切换回复可见性
+         *   @param topic_id
+         *   @param page
+         *   @param size
+         *   @param commentId
          */
-        const handleShowCommentReply = (index: any) => {
-            showCommentReply.value = showCommentReply.value === index ? null : index;
-        };
+        async function toggleReplyVisibility(topic_id: string, page: number, size: number, commentId: number) {
+            replyLoading[commentId] = true;
+            const params: any = {
+                topic_id: topic_id,
+                page: page,
+                size: size,
+                comment_id: commentId,
+            };
+            if (!replyVisibility.value[commentId]) {
+                // 如果不存在这个评论的状态，初始化
+                replyVisibility.value[commentId] = {visible: false, data: {} as Comment};
+                await getReplyList(params);
+            } else {
+                // 切换可见性
+                replyVisibility.value[commentId].visible = !replyVisibility.value[commentId].visible;
+                // 在展开时检查数据是否需要更新
+                if (replyVisibility.value[commentId].visible) {
+                    await getReplyList(params); // 重新获取最新的子评论
+                }
+            }
+            replyLoading[commentId] = false;
+
+        }
 
         /**
          * 获取回复列表
          * @param data
          */
         async function getReplyList(data: any) {
-            const params: any = {
-                topic_id: data.topic_id,
-                page: data.page,
-                size: data.size,
-                comment_id: data.comment_id,
-            };
-            replyLoading.value = true;
-            replyList.value = {} as Comment;
             // 获取评论列表
-            const result: any = await replyListApi(params);
+            const result: any = await replyListApi(data);
             if (result.code === 200 && result.data) {
-                replyList.value = result.data;
-                replyLoading.value = false;
-            } else {
-                replyLoading.value = false;
+                if (replyVisibility.value[data.comment_id].data !== result.data) {
+                    replyVisibility.value[data.comment_id].data = result.data;
+                }
+                replyVisibility.value[data.comment_id].visible = true;
             }
+            replyLoading[data.comment_id] = false;
         }
 
         /**
@@ -278,7 +294,7 @@ export const useCommentStore = defineStore(
             commentLoading,
             showReplyInput,
             showCommentReply,
-            replyList,
+            replyVisibility,
             replyLoading,
             slideCaptchaData,
             commentMap,
@@ -293,7 +309,7 @@ export const useCommentStore = defineStore(
             getCommentList,
             handleShowReplyInput,
             closeReplyInput,
-            handleShowCommentReply,
+            toggleReplyVisibility,
             getReplyList,
             commentLike,
             cancelCommentLike,
@@ -312,7 +328,7 @@ export const useCommentStore = defineStore(
         persist: {
             key: 'comment',
             storage: localStorage,
-            pick: ["emojiList", "commentList", "replyList", "commentMap"],
+            pick: ["emojiList", "commentList", "replyVisibility", "commentMap"],
         }
     }
 );
