@@ -1,6 +1,6 @@
 <template>
   <AFlex :vertical="true" class="reply-item-child">
-    <ASpin :spinning="comment.replyLoading[item.id]" size="default">
+    <ASpin :delay="500" :spinning="comment.replyLoading[item.id]" size="default">
       <AFlex :vertical="true" v-if="comment.replyVisibility[item.id]?.data.comments">
         <AFlex :vertical="false" style="margin-top: 5px"
                v-for="(child, index) in comment.replyVisibility[item.id]?.data.comments"

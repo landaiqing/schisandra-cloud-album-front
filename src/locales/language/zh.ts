@@ -137,6 +137,16 @@ export default {
         reportSeletion: '请选择举报原因',
         view: '查看',
         replies: '条回复',
+    },
+    album: {
+        photo: '照片',
+        allAlbums: '所有相册',
+        recentUploads: '最近上传',
+        albums: '相册',
+        peopleAlbums: '人物',
+        locationAlbums: '地点',
+        thingsAlbums: '事物',
+        recyclingBin: '回收站',
     }
 
 };

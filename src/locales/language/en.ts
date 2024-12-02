@@ -135,5 +135,15 @@ export default {
         reportSeletion: 'Please select the reason for reporting the comment',
         view: 'look',
         replies: 'replies',
+    },
+    album: {
+        photo: 'Photo',
+        allAlbums: 'All Albums',
+        recentUploads: 'Recent Uploads',
+        albums: 'Albums',
+        peopleAlbums: 'People',
+        locationAlbums: 'Location',
+        thingsAlbums: 'Things',
+        recyclingBin: 'Recycling Bin',
     }
 };
