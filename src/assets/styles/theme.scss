@@ -2,7 +2,7 @@
     --background-color: #ffffff;
     --text-color: #000000;
     // 着陆页背景颜色
-    --landing-background-color-main: rgba(147,197,253,.2);
+    --landing-background-color-main: rgba(147, 197, 253, .2);
     // 评论文字颜色
     --comment-text-color: #767779;
     // 评论子评论背景颜色
@@ -14,10 +14,24 @@
     // 举报弹窗文字颜色
     --comment-report-text-color: rgba(15, 15, 16, 0.58);
     // 评论框边框颜色
-    --comment-child-box-border-color: rgba(147,197,253,.2);
+    --comment-child-box-border-color: rgba(147, 197, 253, .2);
 
     // 白色
     --white-color: #ffffff;
+
+    // 主页文件动图
+    --size: 80px;
+    --size-folder-back: var(--size);
+    --size-page-1: calc(var(--size) * 0.55);
+    --size-page-2: calc(var(--size) * 0.65);
+    --size-folder-front: var(--size);
+    --ratio-page-1: 0.95;
+    --ratio-page-2: 1.05;
+    --ratio-page-2-height: 0.5;
+    --ratio-page-2-offset: 0;
+    --scale-folder: 1;
+    --scale-pages: 0.7;
+    --opacity-page-2: 1;
 
 }
 
@@ -52,13 +66,13 @@
     overflow-x: hidden;
 }
 
-
-#nprogress .bar {
-    background: #48c453 !important; //自定义颜色
+html {
+    font-size: 16px;
 }
 
-#nprogress .peg {
-    box-shadow: 0 0 10px cyan, 0 0 5px cyan !important;
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
 }
-
 

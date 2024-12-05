@@ -5,6 +5,7 @@
 <template>
   <div>
     <p>AllPhoto</p>
+    <!--    <Folder/>-->
   </div>
 
 </template>

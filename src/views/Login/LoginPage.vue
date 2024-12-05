@@ -171,21 +171,7 @@
             :ref="accountLoginRotateRef"
         />
       </AModal>
-
-      <div class="area">
-        <ul class="circles">
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
-      </div>
+      <BackgroundAnimation/>
     </div>
   </a-spin>
 </template>
@@ -202,6 +188,7 @@ import {message} from "ant-design-vue";
 import {accountLoginApi, phoneLoginApi, sendMessage} from "@/api/user";
 import useStore from "@/store";
 import {useDebounceFn, useThrottleFn} from "@vueuse/core";
+import BackgroundAnimation from "@/components/BackgroundAnimation/BackgroundAnimation.vue";
 
 const router = useRouter();
 const {t} = useI18n();

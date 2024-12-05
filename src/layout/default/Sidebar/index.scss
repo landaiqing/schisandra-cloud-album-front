@@ -1,6 +1,44 @@
 .sidebar {
-    width: 15vw;
-    height: calc(100vh - 70px);
+    width: 220px;
+    height: calc(100vh - 275px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #fff;
 
+    .ant-menu-item-title {
+        font-size: 15px;
+        margin-left: 10px;
+        font-weight: bold;
+    }
+}
+
+.sidebar-bottom {
+    width: 220px;
+    height: 200px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    border-top: 1px solid #e8e8e8;
+
+
+    .sidebar-folder-text-title {
+        font-family: "Comic Sans MS", cursive;
+    }
+
+    .sidebar-folder-info-text1 {
+        font-family: "Comic Sans MS", cursive;
+        font-size: 12px;
+        font-weight: bold;
+        color: #3e3e42;
+    }
+
+    .sidebar-folder-info-text2 {
+        font-family: "Comic Sans MS", cursive;
+        font-size: 12px;
+        color: rgba(112, 112, 114, 0.82);
+        font-weight: bold;
+    }
 }

@@ -36,7 +36,7 @@ router.beforeEach((to, _from, next) => {
     if (to.path === '/login' || to.path === '/qrlogin' || to.path === '/resetpass') {
         if (isLoggedIn) {
             // 如果用户已登录，重定向到主页或其他页面
-            next({path: '/main'});
+            next({path: '/main/photo/all'});
         } else {
             next();
         }

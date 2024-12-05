@@ -38,20 +38,7 @@
         </ATooltip>
       </ACard>
     </div>
-    <div class="area">
-      <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
-    </div>
+    <BackgroundAnimation/>
   </div>
 </template>
 <script setup lang="ts">
@@ -66,6 +53,7 @@ import logo from "@/assets/svgs/logo-album.svg";
 import useStore from "@/store";
 import {message} from "ant-design-vue";
 import {getUserDevice} from "@/api/user";
+import BackgroundAnimation from "@/components/BackgroundAnimation/BackgroundAnimation.vue";
 
 const {t} = useI18n();
 
