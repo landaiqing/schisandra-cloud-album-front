@@ -2,24 +2,17 @@ import localforage from "localforage";
 
 
 export const localforageStorageAdapter = {
-    set(key: string, value: any) {
-        localforage.setItem(key, value).then();
+    async set(key: string, value: any) {
+        await localforage.setItem(key, value);
     },
-    get(key: string) {
-        let value: any;
-        localforage.getItem(key).then((res: any) => {
-            if (res === null || res === undefined || res === "") {
-                value = "";
-            } else {
-                value = res;
-            }
-        });
-        return value ? JSON.parse(value) : value;
+    async get(key: string) {
+        const res: any = await localforage.getItem(key);
+        return res ? JSON.parse(res) : null;
     },
-    remove(key: any) {
-        localforage.removeItem(key).then();
+    async remove(key: any) {
+        await localforage.removeItem(key);
     },
-    clear() {
-        localforage.clear().then();
+    async clear() {
+        await localforage.clear();
     }
 };

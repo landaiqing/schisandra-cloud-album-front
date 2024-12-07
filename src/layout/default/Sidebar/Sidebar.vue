@@ -51,17 +51,23 @@
           </AMenuItem>
         </AMenuItemGroup>
         <ADivider/>
+        <AMenuItem :title="t('album.recyclingBin')" key="photo/share">
+          <template #icon>
+            <AAvatar shape="square" size="small" :src="share"/>
+          </template>
+          <span class="ant-menu-item-title">{{ t('album.share') }}</span>
+        </AMenuItem>
         <AMenuItem :title="t('album.recyclingBin')" key="photo/recycling">
           <template #icon>
             <AAvatar shape="square" size="small" :src="recyclingbin"/>
           </template>
           <span class="ant-menu-item-title">{{ t('album.recyclingBin') }}</span>
         </AMenuItem>
-        <AMenuItem :title="t('album.recyclingBin')" key="photo/ai">
+        <AMenuItem :title="t('album.recyclingBin')" key="photo/upscale">
           <template #icon>
             <AAvatar shape="square" size="small" :src="ai"/>
           </template>
-          <span class="ant-menu-item-title">图像增强</span>
+          <span class="ant-menu-item-title">{{ t('album.upscale') }}</span>
         </AMenuItem>
       </AMenu>
     </div>
@@ -89,7 +95,7 @@ import thingAlbum from '@/assets/svgs/thing-album.svg';
 import recyclingbin from '@/assets/svgs/recyclingbin.svg';
 import Folder from "@/components/Folder/Folder.vue";
 import ai from '@/assets/svgs/ai.svg';
-
+import share from '@/assets/svgs/share.svg';
 const {t} = useI18n();
 const router = useRouter();
 

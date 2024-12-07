@@ -9,18 +9,18 @@
         <router-view/>
       </div>
     </div>
-    <AFloatButtonGroup trigger="click" type="primary">
+    <AFloatButtonGroup trigger="click" type="default">
       <template #icon>
-        <BarsOutlined/>
+        <AAvatar shape="square" :size="20" :src="other"/>
       </template>
-      <AFloatButton @click="changeLanguage">
+      <AFloatButton @click="changeLanguage" tooltip="切换语言">
         <template #icon>
-          <TranslationOutlined/>
+          <AAvatar shape="square" :size="20" :src="translation"/>
         </template>
       </AFloatButton>
-      <AFloatButton>
+      <AFloatButton tooltip="切换主题">
         <template #icon>
-          <AlertOutlined/>
+          <AAvatar shape="square" :size="20" :src="darkMode"/>
         </template>
       </AFloatButton>
     </AFloatButtonGroup>
@@ -34,7 +34,9 @@ import Header from "@/layout/default/Header/Header.vue";
 // import {SmileOutlined} from "@ant-design/icons-vue";
 import Sidebar from "@/layout/default/Sidebar/Sidebar.vue";
 import {useI18n} from "vue-i18n";
-
+import translation from '@/assets/svgs/translation.svg';
+import darkMode from '@/assets/svgs/dark-mode.svg';
+import other from '@/assets/svgs/other.svg';
 // const websocket = useStore().websocket;
 // const userInfo = useStore().user;
 const lang = useStore().lang;

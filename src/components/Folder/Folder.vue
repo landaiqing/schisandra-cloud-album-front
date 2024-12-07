@@ -1,6 +1,6 @@
 <template>
   <div class="folder-wrapper" @click="handleClick">
-    <div class="download" style="--scale-pages: 1; --scale-folder: 1;">
+    <div ref="download" class="download" style="--scale-pages: 1; --scale-folder: 1;">
       <svg class="folder-back" viewBox="0 0 48 48">
         <path d="
       M  3.50  7.50
@@ -19,7 +19,7 @@
       </svg>
       <div class="page-1"></div>
       <div class="page-2"></div>
-      <svg class="folder-front" viewBox="0 0 48 48">
+      <svg ref="folderFront" class="folder-front" viewBox="0 0 48 48">
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color:#47DB99;stop-opacity:1"></stop>
@@ -52,7 +52,7 @@
 <script setup lang="ts">
 import {gsap} from 'gsap';
 
-import {onMounted, ref} from 'vue';
+import {ref} from 'vue';
 
 const download = ref<Element | null>(null);
 const folderFront = ref<Element | null>(null);
@@ -68,7 +68,7 @@ const keyframes = [
   /*  5 */2.00 //s
 ];
 
-const timespan = (start, end) => ({
+const timespan = (start: number, end: number) => ({
   delay: keyframes[start] * (1 / playspeed),
   duration: (keyframes[end] - keyframes[start]) * (1 / playspeed)
 });
@@ -142,11 +142,6 @@ const handleClick = () => {
     ...timespan(4, 5)
   });
 };
-
-onMounted(() => {
-  download.value = document.querySelector('.download');
-  folderFront.value = document.querySelector('.folder-front');
-});
 </script>
 <style lang="scss">
 .folder-wrapper {

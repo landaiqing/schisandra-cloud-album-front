@@ -15,7 +15,25 @@ export default [
         children: [
             ...photo,
             ...albums,
-            ...recycling_bin
+            ...recycling_bin,
+            {
+                path: '/main/photo/upscale',
+                name: 'upscale',
+                component: () => import('@/views/Upscale/Upscale.vue'),
+                meta: {
+                    requiresAuth: false,
+                    title: '图像修复'
+                }
+            },
+            {
+                path: '/main/photo/share',
+                name: 'share',
+                component: () => import('@/views/ImageShare/ImageShare.vue'),
+                meta: {
+                    requiresAuth: false,
+                    title: '快传'
+                }
+            }
 
         ]
     }

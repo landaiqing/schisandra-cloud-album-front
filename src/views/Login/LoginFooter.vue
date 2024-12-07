@@ -2,7 +2,8 @@
   <div>
     <ADivider/>
     <AFlex :vertical="false" align="center" justify="space-around">
-      <AButton href="/qrlogin" class="login-form-bottom-button" :icon="h(QrcodeOutlined)">{{ t("login.qrLogin") }}
+      <AButton @click="router.push('/qrlogin')" class="login-form-bottom-button" :icon="h(QrcodeOutlined)">
+        {{ t("login.qrLogin") }}
       </AButton>
       <AButton @click="userStore.openQQUrl" class="login-form-bottom-button" :icon="h(QqOutlined)"></AButton>
       <AButton @click="userStore.openGiteeUrl" class="login-form-bottom-button"
@@ -23,6 +24,7 @@ import useStore from "@/store";
 import gitee from "@/assets/svgs/gitee.svg";
 
 const {t} = useI18n();
+const router = useRouter();
 
 const userStore = useStore().user;
 

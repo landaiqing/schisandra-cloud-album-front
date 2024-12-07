@@ -116,6 +116,8 @@ export default {
         locationAlbums: '地点',
         thingsAlbums: '事物',
         recyclingBin: '回收站',
+        upscale: '图像修复',
+        share: '快传'
     }
 
 };

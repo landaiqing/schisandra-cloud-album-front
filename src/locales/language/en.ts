@@ -129,5 +129,7 @@ export default {
         locationAlbums: 'Location',
         thingsAlbums: 'Things',
         recyclingBin: 'Recycling Bin',
+        upscale: 'Image Inpainting',
+        share: 'Quickly Share'
     }
 };

@@ -3,7 +3,7 @@ import login from './modules/login';
 
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import notFound from "./modules/notFound.ts";
+import notFound from "./modules/not_found.ts";
 import landing from "./modules/landing.ts";
 import mainRouter from "./modules/main_router.ts";
 import i18n from "@/locales";

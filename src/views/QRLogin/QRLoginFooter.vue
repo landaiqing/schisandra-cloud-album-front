@@ -2,7 +2,7 @@
   <div>
     <ADivider/>
     <AFlex :vertical="false" align="center" justify="space-around">
-      <AButton href="/login" class="qrlogin-form-bottom-button" :icon="h(TabletOutlined)">
+      <AButton @click="router.push('/login')" class="qrlogin-form-bottom-button" :icon="h(TabletOutlined)">
         {{ t("login.phoneLoginAndRegister") }}
       </AButton>
       <AButton @click="userStore.openQQUrl" class="qrlogin-form-bottom-button" :icon="h(QqOutlined)"></AButton>
@@ -26,7 +26,7 @@ import gitee from "@/assets/svgs/gitee.svg";
 
 const userStore = useStore().user;
 const {t} = useI18n();
-
+const router = useRouter();
 onBeforeMount(() => {
   userStore.getClientId().then(() => {
     userStore.getGithubRedirectUrl();
