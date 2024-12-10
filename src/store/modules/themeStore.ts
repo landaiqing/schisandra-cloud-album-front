@@ -37,10 +37,11 @@ export const useThemeStore = defineStore(
         return {themeName, themeConfig, darkMode, setThemeName, toggleDarkMode};
     },
     {
-        persist: {
-            key: 'theme',
+        persistedState: {
+            persist: true,
             storage: localStorage,
-            pick: ["themeName", "darkMode"],
+            key: 'theme',
+            includePaths: ['themeName', 'darkMode']
         }
     }
 );

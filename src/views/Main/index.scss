@@ -3,23 +3,20 @@
     flex-direction: column;
     background-color: #eaeef6;
     color: var(--text-color);
-    width: 100%;
-    min-height: 100vh;
-
-    .main-header {
-
-    }
+    width: 100vw;
 
     .main-content {
         display: flex;
         flex-direction: row;
+        width: 100%;
+        height: calc(100vh - 70px);
 
         .main-content-container {
-            width: calc(100% - 230px);
-            height: calc(100% - 110px);
-            padding: 20px;
-            overflow: scroll;
-
+            width: calc(100vw - 230px);
+            height: calc(100vh - 100px);
+            max-height: calc(100vh - 100px);
+            padding: 15px;
+            overflow: auto;
         }
 
     }

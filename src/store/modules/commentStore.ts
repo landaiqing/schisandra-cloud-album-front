@@ -8,6 +8,7 @@ import QQ_EMOJI from "@/constant/qq_emoji.ts";
 import {initNSFWJs, predictNSFW} from "@/utils/nsfw/nsfw.ts";
 import {NSFWJS} from "nsfwjs";
 import i18n from "@/locales";
+import localForage from "localforage";
 
 export const useCommentStore = defineStore(
     'comment',
@@ -325,10 +326,16 @@ export const useCommentStore = defineStore(
     },
     {
         // 开启数据持久化
-        persist: {
+        // persist: {
+        //     key: 'comment',
+        //     storage: localStorage,
+        //     pick: ["emojiList", "commentList", "replyVisibility", "commentMap"],
+        // }
+        persistedState: {
+            persist: true,
+            storage: localForage,
             key: 'comment',
-            storage: localStorage,
-            pick: ["emojiList", "commentList", "replyVisibility", "commentMap"],
+            includePaths: ["emojiList", "commentList", "replyVisibility", "commentMap"]
         }
     }
 );

@@ -144,10 +144,16 @@ export const useAuthStore = defineStore(
     },
     {
         // 开启数据持久化
-        persist: {
-            key: 'user',
+        // persist: {
+        //     key: 'user',
+        //     storage: localStorage,
+        //     pick: ['user', "clientId", "githubRedirectUrl", "giteeRedirectUrl", "qqRedirectUrl"],
+        // }
+        persistedState: {
+            persist: true,
             storage: localStorage,
-            pick: ['user', "clientId", "githubRedirectUrl", "giteeRedirectUrl", "qqRedirectUrl"],
+            key: 'user',
+            includePaths: ['user', "clientId", "githubRedirectUrl", "giteeRedirectUrl", "qqRedirectUrl"]
         }
     }
 );

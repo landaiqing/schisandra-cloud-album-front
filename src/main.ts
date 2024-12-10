@@ -6,12 +6,13 @@ import router from "@/router/router.ts";
 import "go-captcha-vue/dist/style.css";
 import GoCaptcha from "go-captcha-vue";
 import {createPinia, Pinia} from "pinia";
-import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import {createPersistedStatePlugin} from 'pinia-plugin-persistedstate-2';
 import VueDOMPurifyHTML from 'vue-dompurify-html';
 import {registerDirectives} from "@/directives";
 
 const pinia: Pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
+const installPersistedStatePlugin = createPersistedStatePlugin();
+pinia.use((context) => installPersistedStatePlugin(context));
 const app = createApp(App);
 registerDirectives(app);
 app.use(pinia);

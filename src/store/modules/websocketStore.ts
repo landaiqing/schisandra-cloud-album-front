@@ -49,5 +49,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
         getReadyState
     };
 }, {
-    persist: false,
+    persistedState: {
+        persist: false,
+    }
 });

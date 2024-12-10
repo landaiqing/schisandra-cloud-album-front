@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import {ref} from "vue";
 
+
 export const langStore = defineStore(
     'lang',
     () => {
@@ -11,10 +12,11 @@ export const langStore = defineStore(
     },
     {
         // 开启数据持久化
-        persist: {
-            key: 'lang',
+        persistedState: {
+            persist: true,
             storage: localStorage,
-            pick: ["lang"],
+            key: 'lang',
+            includePaths: ['lang']
         }
     }
 );

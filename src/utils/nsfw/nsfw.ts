@@ -9,7 +9,7 @@ let isInit: boolean = false;
 const initNSFWJs = async (): Promise<NSFWJS> => {
     tf.enableProdMode();
     if (!isInit) {
-        const initialLoad: nsfwjs.NSFWJS = await nsfwjs.load("/nsfw/model/mobilenet_v2_mid/", {
+        const initialLoad: nsfwjs.NSFWJS = await nsfwjs.load("/nsfw/mobilenet_v2_mid/", {
             size: 224,
             type: "graph"
         });
