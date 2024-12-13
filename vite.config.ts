@@ -83,16 +83,31 @@ export default defineConfig(({mode}: { mode: string }): object => {
                     ],
                 }),
                 AutoImport({
-                    //安装两行后你会发现在组件中不用再导入ref，reactive等
+                    include: [
+                        /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
+                        /\.vue$/,
+                        /\.vue\?vue/, // .vue
+                        /\.md$/, // .md
+                    ],
                     imports: ['vue', 'vue-router', 'pinia', '@vueuse/core'],
-                    dts: 'auto-import.d.ts',
+                    dts: './auto-import.d.ts',
+                    defaultExportByFilename: true,
+                    dirsScanOptions: {
+                        types: true
+                    },
+                    vueTemplate: true,
+                    vueDirectives: true,
+                    viteOptimizeDeps: true,
+                    injectAtEnd: true,
                     //ant-design-vue
                     resolvers: [AntDesignVueResolver({
                         importStyle: false,
                         resolveIcons: true
                     })],
                     eslintrc: {
-                        enabled: false // 1、改为true用于生成eslint配置。2、生成后改回false，避免重复生成消耗
+                        enabled: false,
+                        filepath: './.eslintrc-auto-import.json',
+                        globalsPropValue: true
                     }
                 }),
                 nodePolyfills(),

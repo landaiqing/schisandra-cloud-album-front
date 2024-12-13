@@ -25,9 +25,9 @@ self.onmessage = async function (e: MessageEvent): Promise<void> {
     try {
         Model = await tf.loadGraphModel(`indexeddb://${model_name}`);
         console.log("Model loaded successfully");
-        self.postMessage({info: "Loaded from cache"});
+        self.postMessage({info: "Model loaded from cache successfully"});
     } catch (_error) {
-        self.postMessage({info: "Downloading model"});
+        self.postMessage({info: "Downloading model..."});
         Model = await (async () => {
             const fetchedModel = await tf.loadGraphModel(model_url);
             await fetchedModel.save(`indexeddb://${model_name}`);

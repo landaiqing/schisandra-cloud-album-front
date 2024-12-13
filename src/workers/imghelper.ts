@@ -1,12 +1,15 @@
+/* eslint-disable */
+// @ts-nocheck
+// This file is a modified version of the original imghelper.ts file from Emscripten.
 const Module = (() => {
-    let _scriptDir = import.meta.url;
+    const _scriptDir = import.meta.url;
 
     return (
         async function (moduleArg = {}) {
 
-            let Module = moduleArg;
+            const Module = moduleArg;
             let readyPromiseResolve, readyPromiseReject;
-            let readyPromise = new Promise((resolve, reject) => {
+            const readyPromise = new Promise((resolve, reject) => {
                 readyPromiseResolve = resolve;
                 readyPromiseReject = reject;
             });
@@ -16,9 +19,9 @@ const Module = (() => {
             let quit_ = (_status, toThrow) => {
                 throw toThrow;
             };
-            let ENVIRONMENT_IS_WEB = typeof window == "object";
-            let ENVIRONMENT_IS_WORKER = typeof importScripts == "function";
-            let ENVIRONMENT_IS_NODE = typeof process == "object" && typeof process.versions == "object" && typeof process.versions.node == "string";
+            const ENVIRONMENT_IS_WEB = typeof window == "object";
+            const ENVIRONMENT_IS_WORKER = typeof importScripts == "function";
+            const ENVIRONMENT_IS_NODE = typeof process == "object" && typeof process.versions == "object" && typeof process.versions.node == "string";
             let scriptDirectory = "";
 
             function locateFile(path) {
@@ -31,9 +34,9 @@ const Module = (() => {
             let read_, readAsync, readBinary;
             if (ENVIRONMENT_IS_NODE) {
                 const {createRequire: createRequire} = await import("module");
-                let require = createRequire(import.meta.url);
-                let fs = require("fs");
-                let nodePath = require("path");
+                const require = createRequire(import.meta.url);
+                const fs = require("fs");
+                const nodePath = require("path");
                 if (ENVIRONMENT_IS_WORKER) {
                     scriptDirectory = nodePath.dirname(scriptDirectory) + "/";
                 } else {
@@ -80,14 +83,14 @@ const Module = (() => {
                 }
                 {
                     read_ = url => {
-                        let xhr = new XMLHttpRequest;
+                        const xhr = new XMLHttpRequest;
                         xhr.open("GET", url, false);
                         xhr.send(null);
                         return xhr.responseText;
                     };
                     if (ENVIRONMENT_IS_WORKER) {
                         readBinary = url => {
-                            let xhr = new XMLHttpRequest;
+                            const xhr = new XMLHttpRequest;
                             xhr.open("GET", url, false);
                             xhr.responseType = "arraybuffer";
                             xhr.send(null);
@@ -95,7 +98,7 @@ const Module = (() => {
                         };
                     }
                     readAsync = (url, onload, onerror) => {
-                        let xhr = new XMLHttpRequest;
+                        const xhr = new XMLHttpRequest;
                         xhr.open("GET", url, true);
                         xhr.responseType = "arraybuffer";
                         xhr.onload = () => {
@@ -110,28 +113,27 @@ const Module = (() => {
                     };
                 }
             }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            let out = Module["print"] || console.log.bind(console);
-            let err = Module["printErr"] || console.error.bind(console);
+            const out = Module["print"] || console.log.bind(console);
+            const err = Module["printErr"] || console.error.bind(console);
             Object.assign(Module, moduleOverrides);
             moduleOverrides = null;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
             if (Module["arguments"]) arguments_ = Module["arguments"];
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
             if (Module["thisProgram"]) thisProgram = Module["thisProgram"];
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
             if (Module["quit"]) quit_ = Module["quit"];
             let wasmBinary;
             if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"];
             let wasmMemory;
             let ABORT = false;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
             let EXITSTATUS;
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
             let HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64;
 
             function updateMemoryViews() {
-                let b = wasmMemory.buffer;
+                const b = wasmMemory.buffer;
                 Module["HEAP8"] = HEAP8 = new Int8Array(b);
                 Module["HEAP16"] = HEAP16 = new Int16Array(b);
                 Module["HEAPU8"] = HEAPU8 = new Uint8Array(b);
@@ -142,10 +144,10 @@ const Module = (() => {
                 Module["HEAPF64"] = HEAPF64 = new Float64Array(b);
             }
 
-            let __ATPRERUN__ = [];
-            let __ATINIT__ = [];
-            let __ATPOSTRUN__ = [];
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const __ATPRERUN__ = [];
+            const __ATINIT__ = [];
+            const __ATPOSTRUN__ = [];
+
             let runtimeInitialized = false;
 
             function preRun() {
@@ -203,7 +205,7 @@ const Module = (() => {
                         runDependencyWatcher = null;
                     }
                     if (dependenciesFulfilled) {
-                        let callback = dependenciesFulfilled;
+                        const callback = dependenciesFulfilled;
                         dependenciesFulfilled = null;
                         callback();
                     }
@@ -217,14 +219,14 @@ const Module = (() => {
                 ABORT = true;
                 EXITSTATUS = 1;
                 what += ". Build with -sASSERTIONS for more info.";
-                let e = new WebAssembly.RuntimeError(what);
+                const e = new WebAssembly.RuntimeError(what);
                 readyPromiseReject(e);
                 throw e;
             }
 
-            let dataURIPrefix = "data:application/octet-stream;base64,";
-            let isDataURI = filename => filename.startsWith(dataURIPrefix);
-            let isFileURI = filename => filename.startsWith("file://");
+            const dataURIPrefix = "data:application/octet-stream;base64,";
+            const isDataURI = filename => filename.startsWith(dataURIPrefix);
+            const isFileURI = filename => filename.startsWith("file://");
             let wasmBinaryFile;
             if (Module["locateFile"]) {
                 wasmBinaryFile = "imghelper.wasm";
@@ -273,7 +275,7 @@ const Module = (() => {
             function instantiateAsync(binary, binaryFile, imports, callback) {
                 if (!binary && typeof WebAssembly.instantiateStreaming == "function" && !isDataURI(binaryFile) && !isFileURI(binaryFile) && !ENVIRONMENT_IS_NODE && typeof fetch == "function") {
                     return fetch(binaryFile, {credentials: "same-origin"}).then(response => {
-                        let result = WebAssembly.instantiateStreaming(response, imports);
+                        const result = WebAssembly.instantiateStreaming(response, imports);
                         return result.then(callback, function (reason) {
                             err(`wasm streaming compile failed: ${reason}`);
                             err("falling back to ArrayBuffer instantiation");
@@ -285,7 +287,7 @@ const Module = (() => {
             }
 
             function createWasm() {
-                let info = {"env": wasmImports, "wasi_snapshot_preview1": wasmImports};
+                const info = {"env": wasmImports, "wasi_snapshot_preview1": wasmImports};
 
                 function receiveInstance(instance, _module) {
                     wasmExports = instance.exports;
@@ -314,19 +316,19 @@ const Module = (() => {
                 return {};
             }
 
-            let callRuntimeCallbacks = callbacks => {
+            const callRuntimeCallbacks = callbacks => {
                 while (callbacks.length > 0) {
                     callbacks.shift()(Module);
                 }
             };
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            let noExitRuntime = Module["noExitRuntime"] || true;
-            let stackRestore = val => __emscripten_stack_restore(val);
-            let stackSave = () => _emscripten_stack_get_current();
-            let getHeapMax = () => 2147483648;
-            let growMemory = size => {
-                let b = wasmMemory.buffer;
-                let pages = (size - b.byteLength + 65535) / 65536;
+
+            const noExitRuntime = Module["noExitRuntime"] || true;
+            const stackRestore = val => __emscripten_stack_restore(val);
+            const stackSave = () => _emscripten_stack_get_current();
+            const getHeapMax = () => 2147483648;
+            const growMemory = size => {
+                const b = wasmMemory.buffer;
+                const pages = (size - b.byteLength + 65535) / 65536;
                 try {
                     wasmMemory.grow(pages);
                     updateMemoryViews();
@@ -334,36 +336,36 @@ const Module = (() => {
                 } catch (_e) { /* empty */
                 }
             };
-            let _emscripten_resize_heap = requestedSize => {
-                let oldSize = HEAPU8.length;
+            const _emscripten_resize_heap = requestedSize => {
+                const oldSize = HEAPU8.length;
                 requestedSize >>>= 0;
-                let maxHeapSize = getHeapMax();
+                const maxHeapSize = getHeapMax();
                 if (requestedSize > maxHeapSize) {
                     return false;
                 }
-                let alignUp = (x, multiple) => x + (multiple - x % multiple) % multiple;
+                const alignUp = (x, multiple) => x + (multiple - x % multiple) % multiple;
                 for (let cutDown = 1; cutDown <= 4; cutDown *= 2) {
                     let overGrownHeapSize = oldSize * (1 + .2 / cutDown);
                     overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296);
-                    let newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
-                    let replacement = growMemory(newSize);
+                    const newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
+                    const replacement = growMemory(newSize);
                     if (replacement) {
                         return true;
                     }
                 }
                 return false;
             };
-            let getCFunc = ident => {
-                let func = Module["_" + ident];
+            const getCFunc = ident => {
+                const func = Module["_" + ident];
                 return func;
             };
-            let writeArrayToMemory = (array, buffer) => {
+            const writeArrayToMemory = (array, buffer) => {
                 HEAP8.set(array, buffer);
             };
-            let lengthBytesUTF8 = str => {
+            const lengthBytesUTF8 = str => {
                 let len = 0;
                 for (let i = 0; i < str.length; ++i) {
-                    let c = str.charCodeAt(i);
+                    const c = str.charCodeAt(i);
                     if (c <= 127) {
                         len++;
                     } else if (c <= 2047) {
@@ -377,14 +379,14 @@ const Module = (() => {
                 }
                 return len;
             };
-            let stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
+            const stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
                 if (!(maxBytesToWrite > 0)) return 0;
-                let startIdx = outIdx;
-                let endIdx = outIdx + maxBytesToWrite - 1;
+                const startIdx = outIdx;
+                const endIdx = outIdx + maxBytesToWrite - 1;
                 for (let i = 0; i < str.length; ++i) {
                     let u = str.charCodeAt(i);
                     if (u >= 55296 && u <= 57343) {
-                        let u1 = str.charCodeAt(++i);
+                        const u1 = str.charCodeAt(++i);
                         u = 65536 + ((u & 1023) << 10) | u1 & 1023;
                     }
                     if (u <= 127) {
@@ -410,17 +412,17 @@ const Module = (() => {
                 heap[outIdx] = 0;
                 return outIdx - startIdx;
             };
-            let stringToUTF8 = (str, outPtr, maxBytesToWrite) => stringToUTF8Array(str, HEAPU8, outPtr, maxBytesToWrite);
-            let stackAlloc = sz => __emscripten_stack_alloc(sz);
-            let stringToUTF8OnStack = str => {
-                let size = lengthBytesUTF8(str) + 1;
-                let ret = stackAlloc(size);
+            const stringToUTF8 = (str, outPtr, maxBytesToWrite) => stringToUTF8Array(str, HEAPU8, outPtr, maxBytesToWrite);
+            const stackAlloc = sz => __emscripten_stack_alloc(sz);
+            const stringToUTF8OnStack = str => {
+                const size = lengthBytesUTF8(str) + 1;
+                const ret = stackAlloc(size);
                 stringToUTF8(str, ret, size);
                 return ret;
             };
-            let UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder("utf8") : undefined;
-            let UTF8ArrayToString = (heapOrArray, idx, maxBytesToRead) => {
-                let endIdx = idx + maxBytesToRead;
+            const UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder("utf8") : undefined;
+            const UTF8ArrayToString = (heapOrArray, idx, maxBytesToRead) => {
+                const endIdx = idx + maxBytesToRead;
                 let endPtr = idx;
                 while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
                 if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
@@ -433,12 +435,12 @@ const Module = (() => {
                         str += String.fromCharCode(u0);
                         continue;
                     }
-                    let u1 = heapOrArray[idx++] & 63;
+                    const u1 = heapOrArray[idx++] & 63;
                     if ((u0 & 224) == 192) {
                         str += String.fromCharCode((u0 & 31) << 6 | u1);
                         continue;
                     }
-                    let u2 = heapOrArray[idx++] & 63;
+                    const u2 = heapOrArray[idx++] & 63;
                     if ((u0 & 240) == 224) {
                         u0 = (u0 & 15) << 12 | u1 << 6 | u2;
                     } else {
@@ -447,15 +449,15 @@ const Module = (() => {
                     if (u0 < 65536) {
                         str += String.fromCharCode(u0);
                     } else {
-                        let ch = u0 - 65536;
+                        const ch = u0 - 65536;
                         str += String.fromCharCode(55296 | ch >> 10, 56320 | ch & 1023);
                     }
                 }
                 return str;
             };
-            let UTF8ToString = (ptr, maxBytesToRead) => ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : "";
-            let ccall = (ident, returnType, argTypes, args, _opts) => {
-                let toC = {
+            const UTF8ToString = (ptr, maxBytesToRead) => ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : "";
+            const ccall = (ident, returnType, argTypes, args, _opts) => {
+                const toC = {
                     "string": str => {
                         let ret = 0;
                         if (str !== null && str !== undefined && str !== 0) {
@@ -463,7 +465,7 @@ const Module = (() => {
                         }
                         return ret;
                     }, "array": arr => {
-                        let ret = stackAlloc(arr.length);
+                        const ret = stackAlloc(arr.length);
                         writeArrayToMemory(arr, ret);
                         return ret;
                     }
@@ -477,12 +479,12 @@ const Module = (() => {
                     return ret;
                 }
 
-                let func = getCFunc(ident);
-                let cArgs = [];
+                const func = getCFunc(ident);
+                const cArgs = [];
                 let stack = 0;
                 if (args) {
                     for (let i = 0; i < args.length; i++) {
-                        let converter = toC[argTypes[i]];
+                        const converter = toC[argTypes[i]];
                         if (converter) {
                             if (stack === 0) stack = stackSave();
                             cArgs[i] = converter(args[i]);
@@ -501,15 +503,15 @@ const Module = (() => {
                 ret = onDone(ret);
                 return ret;
             };
-            let cwrap = (ident, returnType, argTypes, opts) => {
-                let numericArgs = !argTypes || argTypes.every(type => type === "number" || type === "boolean");
-                let numericRet = returnType !== "string";
+            const cwrap = (ident, returnType, argTypes, opts) => {
+                const numericArgs = !argTypes || argTypes.every(type => type === "number" || type === "boolean");
+                const numericRet = returnType !== "string";
                 if (numericRet && numericArgs && !opts) {
                     return getCFunc(ident);
                 }
                 return (...args) => ccall(ident, returnType, argTypes, args, opts);
             };
-            let wasmImports = {emscripten_resize_heap: _emscripten_resize_heap};
+            const wasmImports = {emscripten_resize_heap: _emscripten_resize_heap};
             let wasmExports = createWasm();
             let ___wasm_call_ctors = () => (___wasm_call_ctors = wasmExports["__wasm_call_ctors"])();
             let _check_alpha = Module["_check_alpha"] = (a0, a1) => (_check_alpha = Module["_check_alpha"] = wasmExports["check_alpha"])(a0, a1);

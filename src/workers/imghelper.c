@@ -2,7 +2,7 @@
 #include <stdbool.h>
 
 // Usage - generate js and wasm files
-// emcc imghelper.c -o imghelper.js -O2 -s WASM=1 -s EXPORTED_FUNCTIONS="['_copy_alpha_to_rgb','_check_alpha','_copy_alpha_channel','_malloc','_free']" -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1 -s EXPORT_ES6=1
+// emcc imghelper.c -o imghelper.ts -O2 -s WASM=1 -s EXPORTED_FUNCTIONS="['_copy_alpha_to_rgb','_check_alpha','_copy_alpha_channel','_malloc','_free']" -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" -s ALLOW_MEMORY_GROWTH=1 -s MODULARIZE=1 -s EXPORT_ES6=1
 
 bool check_alpha(uint8_t *data, int pixelCount)
 {
