@@ -1,7 +1,7 @@
 <template>
   <div
       ref="canvasContainer"
-      class="canvas-container drag-over bg dark"
+      class="canvas-container bg drag-over  dark"
       @mousedown="startDragging"
       @mouseup="stopDragging"
       @mouseleave="stopDragging"
@@ -11,9 +11,23 @@
       @touchmove="touchMove"
       @touchend="touchEnd"
   >
-    <canvas ref="canvas"></canvas>
+    <div v-if="store.isProcessing" class="canvas-progressbar">
+      <span class="canvas-progressbar-text">
+        {{ store.msg }}
+      </span>
+      <AProgress
+          :stroke-color="{
+          '0%': '#108ee9',
+          '100%': '#87d068',
+      }"
+          :percent="store.progressBar"
+          :showInfo="false"
+      />
+    </div>
+    <canvas ref="canvas" v-if="store.imageData || store.processedImg"></canvas>
     <div
         class="dragLine"
+        v-if="store.isDone"
         ref="dragLine">
       <div class="dragBall"
            @mousedown.stop="startDraggingLine"
@@ -26,11 +40,20 @@
         </svg>
       </div>
     </div>
+    <div class="canvas-qr" v-if="!store.isDone && !store.imageData">
+      <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)" :size="200"
+               :value="'https://git.landaiqing.cn'"
+               :icon="phone"
+               :iconSize="40"
+      />
+      <span class="canvas-qr-text">手机扫码上传</span>
+    </div>
+
   </div>
 </template>
 <script setup lang="ts">
-import img1 from "@/assets/images/1.png";
-import img2 from "@/assets/images/2.png";
+import useStore from "@/store";
+import phone from '@/assets/svgs/qr-phone.svg';
 
 const canvasContainer = ref<HTMLDivElement | null>(null);
 const dragging = ref<boolean>(false);
@@ -52,6 +75,7 @@ const touchStartY = ref(0);
 const touchStartDistance = ref(0);
 const imgScaleStart = ref(1);
 
+const store = useStore().upscale;
 const img = ref<HTMLImageElement>(new Image());
 const processedImg = ref<HTMLImageElement>(new Image());
 
@@ -395,30 +419,48 @@ function initCanvasSize() {
 }
 
 onMounted(() => {
-  img.value.src = img1;
-  processedImg.value.src = img2;
-  initCanvasSize();
-
   window.addEventListener("resize", handleResize);
-
 });
+
+watch(
+    () => store.imageData,
+    (newValue) => {
+      if (newValue) {
+        img.value.src = newValue;
+        img.value.onload = () => {
+          initCanvasSize();
+        };
+      }
+    }
+);
+watch(
+    () => store.processedImg,
+    (newValue) => {
+      if (newValue) {
+        processedImg.value.src = newValue;
+        processedImg.value.onload = () => {
+          initCanvasSize();
+        };
+      }
+    }
+);
 onBeforeUnmount(() => {
   window.removeEventListener("resize", handleResize);
+  store.isDone = false;
+  store.imageData = "";
+  store.processedImg = "";
+  store.isProcessing = false;
+  store.msg = "";
+  store.progressBar = 0;
 });
 
-watchEffect(() => {
-  img.value.onload = () => {
-    drawImage();
-  };
-  processedImg.value.onload = () => {
-    drawImage();
-  };
-});
 </script>
 <style scoped lang="scss">
 .canvas-container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
   position: relative;
@@ -496,6 +538,18 @@ canvas {
   width: 100%;
 }
 
+.canvas-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.canvas-qr-text {
+  font-size: 16px;
+  color: rgba(126, 126, 135, 0.48);
+}
+
 .dragLine {
   position: absolute;
   top: 0;
@@ -508,6 +562,7 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .dragLine:hover {
@@ -527,6 +582,28 @@ canvas {
   justify-content: center;
   align-items: center;
   cursor: ew-resize;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+.canvas-progressbar {
+  position: absolute;
+  top: 0;
+  //left: 50%;
+  //transform: translate(-50%, -50%);
+  width: 300px;
+  //height: 100px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  //background-color: rgba(255, 255, 255, 0.5);
+  //padding: 10px;
+}
+
+.canvas-progressbar-text {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
 </style>

@@ -599,7 +599,7 @@ defineExpose({
         }
 
         .icon-info {
-          color: @themeColor;
+          color: #fff;
         }
 
         .icon-success {

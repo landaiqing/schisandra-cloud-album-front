@@ -19,7 +19,7 @@ export default [
             {
                 path: '/main/photo/upscale',
                 name: 'upscale',
-                component: () => import('@/views/Upscale/Upscale.vue'),
+                component: () => import('@/views/Upscale/index.vue'),
                 meta: {
                     requiresAuth: false,
                     title: '图像修复'
