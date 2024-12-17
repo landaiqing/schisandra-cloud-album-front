@@ -118,6 +118,10 @@ export default {
         recyclingBin: '回收站',
         upscale: '图像修复',
         share: '快传'
+    },
+    upload:{
+        uploadSuccess: '上传成功！',
+        uploadError: '上传失败！',
     }
 
 };

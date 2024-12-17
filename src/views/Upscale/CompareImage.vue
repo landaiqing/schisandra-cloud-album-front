@@ -11,20 +11,24 @@
       @touchmove="touchMove"
       @touchend="touchEnd"
   >
-    <div v-if="store.isProcessing" class="canvas-progressbar">
+    <!--  进度条   -->
+    <div class="canvas-progressbar">
       <span class="canvas-progressbar-text">
         {{ store.msg }}
       </span>
       <AProgress
+          v-if="store.isProcessing"
           :stroke-color="{
           '0%': '#108ee9',
-          '100%': '#87d068',
-      }"
+          '100%': '#87d068',}"
           :percent="store.progressBar"
           :showInfo="false"
+          status="active"
       />
     </div>
-    <canvas ref="canvas" v-if="store.imageData || store.processedImg"></canvas>
+    <!--      图片   -->
+    <canvas ref="canvas"></canvas>
+    <!--      拖动条   -->
     <div
         class="dragLine"
         v-if="store.isDone"
@@ -40,20 +44,58 @@
         </svg>
       </div>
     </div>
-    <div class="canvas-qr" v-if="!store.isDone && !store.imageData">
-      <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)" :size="200"
-               :value="'https://git.landaiqing.cn'"
+    <!--      二维码  -->
+    <div class="canvas-qr">
+      <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)"
+               :size="qrcodeSize"
+               :value="generateQrCodeUrl()"
                :icon="phone"
-               :iconSize="40"
+               :iconSize="iconSize"
       />
       <span class="canvas-qr-text">手机扫码上传</span>
     </div>
-
+    <!--      菜单  -->
+    <div class="floating-menu" @mousedown.stop v-if="store.isDone && store.processedImg">
+      <AFlex :vertical="false" align="center" justify="space-between" :gap="12">
+        <ATooltip placement="top" title="下载图片">
+          <AButton type="text" size="large" @click="downloadImage" class="menu-btn">
+            <template #icon>
+              <AAvatar :src="download" class="menu-icon"/>
+            </template>
+          </AButton>
+        </ATooltip>
+        <ATooltip placement="top" title="分享图片">
+          <AButton type="text" size="large" class="menu-btn">
+            <template #icon>
+              <AAvatar :src="share" :size="28" class="menu-icon"/>
+            </template>
+          </AButton>
+        </ATooltip>
+        <ATooltip placement="top" title="保存图片">
+          <AButton type="text" size="large" class="menu-btn">
+            <template #icon>
+              <AAvatar :src="save" :size="30" class="menu-icon"/>
+            </template>
+          </AButton>
+        </ATooltip>
+        <ATooltip placement="top" title="删除图片">
+          <AButton type="text" size="large" danger class="menu-btn" @click="deletedImage">
+            <template #icon>
+              <AAvatar :src="deleted" :size="28" class="menu-icon"/>
+            </template>
+          </AButton>
+        </ATooltip>
+      </AFlex>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import useStore from "@/store";
 import phone from '@/assets/svgs/qr-phone.svg';
+import download from '@/assets/svgs/download.svg';
+import share from '@/assets/svgs/share.svg';
+import save from '@/assets/svgs/save.svg';
+import deleted from '@/assets/svgs/deleted.svg';
 
 const canvasContainer = ref<HTMLDivElement | null>(null);
 const dragging = ref<boolean>(false);
@@ -76,8 +118,67 @@ const touchStartDistance = ref(0);
 const imgScaleStart = ref(1);
 
 const store = useStore().upscale;
+const user = useStore().user;
 const img = ref<HTMLImageElement>(new Image());
 const processedImg = ref<HTMLImageElement>(new Image());
+
+const qrcodeSize = ref<number>(250);
+const iconSize = ref<number>(30);
+/**
+ *  更新二维码大小
+ */
+const updateQrcodeSize = () => {
+  if (canvasContainer.value) {
+    // 设置 QRCode 大小
+    const containerWidth = canvasContainer.value.clientWidth;
+    qrcodeSize.value = containerWidth * 0.3; // 设置 QRCode 为父盒子宽度的80%
+    iconSize.value = Math.min(containerWidth * 0.1, 40); // 设置 icon 大小为父盒子宽度的10%
+  }
+};
+
+function generateQrCodeUrl(): string {
+  return import.meta.env.VITE_APP_WEB_URL + "/upscale/app?user_id=" + user.user.uid + "&token=" + user.user.access_token;
+}
+
+console.log(generateQrCodeUrl());
+
+/**
+ *  下载图片
+ */
+function downloadImage() {
+  if (!store.processedImg) return;
+  const a = document.createElement("a");
+  a.href = store.processedImg;
+  if (store.hasAlpha) a.download = "output.png";
+  else a.download = "output.jpg";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+/**
+ *  删除图片
+ */
+function deletedImage() {
+  if (store.processedImg && store.imageData) {
+    store.imageData = '';
+    store.processedImg = '';
+  }
+  store.isDone = false;
+  store.isProcessing = false;
+  store.progressBar = 0;
+  store.msg = "";
+  draggingLine.value = false;
+  dragging.value = false;
+  imgX.value = 0;
+  imgY.value = 0;
+  imgScale.value = 1;
+  imgInitScale.value = 1;
+  img.value = new Image();
+  processedImg.value = new Image();
+  initCanvasSize();
+}
+
 
 /**
  * 开始拖动
@@ -409,6 +510,7 @@ function updateCanvasSize() {
  */
 function handleResize() {
   updateCanvasSize();
+  updateQrcodeSize();
 }
 
 /**
@@ -464,6 +566,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   position: relative;
+  z-index: 0;
 }
 
 .bg {
@@ -536,13 +639,19 @@ onBeforeUnmount(() => {
 canvas {
   height: 100%;
   width: 100%;
+  z-index: 2;
 }
 
 .canvas-qr {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 
 .canvas-qr-text {
@@ -563,6 +672,7 @@ canvas {
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 3;
 }
 
 .dragLine:hover {
@@ -588,22 +698,53 @@ canvas {
 .canvas-progressbar {
   position: absolute;
   top: 0;
-  //left: 50%;
-  //transform: translate(-50%, -50%);
   width: 300px;
-  //height: 100px;
-  border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  //background-color: rgba(255, 255, 255, 0.5);
-  //padding: 10px;
 }
 
 .canvas-progressbar-text {
   font-size: 16px;
   font-weight: bold;
   color: white;
+}
+
+.floating-menu {
+  position: absolute;
+  background-color: rgb(255, 255, 255);
+  opacity: 0.8;
+  border-radius: 10px;
+  color: white;
+  width: 200px;
+  height: 50px;
+  padding: 10px;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease;
+  user-select: none;
+}
+
+.menu-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-btn:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.menu-icon {
+  transition: transform 0.2s ease;
+}
+
+.menu-icon:hover {
+  transform: scale(1.1);
 }
 </style>

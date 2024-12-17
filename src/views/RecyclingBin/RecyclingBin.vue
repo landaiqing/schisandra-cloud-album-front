@@ -1,5 +1,5 @@
 <template>
-
+  <CommentReply/>
 </template>
 <script setup lang="ts">
 </script>

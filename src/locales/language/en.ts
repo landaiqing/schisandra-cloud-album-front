@@ -131,5 +131,9 @@ export default {
         recyclingBin: 'Recycling Bin',
         upscale: 'Image Inpainting',
         share: 'Quickly Share'
+    },
+    upload:{
+        uploadSuccess: 'upload success！',
+        uploadError: 'upload failed！',
     }
 };

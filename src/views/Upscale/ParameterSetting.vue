@@ -52,6 +52,7 @@
     </div>
     <ADivider></ADivider>
     <AButton style="width: 100%;" size="large" shape="default" type="default" :loading="upscale.isProcessing"
+             :disabled="!upscale.input"
              @click="startTask">
       <template #icon>
         <AAvatar shape="square" :size="25" :src="run"/>
@@ -142,7 +143,6 @@ const imgCanvas = document.createElement("canvas");
  *  WebWorker 处理图片
  */
 async function startTask() {
-  console.log(upscale.input);
   if (upscale.input === null) return;
   upscale.isProcessing = true;
   const start = Date.now();
@@ -226,7 +226,7 @@ async function startTask() {
         outputData.value = null;
         imgCtx.putImageData(outImg, 0, 0);
         let type = "image/jpeg";
-        const quality = 0.92;
+        const quality = 1.0;
         if (upscale.hasAlpha) type = "image/png";
 
         imgCanvas.toBlob(

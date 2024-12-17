@@ -54,13 +54,7 @@ export const useUpscaleStore = defineStore(
                 fileData.value = urlData;
                 await loadImg(image);
                 uploading.value = false;
-
-                imageData.value = "";
-                processedImg.value = "";
-                isDone.value = false;
-                msg.value = "";
-                progressBar.value = 0;
-
+                await clear();
                 return true;
             }
 
@@ -68,8 +62,19 @@ export const useUpscaleStore = defineStore(
              *  自定义上传图片请求
              */
             async function customUploadRequest(_file: any) {
-
                 imageData.value = fileData.value;
+            }
+
+            /**
+             *  清空数据
+             */
+            async function clear() {
+                imageData.value = "";
+                processedImg.value = "";
+                isDone.value = false;
+                msg.value = "";
+                progressBar.value = 0;
+                isProcessing.value = false;
             }
 
             /**
@@ -117,6 +122,7 @@ export const useUpscaleStore = defineStore(
                 isProcessing,
                 msg,
                 progressBar,
+                loadImg,
                 beforeUpload,
                 customUploadRequest,
             };

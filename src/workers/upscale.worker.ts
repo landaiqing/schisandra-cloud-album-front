@@ -24,7 +24,6 @@ self.onmessage = async function (e: MessageEvent): Promise<void> {
     let Model: tf.GraphModel;
     try {
         Model = await tf.loadGraphModel(`indexeddb://${model_name}`);
-        console.log("Model loaded successfully");
         self.postMessage({info: "Model loaded from cache successfully"});
     } catch (_error) {
         self.postMessage({info: "Downloading model..."});
@@ -221,7 +220,6 @@ self.onmessage = async function (e: MessageEvent): Promise<void> {
     const factor = data?.factor || 4;
     const tile_size = data?.tile_size || 64;
     const min_lap = data?.min_lap || 12;
-    const start = Date.now();
     let output: any;
     try {
         output = await enlargeImageWithFixedInput(
@@ -237,8 +235,6 @@ self.onmessage = async function (e: MessageEvent): Promise<void> {
     if (withPadding) {
         output.cropToOriginalSize(width_ori * factor, height_ori * factor);
     }
-    const end = Date.now();
-    console.log("Time:", end - start);
     await new Promise((resolve) => setTimeout(resolve, 10));
     self.postMessage({
         progress: 100,

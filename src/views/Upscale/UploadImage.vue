@@ -39,7 +39,7 @@ import warn from '@/assets/svgs/warn.svg';
 const upscale = useStore().upscale;
 
 const uploadDraggerRef = ref<HTMLDivElement | null>(null);
-const containerRef = ref<HTMLDivElement | null>(null);
+
 
 
 

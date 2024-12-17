@@ -19,9 +19,34 @@
   </div>
 </template>
 <script setup lang="ts">
-import UploadImage from "@/views/Upscale/UploadImage.vue";
-import CompareImage from "@/views/Upscale/CompareImage.vue";
-import ParameterSetting from "@/views/Upscale/ParameterSetting.vue";
+
+import useStore from "@/store";
+
+const websocket = useStore().websocket;
+const user = useStore().user;
+const upscale = useStore().upscale;
+
+const img = new Image();
+const wsOptions = {
+  url: import.meta.env.VITE_FILE_SOCKET_URL + "?user_id=" + user.user.uid,
+  protocols: [user.user.access_token],
+};
+
+onMounted(() => {
+  websocket.initialize(wsOptions);
+  websocket.on("message", async (res: any) => {
+    if (res && res.code === 200) {
+      const {data} = res;
+      img.src = data;
+      await upscale.loadImg(img);
+      upscale.imageData = data;
+    }
+  });
+});
+
+onUnmounted(() => {
+  websocket.close(false);
+});
 </script>
 <style scoped lang="scss">
 .upscale-container {
@@ -29,13 +54,6 @@ import ParameterSetting from "@/views/Upscale/ParameterSetting.vue";
   flex-direction: column;
   width: 100%;
   height: 100%;
-
-
-  //.upscale-title {
-  //  font-size: 16px;
-  //  font-weight: bold;
-  //  margin-left: 5px;
-  //}
 
   .upscale-content {
     width: 100%;

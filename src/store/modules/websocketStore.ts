@@ -10,6 +10,9 @@ export const useWebSocketStore = defineStore('websocket', () => {
         wsService: null as WebSocketService | null,
     });
 
+    const readyState = ref<number>(WebSocket.CLOSED);
+
+
     function initialize(options: {
         url: string;
         protocols?: string | string[];
@@ -17,6 +20,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
     }) {
         state.wsService = new WebSocketService(options);
         state.wsService?.open();
+        readyState.value = WebSocket.OPEN;
     }
 
     function sendMessage(data: any) {
@@ -33,12 +37,9 @@ export const useWebSocketStore = defineStore('websocket', () => {
 
     function close(isActiveClose: boolean) {
         state.wsService?.close(isActiveClose);
+        readyState.value = WebSocket.CLOSED;
     }
 
-    // 新增的获取 WebSocket 状态的方法
-    function getReadyState() {
-        return state.wsService ? state.wsService.getReadyState() : WebSocket.CLOSED;
-    }
 
     return {
         initialize,
@@ -46,7 +47,7 @@ export const useWebSocketStore = defineStore('websocket', () => {
         on,
         onEvent,
         close,
-        getReadyState
+        readyState,
     };
 }, {
     persistedState: {

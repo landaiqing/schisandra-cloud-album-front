@@ -21,16 +21,16 @@ export default [
                 name: 'upscale',
                 component: () => import('@/views/Upscale/index.vue'),
                 meta: {
-                    requiresAuth: false,
+                    requiresAuth: true,
                     title: '图像修复'
-                }
+                },
             },
             {
                 path: '/main/photo/share',
                 name: 'share',
                 component: () => import('@/views/ImageShare/ImageShare.vue'),
                 meta: {
-                    requiresAuth: false,
+                    requiresAuth: true,
                     title: '快传'
                 }
             }

@@ -6,8 +6,7 @@ export const localforageStorageAdapter = {
         await localforage.setItem(key, value);
     },
     async get(key: string) {
-        const res: any = await localforage.getItem(key);
-        return res ? JSON.parse(res) : null;
+        return await localforage.getItem(key);
     },
     async remove(key: any) {
         await localforage.removeItem(key);

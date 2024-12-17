@@ -2,7 +2,7 @@
   <div>
     <div class="sidebar">
       <AMenu
-          :selectedKeys="[router.currentRoute.value.path.split('/').slice(-2).join('/')]"
+          :selectedKeys="[route.path.split('/').slice(-2).join('/')]"
           :selectable="true"
           :multiple="false"
           mode="vertical"
@@ -96,8 +96,11 @@ import recyclingbin from '@/assets/svgs/recyclingbin.svg';
 import Folder from "@/components/Folder/Folder.vue";
 import ai from '@/assets/svgs/ai.svg';
 import share from '@/assets/svgs/share.svg';
+
 const {t} = useI18n();
 const router = useRouter();
+const route = useRoute();
+
 
 
 /**

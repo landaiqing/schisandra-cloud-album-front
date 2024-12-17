@@ -7,12 +7,14 @@ import notFound from "./modules/not_found.ts";
 import landing from "./modules/landing.ts";
 import mainRouter from "./modules/main_router.ts";
 import i18n from "@/locales";
+import phone_upload from "@/router/modules/phone_upload.ts";
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
     ...notFound,
     ...landing,
     ...mainRouter,
+    ...phone_upload,
     {
         path: '/:pathMatch(.*)',
         redirect: '/404',
