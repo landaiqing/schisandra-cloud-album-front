@@ -35,7 +35,7 @@ const wsOptions = {
 onMounted(() => {
   websocket.initialize(wsOptions);
   websocket.on("message", async (res: any) => {
-    if (res && res.code === 200) {
+    if (res && res && res.code === 200) {
       const {data} = res;
       img.src = data;
       await upscale.loadImg(img);

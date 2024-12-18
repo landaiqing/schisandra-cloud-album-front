@@ -70,7 +70,7 @@ const userStore = useStore().user;
  */
 async function getQrCode() {
   const res: any = await generateQrCode(userStore.clientId);
-  if (res.code === 200 && res.data) {
+  if (res && res.code === 200) {
     status.value = 'active';
     qrcode.value = res.data;
     await handleListenMessage();
@@ -92,7 +92,7 @@ async function handleListenMessage() {
   websocket.initialize(wsOptions);
   // 注册消息接收处理函数
   websocket.on('message', async (res: any) => {
-    if (res.code === 200 && res.data) {
+    if (res && res.code === 200) {
       userStore.user.uid = res.data.uid;
       userStore.user.access_token = res.data.access_token;
       userStore.user.username = res.data.username;
@@ -103,7 +103,7 @@ async function handleListenMessage() {
       await getUserDevice();
       message.success(t('login.loginSuccess'));
       setTimeout(() => {
-        router.push('/main');
+        router.push('/main/photo/all');
       }, 1000);
     }
   });

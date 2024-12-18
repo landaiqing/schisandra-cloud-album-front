@@ -84,7 +84,7 @@ async function sendImage() {
     user_id: route.query.user_id as string,
   };
   const res: any = await uploadImage(data);
-  if (res && res.code === 200) {
+  if (res && res && res.code === 200) {
     message.success(t('upload.uploadSuccess'));
   } else {
     message.error(res.message);

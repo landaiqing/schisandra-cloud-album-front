@@ -27,7 +27,7 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
             // 刷新token
             const user = useStore().user;
             const res: any = await refreshToken();
-            if (res.code === 200 && res.data) {
+            if (res && res.code === 200) {
                 user.user.access_token = res.data;
             }
         }

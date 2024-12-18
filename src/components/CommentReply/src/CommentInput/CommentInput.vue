@@ -171,7 +171,7 @@ async function commentSubmit(point: any) {
     key: comment.slideCaptchaData.captKey,
   };
   const result: any = await commentSubmitApi(commentParams);
-  if (result.code === 200) {
+  if (result && result.code === 200) {
     const tmpData: any = {
       user_id: user.user.uid,
       content: result.data.content,

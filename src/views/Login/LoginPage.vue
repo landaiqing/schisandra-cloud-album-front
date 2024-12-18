@@ -372,7 +372,7 @@ async function phoneLoginSubmit() {
       .then(async () => {
         loginLoading.value = true;
         const res: any = await phoneLoginApi(phoneLoginForm);
-        if (res.code === 200 && res.data) {
+        if (res && res.code === 200) {
           userStore.user.uid = res.data.uid;
           userStore.user.access_token = res.data.access_token;
           userStore.user.username = res.data.username;
@@ -382,7 +382,7 @@ async function phoneLoginSubmit() {
           message.success(t('login.loginSuccess'));
           loginLoading.value = false;
           setTimeout(() => {
-            router.push('/main');
+            router.push('/main/photo/all');
           }, 1000);
         } else {
           loginLoading.value = false;
@@ -410,7 +410,7 @@ async function getRotateCaptcha() {
     accountLoginRotateRef.value?.clear();
   }
   const data: any = await getRotatedCaptchaData();
-  if (data.code === 200 && data.data) {
+  if (data && data.code === 200) {
     const {image, thumb, key} = data.data;
     captchaData.image = image;
     captchaData.thumb = thumb;
@@ -459,7 +459,7 @@ async function checkAccountLoginCaptcha(angle: number) {
   };
   loginLoading.value = true;
   const res: any = await accountLoginApi(params);
-  if (res.code === 200 && res.data) {
+  if (res && res.code === 200) {
     userStore.user.uid = res.data.uid;
     userStore.user.access_token = res.data.access_token;
     userStore.user.username = res.data.username;
@@ -470,7 +470,7 @@ async function checkAccountLoginCaptcha(angle: number) {
     loginLoading.value = false;
     showAccountRotateCaptcha.value = false;
     setTimeout(() => {
-      router.push('/main');
+      router.push('/main/photo/all');
     }, 1000);
   } else {
     loginLoading.value = false;
@@ -484,7 +484,7 @@ async function checkAccountLoginCaptcha(angle: number) {
  */
 async function sendMessageByPhone(params: any): Promise<boolean> {
   const res: any = await sendMessage(params);
-  if (res.code === 200) {
+  if (res && res.code === 200) {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
   } else {

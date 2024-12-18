@@ -263,7 +263,7 @@ async function resetPasswordSubmit() {
       .validate()
       .then(async () => {
         const res: any = await resetPasswordApi(ResetPasswordForm);
-        if (res.code === 200 && res.data) {
+        if (res && res.code === 200) {
           message.success(t('login.resetPasswordSuccess'));
           router.push('/login');
         } else {
@@ -285,7 +285,7 @@ const refreshCaptcha = useDebounceFn(getRotateCaptcha, 3000);
  */
 async function getRotateCaptcha() {
   const data: any = await getRotatedCaptchaData();
-  if (data.code === 200 && data.data) {
+  if (data && data.code === 200) {
     const {image, thumb, key} = data.data;
     captchaData.image = image;
     captchaData.thumb = thumb;
@@ -300,7 +300,7 @@ async function getRotateCaptcha() {
  */
 async function sendMessageByPhone(param: any): Promise<boolean> {
   const res: any = await sendMessage(param);
-  if (res.code === 200 && res.data) {
+  if (res && res.code === 200) {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
   } else {

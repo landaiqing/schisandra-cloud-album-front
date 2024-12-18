@@ -31,7 +31,7 @@ export const useAuthStore = defineStore(
          */
         async function getGithubRedirectUrl() {
             const res: any = await getGithubUrl(clientId.value);
-            if (res.code === 200 && res.data) {
+            if (res && res.code === 200 && res.data) {
                 githubRedirectUrl.value = res.data;
             }
         }
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore(
          */
         async function getGiteeRedirectUrl() {
             const res: any = await getGiteeUrl();
-            if (res.code === 200 && res.data) {
+            if (res && res.code === 200) {
                 giteeRedirectUrl.value = res.data;
             }
         }
@@ -51,7 +51,7 @@ export const useAuthStore = defineStore(
          */
         async function getQQRedirectUrl() {
             const res: any = await getQQUrl(clientId.value);
-            if (res.code === 200 && res.data) {
+            if (res && res.code === 200) {
                 qqRedirectUrl.value = res.data;
             }
         }
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore(
          */
         async function getClientId() {
             const res: any = await generateClientId();
-            if (res.code === 200 && res.data) {
+            if (res && res.code === 200) {
                 clientId.value = res.data;
             }
         }
@@ -73,7 +73,7 @@ export const useAuthStore = defineStore(
         const messageHandler = async (e: any) => {
             if (typeof e.data === 'string') {
                 const res: any = JSON.parse(e.data);
-                if (res.code === 200 && res.data) {
+                if (res && res.code === 200) {
                     user.uid = res.data.uid;
                     user.access_token = res.data.access_token;
                     user.username = res.data.username;
@@ -84,7 +84,7 @@ export const useAuthStore = defineStore(
                     message.success(t('login.loginSuccess'));
                     window.removeEventListener("message", messageHandler);
                     setTimeout(() => {
-                        router.push('/main');
+                        router.push('/main/photo/all');
                     }, 1000);
                 } else {
                     message.error(t('login.loginError'));

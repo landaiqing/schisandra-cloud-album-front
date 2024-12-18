@@ -172,7 +172,6 @@ import {
 } from "@ant-design/icons-vue";
 import {useThrottleFn} from "@vueuse/core";
 import useStore from "@/store";
-import {useRouter} from "vue-router";
 import ReplyInput from "@/components/CommentReply/src/ReplyInput/ReplyInput.vue";
 import ReplyList from "@/components/CommentReply/src/ReplyList/ReplyList.vue";
 import MessageReport from "@/components/CommentReply/src/MessageReport/MessageReport.vue";
@@ -181,6 +180,7 @@ import UserInfoCard from "@/components/CommentReply/src/UserInfoCard/UserInfoCar
 
 const {t} = useI18n();
 const router = useRouter();
+const route =useRoute();
 const comment = useStore().comment;
 
 
@@ -274,7 +274,7 @@ async function cancelCommentLike(item: any) {
  */
 async function paginationCommentChange(page: number, pageSize: number) {
   router.push({
-    path: "/main",
+    path: route.path,
     query: {
       type: router.currentRoute.value.query.type,
       page: page,
@@ -290,7 +290,7 @@ async function getHotCommentList() {
   comment.commentLoading = true;
   getCommentList(1, 5, true).then(() => {
     router.push({
-      path: "/main",
+      path: route.path,
       query: {
         type: "hot",
         page: router.currentRoute.value.query.page,
@@ -308,7 +308,7 @@ async function getLatestCommentList() {
   comment.commentLoading = true;
   getCommentList(1, 5, false).then(() => {
     router.push({
-      path: "/main",
+      path: route.path,
       query: {
         type: "latest",
         page: router.currentRoute.value.query.page,

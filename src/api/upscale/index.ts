@@ -9,7 +9,7 @@ export const uploadImage = (data: uploadImageRequest) => {
     }, {
         meta: {
             ignoreToken: false,
-            signature: true
+            signature: false,
         }
     });
 };

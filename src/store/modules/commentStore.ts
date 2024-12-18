@@ -53,7 +53,7 @@ export const useCommentStore = defineStore(
             commentList.value = {} as Comment;
             // 获取评论列表
             const result: any = await commentListApi(data);
-            if (result.code === 200 && result.data) {
+            if (result && result.code === 200) {
                 commentList.value = result.data;
                 if (Array.isArray(commentList.value.comments)) {
                     commentList.value.comments.map((item: any) => {
@@ -116,7 +116,7 @@ export const useCommentStore = defineStore(
         async function getReplyList(data: any) {
             // 获取评论列表
             const result: any = await replyListApi(data);
-            if (result.code === 200 && result.data) {
+            if (result && result.code === 200) {
                 if (replyVisibility.value[data.comment_id].data !== result.data) {
                     replyVisibility.value[data.comment_id].data = result.data;
                 }
@@ -135,7 +135,7 @@ export const useCommentStore = defineStore(
                 topic_id: data.topic_id,
             };
             const result: any = await commentLikeApi(params);
-            if (result.code !== 200) {
+            if (result && result.code !== 200) {
                 message.error(result.message);
                 return false;
             }
@@ -152,7 +152,7 @@ export const useCommentStore = defineStore(
                 topic_id: data.topic_id,
             };
             const result: any = await cancelCommentLikeApi(params);
-            if (result.code !== 200) {
+            if (result && result.code !== 200) {
                 message.error(result.message);
                 return false;
             }
@@ -164,7 +164,7 @@ export const useCommentStore = defineStore(
          */
         async function getSlideCaptchaData(): Promise<boolean> {
             const res: any = await getSlideCaptchaDataApi();
-            if (res.code == 200 && res.data) {
+            if (res && res.code === 200) {
                 const {key, image, thumb, thumb_width, thumb_height, thumb_x, thumb_y} = res.data;
                 slideCaptchaData.captKey = key;
                 slideCaptchaData.image = image;
