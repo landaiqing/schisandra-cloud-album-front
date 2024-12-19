@@ -6,7 +6,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.400"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -15,7 +15,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.401"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -24,7 +24,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.403"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -33,7 +33,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.404"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -42,7 +42,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.408"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -51,7 +51,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.500"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -60,7 +60,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.501"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -69,7 +69,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.502"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -78,7 +78,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.503"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -87,7 +87,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.504"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -96,7 +96,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.505"),
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();
@@ -105,7 +105,7 @@ export function handleErrorCode(code: number): void {
             message
                 .open({
                     content: i18n.global.t("error.other") + `(${code})`,
-                    duration: 5,
+                    duration: 3,
                     type: "error",
                 })
                 .then();

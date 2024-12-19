@@ -20,7 +20,13 @@ export const useWebSocketStore = defineStore('websocket', () => {
     }) {
         state.wsService = new WebSocketService(options);
         state.wsService?.open();
-        readyState.value = WebSocket.OPEN;
+
+        state.wsService?.on('open', () => {
+            readyState.value = WebSocket.OPEN;
+        });
+        state.wsService?.on('close', () => {
+            readyState.value = WebSocket.CLOSED;
+        });
     }
 
     function sendMessage(data: any) {

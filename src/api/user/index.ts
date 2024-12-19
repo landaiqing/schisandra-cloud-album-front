@@ -8,7 +8,7 @@ export const refreshToken = () => {
     return service.Post('/api/auth/token/refresh', {}, {
         meta: {
             authRole: 'refreshToken',
-            ignoreToken: false,
+            ignoreToken: true,
             signature: true
         }
     });
@@ -93,11 +93,14 @@ export const resetPasswordApi = (param: ResetPassword) => {
 
 /**
  * 获取用户设备信息
+ * @param access_token
  */
-export const getUserDevice = () => {
-    return service.Get('/api/user/device',
+export const getUserDevice = (access_token: string) => {
+    return service.Post('/api/user/device',
         {
-            params: {},
+            access_token: access_token,
+        },
+        {
             meta: {
                 ignoreToken: true,
                 signature: true

@@ -10,7 +10,7 @@ export const generateQrCode = (clientId: string) => {
             params: {
                 client_id: clientId
             },
-            cacheFor: 1000 * 60 * 60 * 24 * 7,
+            cacheFor: null,
             meta: {
                 ignoreToken: true,
             },

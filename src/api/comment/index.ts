@@ -58,7 +58,7 @@ export const commentListApi = (params: any) => {
         },
         {
             cacheFor: {
-                expire: 60 * 60 * 24 * 7,
+                expire: 60 * 60 * 24,
                 mode: "restore",
             }, // 7天缓存
             hitSource: "comment-submit",
@@ -81,7 +81,7 @@ export const replyListApi = (params: any) => {
         },
         {
             cacheFor: {
-                expire: 60 * 60 * 24 * 7,
+                expire: 60 * 60 * 24,
                 mode: "restore",
             }, // 7天缓存
             hitSource: ["reply-submit", "reply-reply-submit"],

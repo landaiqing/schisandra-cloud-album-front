@@ -41,7 +41,7 @@ export const service = createAlova({
     requestAdapter: axiosRequestAdapter(),
     l2Cache: localforageStorageAdapter,
     cacheLogger: import.meta.env.VITE_NODE_ENV === 'development',
-    cacheFor: {},
+    cacheFor: null,
     // 设置全局的请求拦截器
     beforeRequest: onAuthRequired(async (method: any) => {
         if (!method.meta?.ignoreToken) {

@@ -47,7 +47,6 @@ import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
 import {generateQrCode} from "@/api/oauth/wechat.ts";
-import {onBeforeUnmount, onMounted, ref} from "vue";
 import logo from "@/assets/svgs/logo-album.svg";
 
 import useStore from "@/store";
@@ -71,7 +70,6 @@ const userStore = useStore().user;
 async function getQrCode() {
   const res: any = await generateQrCode(userStore.clientId);
   if (res && res.code === 200) {
-    status.value = 'active';
     qrcode.value = res.data;
     await handleListenMessage();
   } else {
@@ -82,6 +80,7 @@ async function getQrCode() {
 
 const wsOptions = {
   url: import.meta.env.VITE_QR_SOCKET_URL + "?client_id=" + userStore.clientId,
+  reconnectTimeout: 10000,
 };
 
 
@@ -93,14 +92,15 @@ async function handleListenMessage() {
   // 注册消息接收处理函数
   websocket.on('message', async (res: any) => {
     if (res && res.code === 200) {
-      userStore.user.uid = res.data.uid;
-      userStore.user.access_token = res.data.access_token;
-      userStore.user.username = res.data.username;
-      userStore.user.avatar = res.data.avatar;
-      userStore.user.nickname = res.data.nickname;
-      userStore.user.status = res.data.status;
       status.value = 'scanned';
-      await getUserDevice();
+      const {data} = res;
+      userStore.user.uid = data.uid;
+      userStore.user.access_token = data.access_token;
+      userStore.user.username = data.username;
+      userStore.user.avatar = data.avatar;
+      userStore.user.nickname = data.nickname;
+      userStore.user.status = data.status;
+      await getUserDevice(data.access_token);
       message.success(t('login.loginSuccess'));
       setTimeout(() => {
         router.push('/main/photo/all');
@@ -117,6 +117,17 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   websocket.close(false);
 });
+
+watch(
+    () => websocket.readyState,
+    (newStatus) => {
+      if (newStatus === WebSocket.OPEN) {
+        status.value = 'active';
+      } else {
+        status.value = 'expired';
+      }
+    }
+);
 </script>
 <style src="./index.scss" lang="scss" scoped>
 

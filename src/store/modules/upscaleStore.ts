@@ -12,6 +12,73 @@ import Module from "@/workers/imghelper.ts";
 export const useUpscaleStore = defineStore(
         'upscale',
         () => {
+
+            // 模型参数
+            const TypeData = ref<string[]>(['realesrgan', 'realcugan']);
+
+            const model_type = ref<string>(TypeData.value[0]);
+
+            const ModelConfig = reactive({
+                realesrgan: {
+                    model: ["anime_fast", "anime_plus", "general_fast", "general_plus"],
+                    factor: [4],
+                    tile_size: [32, 48, 64, 96, 128, 192, 256],
+                },
+                realcugan: {
+                    factor: [2, 4],
+                    denoise: {
+                        2: [
+                            "conservative",
+                            "no-denoise",
+                            "denoise1x",
+                            "denoise2x",
+                            "denoise3x",
+                        ],
+                        3: ["conservative", "denoise3x"],
+                        4: ["conservative", "no-denoise", "denoise3x"],
+                    },
+                    tile_size: [32, 48, 64, 96, 128, 192, 256, 384, 512],
+                }
+            });
+            const factor = ref<number>(4);
+            const model = ref(ModelConfig[model_type.value].model[0]);
+            const modes = computed(() => {
+                if (model_type.value === "realesrgan") {
+                    return ModelConfig[model_type.value].model;
+                } else {
+                    return ModelConfig[model_type.value].denoise[factor.value];
+                }
+            });
+
+            watch(model_type, val => {
+                if (model_type.value === "realesrgan") {
+                    model.value = ModelConfig[val].model[0];
+                } else {
+                    model.value = ModelConfig[val].denoise[factor.value][0];
+                }
+            });
+
+
+            // Scale
+            const scales = computed(() => {
+                return ModelConfig[model_type.value].factor;
+            });
+
+            //tile size
+            const tile_size = ref<number>(128);
+            const tileSize = computed(() => {
+                return ModelConfig[model_type.value].tile_size;
+            });
+
+            // overlap
+            const overlapList = ref<number[]>([0, 4, 8, 12, 16, 20]);
+            const min_lap = ref<number>(overlapList.value[3]);
+
+            // run on
+            const backendList = ref<string[]>(['webgl', 'webgpu']);
+            const backend = ref<string>(backendList.value[0]);
+
+            // ***************图片处理***************
             const image: HTMLImageElement = document.createElement('img');
             const imageData = ref<string>();
             const fileData = ref<string>();
@@ -33,7 +100,7 @@ export const useUpscaleStore = defineStore(
             const isProcessing = ref<boolean>(false);
             const msg = ref<string>("");
             const progressBar = ref<number>(0);
-
+            const status = ref<string>('loading');
             /**
              * 图片上传前的校验
              * @param file
@@ -111,6 +178,19 @@ export const useUpscaleStore = defineStore(
 
 
             return {
+                TypeData,
+                model_type,
+                ModelConfig,
+                model,
+                modes,
+                factor,
+                tile_size,
+                tileSize,
+                scales,
+                overlapList,
+                min_lap,
+                backend,
+                backendList,
                 uploading,
                 imageData,
                 input,
@@ -122,6 +202,7 @@ export const useUpscaleStore = defineStore(
                 isProcessing,
                 msg,
                 progressBar,
+                status,
                 loadImg,
                 beforeUpload,
                 customUploadRequest,

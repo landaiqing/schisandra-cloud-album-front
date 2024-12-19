@@ -53,7 +53,7 @@ export class WebSocketService {
     };
 
     private handleMessage = (event: MessageEvent): void => {
-        const data = JSON.parse(event.data);
+        const {data} = event;
         if (this.callbacks.message) {
             this.callbacks.message.forEach((cb) => (cb as MessageCallback)(data));
         }
@@ -71,9 +71,6 @@ export class WebSocketService {
         console.log('WebSocket连接已关闭');
         if (this.callbacks.close) {
             this.callbacks.close.forEach((cb) => (cb as EventCallback)());
-            if (!this.options.reconnectTimeout) {
-                this.reconnect();
-            }
         }
     };
 
@@ -83,9 +80,5 @@ export class WebSocketService {
         } else {
             console.warn('尝试发送消息时WebSocket未连接');
         }
-    }
-
-    public getReadyState(): number {
-        return this.ws ? this.ws.readyState : WebSocket.CLOSED;
     }
 }

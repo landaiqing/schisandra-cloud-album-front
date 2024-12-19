@@ -13,7 +13,7 @@
         </ACard>
       </div>
       <div class="upscale-content-right">
-        <CompareImage style="border-radius: 10px"/>
+        <CompareImage/>
       </div>
     </AFlex>
   </div>
@@ -35,7 +35,7 @@ const wsOptions = {
 onMounted(() => {
   websocket.initialize(wsOptions);
   websocket.on("message", async (res: any) => {
-    if (res && res && res.code === 200) {
+    if (res && res.code === 200) {
       const {data} = res;
       img.src = data;
       await upscale.loadImg(img);
@@ -43,7 +43,16 @@ onMounted(() => {
     }
   });
 });
-
+watch(
+    () => websocket.readyState,
+    (newStatus) => {
+      if (newStatus === WebSocket.OPEN) {
+        upscale.status = 'active';
+      } else {
+        upscale.status = 'loading';
+      }
+    }
+);
 onUnmounted(() => {
   websocket.close(false);
 });
@@ -87,7 +96,7 @@ onUnmounted(() => {
     .upscale-content-right {
       width: 70%;
       height: 100%;
-
+      border-radius: 10px;
     }
   }
 }

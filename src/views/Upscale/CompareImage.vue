@@ -1,7 +1,11 @@
 <template>
   <div
       ref="canvasContainer"
-      class="canvas-container bg drag-over  dark"
+      class="canvas-container bg"
+      :class="{
+      'drag-over':false,
+      'dark':false
+      }"
       @mousedown="startDragging"
       @mouseup="stopDragging"
       @mouseleave="stopDragging"
@@ -51,6 +55,8 @@
                :value="generateQrCodeUrl()"
                :icon="phone"
                :iconSize="iconSize"
+               :status="store.status"
+
       />
       <span class="canvas-qr-text">手机扫码上传</span>
     </div>
@@ -87,6 +93,11 @@
         </ATooltip>
       </AFlex>
     </div>
+    <!--    图片信息 -->
+    <div class="image-info">
+      <ATag color="cyan" :bordered="false" v-if="store.imageData">修复前: {{ originalImageSize }}</ATag>
+      <ATag color="purple" :bordered="false" v-if="store.processedImg">修复后: {{ processedImageSize }}</ATag>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -96,6 +107,7 @@ import download from '@/assets/svgs/download.svg';
 import share from '@/assets/svgs/share.svg';
 import save from '@/assets/svgs/save.svg';
 import deleted from '@/assets/svgs/deleted.svg';
+import getImageSizeWithUnit from "@/utils/imageUtils/getImageSizeWithUnit.ts";
 
 const canvasContainer = ref<HTMLDivElement | null>(null);
 const dragging = ref<boolean>(false);
@@ -124,6 +136,11 @@ const processedImg = ref<HTMLImageElement>(new Image());
 
 const qrcodeSize = ref<number>(250);
 const iconSize = ref<number>(30);
+
+const originalImageSize = ref<string>('');
+const processedImageSize = ref<string>('');
+
+
 /**
  *  更新二维码大小
  */
@@ -140,8 +157,6 @@ function generateQrCodeUrl(): string {
   return import.meta.env.VITE_APP_WEB_URL + "/upscale/app?user_id=" + user.user.uid + "&token=" + user.user.access_token;
 }
 
-console.log(generateQrCodeUrl());
-
 /**
  *  下载图片
  */
@@ -149,8 +164,22 @@ function downloadImage() {
   if (!store.processedImg) return;
   const a = document.createElement("a");
   a.href = store.processedImg;
-  if (store.hasAlpha) a.download = "output.png";
-  else a.download = "output.jpg";
+  if (store.hasAlpha) a.download = store.model_type +
+      "_" + store.model +
+      "_" + store.factor +
+      "_" + store.tile_size +
+      "_" + store.min_lap +
+      "_" + store.backend +
+      "_" +
+      "output.png";
+  else a.download = store.model_type +
+      "_" + store.model +
+      "_" + store.factor +
+      "_" + store.tile_size +
+      "_" + store.min_lap +
+      "_" + store.backend +
+      "_" +
+      "output.jpg";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -529,8 +558,9 @@ watch(
     (newValue) => {
       if (newValue) {
         img.value.src = newValue;
-        img.value.onload = () => {
+        img.value.onload = async () => {
           initCanvasSize();
+          originalImageSize.value = await getImageSizeWithUnit(newValue);
         };
       }
     }
@@ -540,8 +570,9 @@ watch(
     (newValue) => {
       if (newValue) {
         processedImg.value.src = newValue;
-        processedImg.value.onload = () => {
+        processedImg.value.onload = async () => {
           initCanvasSize();
+          processedImageSize.value = await getImageSizeWithUnit(newValue);
         };
       }
     }
@@ -567,6 +598,8 @@ onBeforeUnmount(() => {
   height: 100%;
   position: relative;
   z-index: 0;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .bg {
@@ -640,6 +673,7 @@ canvas {
   height: 100%;
   width: 100%;
   z-index: 2;
+  border-radius: 10px;
 }
 
 .canvas-qr {
@@ -708,7 +742,7 @@ canvas {
 .canvas-progressbar-text {
   font-size: 16px;
   font-weight: bold;
-  color: white;
+  color: #000000;
 }
 
 .floating-menu {
@@ -746,5 +780,23 @@ canvas {
 
 .menu-icon:hover {
   transform: scale(1.1);
+}
+
+
+.image-info {
+  position: absolute;
+  opacity: 0.8;
+  border-radius: 10px;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  transition: all 0.5s ease;
+  user-select: none;
+  z-index: 3;
 }
 </style>

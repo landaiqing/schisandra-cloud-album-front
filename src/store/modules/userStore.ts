@@ -5,7 +5,7 @@ import {getGithubUrl} from "@/api/oauth/github.ts";
 import {getQQUrl} from "@/api/oauth/qq.ts";
 import {getGiteeUrl} from "@/api/oauth/gitee.ts";
 import {getUserDevice} from "@/api/user";
-import message from "@/components/MyUI/Message/Message.vue";
+import {message} from "ant-design-vue";
 import {useI18n} from "vue-i18n";
 
 export const useAuthStore = defineStore(
@@ -70,17 +70,18 @@ export const useAuthStore = defineStore(
          * 处理消息
          * @param e
          */
-        const messageHandler = async (e: any) => {
+        const messageHandler = async (e: MessageEvent) => {
             if (typeof e.data === 'string') {
                 const res: any = JSON.parse(e.data);
                 if (res && res.code === 200) {
-                    user.uid = res.data.uid;
-                    user.access_token = res.data.access_token;
-                    user.username = res.data.username;
-                    user.avatar = res.data.avatar;
-                    user.nickname = res.data.nickname;
-                    user.status = res.data.status;
-                    await getUserDevice();
+                    const {data} = res;
+                    user.uid = data.uid;
+                    user.access_token = data.access_token;
+                    user.username = data.username;
+                    user.avatar = data.avatar;
+                    user.nickname = data.nickname;
+                    user.status = data.status;
+                    await getUserDevice(data.access_token);
                     message.success(t('login.loginSuccess'));
                     window.removeEventListener("message", messageHandler);
                     setTimeout(() => {

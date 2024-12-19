@@ -8,11 +8,9 @@ export const generateClientId = () => {
         {
             meta: {
                 ignoreToken: true,
+                signature: true
             },
-            cacheFor: {
-                mode: "restore",
-                expire: 1000 * 60 * 60 * 24
-            }
+            cacheFor: null,
         }
     );
 };

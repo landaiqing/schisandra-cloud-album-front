@@ -4,15 +4,15 @@
       <div class="upscale-params-item-content">
         <span class="upscale-params-title">类型:</span>
         <ASelect style="width: 100%" size="large"
-                 v-model:value="model_type"
-                 :options="TypeData.map(item => ({label: item, value: item}))">
+                 v-model:value="upscale.model_type"
+                 :options="upscale.TypeData.map(item => ({label: item, value: item}))">
         </ASelect>
       </div>
       <div class="upscale-params-item-content">
         <span class="upscale-params-title">模型:</span>
         <ASelect style="width: 100%" size="large"
-                 v-model:value="model"
-                 :options="modes.map((item: any) => ({label: item, value: item}))">
+                 v-model:value="upscale.model"
+                 :options="upscale.modes.map((item: any) => ({label: item, value: item}))">
         </ASelect>
       </div>
     </div>
@@ -20,16 +20,16 @@
       <div class="upscale-params-item-content">
         <span class="upscale-params-title">比列:</span>
         <ASelect style="width: 100%" size="large"
-                 v-model:value="factor"
-                 :options="scales.map((item: any) => ({label: item, value: item}))">
+                 v-model:value="upscale.factor"
+                 :options="upscale.scales.map((item: any) => ({label: item, value: item}))">
 
         </ASelect>
       </div>
       <div class="upscale-params-item-content">
         <span class="upscale-params-title">分块大小:</span>
         <ASelect style="width: 100%" size="large"
-                 v-model:value="tile_size"
-                 :options="tileSize.map((item: any) => ({label: item, value: item}))">
+                 v-model:value="upscale.tile_size"
+                 :options="upscale.tileSize.map((item: any) => ({label: item, value: item}))">
 
         </ASelect>
       </div>
@@ -38,15 +38,15 @@
       <div class="upscale-params-item-content">
         <span class="upscale-params-title">重复:</span>
         <ASelect style="width: 100%" size="large"
-                 v-model:value="min_lap"
-                 :options="overlapList.map((item: any) => ({label: item, value: item}))">
+                 v-model:value="upscale.min_lap"
+                 :options="upscale.overlapList.map((item: any) => ({label: item, value: item}))">
         </ASelect>
       </div>
       <div class="upscale-params-item-content">
         <span class="upscale-params-title">运行环境：</span>
         <ASelect style="width: 100%" size="large"
-                 v-model:value="backend"
-                 :options="backendList.map((item: any) => ({label: item, value: item}))">
+                 v-model:value="upscale.backend"
+                 :options="upscale.backendList.map((item: any) => ({label: item, value: item}))">
         </ASelect>
       </div>
     </div>
@@ -69,70 +69,6 @@ import useStore from "@/store";
 import run from '@/assets/svgs/run.svg';
 
 const upscale = useStore().upscale;
-// ***************参数设置***************
-const TypeData = ['realesrgan', 'realcugan'];
-
-const model_type = ref<string>(TypeData[0]);
-
-const ModelConfig = reactive({
-  realesrgan: {
-    model: ["anime_fast", "anime_plus", "general_fast", "general_plus"],
-    factor: [4],
-    tile_size: [32, 48, 64, 96, 128, 192, 256],
-  },
-  realcugan: {
-    factor: [2, 4],
-    denoise: {
-      2: [
-        "conservative",
-        "no-denoise",
-        "denoise1x",
-        "denoise2x",
-        "denoise3x",
-      ],
-      3: ["conservative", "denoise3x"],
-      4: ["conservative", "no-denoise", "denoise3x"],
-    },
-    tile_size: [32, 48, 64, 96, 128, 192, 256, 384, 512],
-  }
-});
-const factor = ref<number>(4);
-const model = ref(ModelConfig[model_type.value].model[0]);
-const modes = computed(() => {
-  if (model_type.value === "realesrgan") {
-    return ModelConfig[model_type.value].model;
-  } else {
-    return ModelConfig[model_type.value].denoise[factor.value];
-  }
-});
-
-watch(model_type, val => {
-  if (model_type.value === "realesrgan") {
-    model.value = ModelConfig[val].model[0];
-  } else {
-    model.value = ModelConfig[val].denoise[factor.value][0];
-  }
-});
-
-
-// Scale
-const scales = computed(() => {
-  return ModelConfig[model_type.value].factor;
-});
-
-//tile size
-const tile_size = ref<number>(128);
-const tileSize = computed(() => {
-  return ModelConfig[model_type.value].tile_size;
-});
-
-// overlap
-const overlapList = [0, 4, 8, 12, 16, 20];
-const min_lap = ref<number>(overlapList[3]);
-
-// run on
-const backendList = ['webgl', 'webgpu'];
-const backend = ref<string>(backendList[0]);
 
 // ********************处理图片*******************
 const outputData = ref<any>();
@@ -166,8 +102,8 @@ async function startTask() {
       if (!upscale.hasAlpha || (upscale.hasAlpha && upscale.inputAlpha)) {
         if (upscale.input) {
           outputData.value = new Img(
-              factor.value * upscale.input.width,
-              factor.value * upscale.input.height,
+              upscale.factor * upscale.input.width,
+              upscale.factor * upscale.input.height,
               new Uint8Array(output)
           );
         }
@@ -177,14 +113,14 @@ async function startTask() {
         worker.postMessage(
             {
               input: upscale.inputAlpha.data.buffer,
-              factor: factor.value,
-              tile_size: tile_size.value,
-              min_lap: min_lap.value,
-              model_type: model_type.value,
+              factor: upscale.factor,
+              tile_size: upscale.tile_size,
+              min_lap: upscale.min_lap,
+              model_type: upscale.model_type,
               width: upscale.inputAlpha.width,
               height: upscale.inputAlpha.height,
-              model: model.value,
-              backend: backend.value,
+              model: upscale.model,
+              backend: upscale.backend,
               hasAlpha: true,
             },
             [upscale.inputAlpha.data.buffer]
@@ -247,14 +183,14 @@ async function startTask() {
     worker.postMessage(
         {
           input: upscale.input.data.buffer,
-          factor: factor.value,
-          tile_size: tile_size.value,
-          min_lap: min_lap.value,
-          model_type: model_type.value,
+          factor: upscale.factor,
+          tile_size: upscale.tile_size,
+          min_lap: upscale.min_lap,
+          model_type: upscale.model_type,
           width: upscale.input.width,
           height: upscale.input.height,
-          model: model.value,
-          backend: backend.value,
+          model: upscale.model,
+          backend: upscale.backend,
           hasAlpha: false,
         },
         [upscale.input.data.buffer]

@@ -236,10 +236,6 @@ self.onmessage = async function (e: MessageEvent): Promise<void> {
         output.cropToOriginalSize(width_ori * factor, height_ori * factor);
     }
     await new Promise((resolve) => setTimeout(resolve, 10));
-    self.postMessage({
-        progress: 100,
-        info: `Processing image...`,
-    });
     self.postMessage(
         {
             progress: 100,
