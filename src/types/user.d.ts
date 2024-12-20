@@ -18,3 +18,8 @@ export interface ResetPassword {
     password?: string;
     repassword?: string;
 }
+
+export interface WechatOffiaccountLogin {
+    openid:string;
+    client_id:string;
+}

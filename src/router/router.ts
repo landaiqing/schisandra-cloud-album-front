@@ -29,7 +29,7 @@ const router: Router = createRouter({
 router.beforeEach((to, _from, next) => {
     // start();
     const user = useStore().user;
-    const token: string | undefined = user.user.access_token;
+    const token: string | undefined = user.token;
     const userId: string | undefined = user.user.uid;
 
     // 检查用户是否已登录

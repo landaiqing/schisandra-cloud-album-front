@@ -21,7 +21,7 @@
               class="qrlogin-card-qr"
               :size="280"
               :error-level="'H'"
-              :status="status"
+              :status="qrStatus"
               @refresh="getQrCode"
               :value=qrcode
               :icon="logo"
@@ -46,20 +46,20 @@ import {useI18n} from "vue-i18n";
 import BoxDog from "@/components/BoxDog/BoxDog.vue";
 import QRLoginFooter from "@/views/QRLogin/QRLoginFooter.vue";
 import {useRouter} from 'vue-router';
-import {generateQrCode} from "@/api/oauth/wechat.ts";
 import logo from "@/assets/svgs/logo-album.svg";
 
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import {getUserDevice} from "@/api/user";
 import BackgroundAnimation from "@/components/BackgroundAnimation/BackgroundAnimation.vue";
+import {generateQrCode, wechatOffiaccountLoginApi} from "@/api/user";
+import {WechatOffiaccountLogin} from "@/types/user";
 
 const {t} = useI18n();
 
 const router = useRouter();
 
 const qrcode = ref<string>('');
-const status = ref<string>('loading');
+const qrStatus = ref<string>('loading');
 const websocket = useStore().websocket;
 const userStore = useStore().user;
 
@@ -73,7 +73,7 @@ async function getQrCode() {
     qrcode.value = res.data;
     await handleListenMessage();
   } else {
-    status.value = 'expired';
+    qrStatus.value = 'expired';
   }
 }
 
@@ -92,15 +92,20 @@ async function handleListenMessage() {
   // 注册消息接收处理函数
   websocket.on('message', async (res: any) => {
     if (res && res.code === 200) {
-      status.value = 'scanned';
-      const {data} = res;
-      userStore.user.uid = data.uid;
-      userStore.user.access_token = data.access_token;
-      userStore.user.username = data.username;
-      userStore.user.avatar = data.avatar;
-      userStore.user.nickname = data.nickname;
-      userStore.user.status = data.status;
-      await getUserDevice(data.access_token);
+      qrStatus.value = 'scanned';
+      const {openid, client_id } = res.data;
+      const param: WechatOffiaccountLogin = {
+        openid: openid,
+        client_id: client_id
+      };
+      const response: any = await wechatOffiaccountLoginApi(param);
+      const {uid, access_token, username, avatar, nickname, status} = response.data;
+      userStore.user.uid = uid;
+      userStore.user.username = username;
+      userStore.user.avatar = avatar;
+      userStore.user.nickname = nickname;
+      userStore.user.status = status;
+      userStore.token = access_token;
       message.success(t('login.loginSuccess'));
       setTimeout(() => {
         router.push('/main/photo/all');
@@ -122,9 +127,9 @@ watch(
     () => websocket.readyState,
     (newStatus) => {
       if (newStatus === WebSocket.OPEN) {
-        status.value = 'active';
+        qrStatus.value = 'active';
       } else {
-        status.value = 'expired';
+        qrStatus.value = 'expired';
       }
     }
 );

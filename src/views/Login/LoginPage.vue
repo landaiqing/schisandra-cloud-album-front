@@ -374,11 +374,11 @@ async function phoneLoginSubmit() {
         const res: any = await phoneLoginApi(phoneLoginForm);
         if (res && res.code === 200) {
           userStore.user.uid = res.data.uid;
-          userStore.user.access_token = res.data.access_token;
           userStore.user.username = res.data.username;
           userStore.user.avatar = res.data.avatar;
           userStore.user.nickname = res.data.nickname;
           userStore.user.status = res.data.status;
+          userStore.token = res.data.access_token;
           message.success(t('login.loginSuccess'));
           loginLoading.value = false;
           setTimeout(() => {
@@ -461,11 +461,11 @@ async function checkAccountLoginCaptcha(angle: number) {
   const res: any = await accountLoginApi(params);
   if (res && res.code === 200) {
     userStore.user.uid = res.data.uid;
-    userStore.user.access_token = res.data.access_token;
     userStore.user.username = res.data.username;
     userStore.user.avatar = res.data.avatar;
     userStore.user.nickname = res.data.nickname;
     userStore.user.status = res.data.status;
+    userStore.token = res.data.access_token;
     message.success(t('login.loginSuccess'));
     loginLoading.value = false;
     showAccountRotateCaptcha.value = false;

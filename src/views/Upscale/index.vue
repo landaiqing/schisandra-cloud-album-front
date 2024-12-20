@@ -29,7 +29,7 @@ const upscale = useStore().upscale;
 const img = new Image();
 const wsOptions = {
   url: import.meta.env.VITE_FILE_SOCKET_URL + "?user_id=" + user.user.uid,
-  protocols: [user.user.access_token],
+  protocols: [user.token],
 };
 
 onMounted(() => {

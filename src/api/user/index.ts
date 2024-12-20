@@ -1,5 +1,5 @@
 import {service} from "@/utils/alova/service.ts";
-import {AccountLogin, PhoneLogin, ResetPassword} from "@/types/user";
+import {AccountLogin, PhoneLogin, ResetPassword, WechatOffiaccountLogin} from "@/types/user";
 
 /**
  * 刷新token
@@ -8,7 +8,7 @@ export const refreshToken = () => {
     return service.Post('/api/auth/token/refresh', {}, {
         meta: {
             authRole: 'refreshToken',
-            ignoreToken: true,
+            ignoreToken: false,
             signature: true
         }
     });
@@ -89,22 +89,38 @@ export const resetPasswordApi = (param: ResetPassword) => {
         }
     );
 };
-
-
 /**
- * 获取用户设备信息
- * @param access_token
+ * 微信扫码登录
+ * @param param
  */
-export const getUserDevice = (access_token: string) => {
-    return service.Post('/api/user/device',
-        {
-            access_token: access_token,
+export const wechatOffiaccountLoginApi = (param: WechatOffiaccountLogin) => {
+    return service.Post('/api/user/wechat/offiaccount/login', {
+            openid: param.openid,
+            client_id: param.client_id,
         },
         {
             meta: {
                 ignoreToken: true,
                 signature: true
             }
+        }
+    );
+};
+
+
+/**
+ * 获取临时二维码
+ * @param clientId
+ */
+export const generateQrCode = (clientId: string) => {
+    return service.Post('/api/user/wechat/offiaccount/qrcode', {
+            client_id: clientId
+        }, {
+            cacheFor: 60 * 60 * 24,
+            meta: {
+                ignoreToken: true,
+                signature: true
+            },
         }
     );
 };

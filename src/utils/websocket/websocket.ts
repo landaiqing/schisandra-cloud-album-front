@@ -53,7 +53,7 @@ export class WebSocketService {
     };
 
     private handleMessage = (event: MessageEvent): void => {
-        const {data} = event;
+        const data = JSON.parse(event.data);
         if (this.callbacks.message) {
             this.callbacks.message.forEach((cb) => (cb as MessageCallback)(data));
         }

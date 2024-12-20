@@ -1,24 +1,20 @@
 import {defineStore} from 'pinia';
-import {reactive} from 'vue';
 import {generateClientId} from "@/api/client";
-import {getGithubUrl} from "@/api/oauth/github.ts";
-import {getQQUrl} from "@/api/oauth/qq.ts";
-import {getGiteeUrl} from "@/api/oauth/gitee.ts";
-import {getUserDevice} from "@/api/user";
 import {message} from "ant-design-vue";
 import {useI18n} from "vue-i18n";
+import {getGiteeUrl, getGithubUrl, getQQUrl} from "@/api/oauth";
 
 export const useAuthStore = defineStore(
     'user',
     () => {
         const user: any = reactive({
-            access_token: '',
             uid: '',
             username: '',
             nickname: '',
             avatar: '',
             status: '',
         });
+        const token: any = ref<string>('');
         const clientId = ref<string>('');
         const githubRedirectUrl = ref<string>('');
         const giteeRedirectUrl = ref<string>('');
@@ -74,14 +70,13 @@ export const useAuthStore = defineStore(
             if (typeof e.data === 'string') {
                 const res: any = JSON.parse(e.data);
                 if (res && res.code === 200) {
-                    const {data} = res;
-                    user.uid = data.uid;
-                    user.access_token = data.access_token;
-                    user.username = data.username;
-                    user.avatar = data.avatar;
-                    user.nickname = data.nickname;
-                    user.status = data.status;
-                    await getUserDevice(data.access_token);
+                    const {uid, access_token, username, avatar, nickname, status} = res.data;
+                    user.uid = uid;
+                    user.username = username;
+                    user.avatar = avatar;
+                    user.nickname = nickname;
+                    user.status = status;
+                    token.value = access_token;
                     message.success(t('login.loginSuccess'));
                     window.removeEventListener("message", messageHandler);
                     setTimeout(() => {
@@ -130,9 +125,19 @@ export const useAuthStore = defineStore(
             window.addEventListener("message", messageHandler);
         }
 
+        function clear() {
+            token.value = "";
+            user.avatar = "";
+            user.uid = "";
+            user.username = "";
+            user.nickname = "";
+            user.status = "";
+        }
+
 
         return {
             user,
+            token,
             clientId,
             getGithubRedirectUrl,
             getGiteeRedirectUrl,
@@ -141,6 +146,7 @@ export const useAuthStore = defineStore(
             openGithubUrl,
             openGiteeUrl,
             openQQUrl,
+            clear
         };
     },
     {
@@ -154,7 +160,7 @@ export const useAuthStore = defineStore(
             persist: true,
             storage: localStorage,
             key: 'user',
-            includePaths: ['user', "clientId", "githubRedirectUrl", "giteeRedirectUrl", "qqRedirectUrl"]
+            includePaths: ['user', 'token', "clientId"]
         }
     }
 );

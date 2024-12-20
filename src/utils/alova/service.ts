@@ -28,7 +28,7 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
             const user = useStore().user;
             const res: any = await refreshToken();
             if (res && res.code === 200) {
-                user.user.access_token = res.data;
+                user.token = res.data;
             }
         }
     }
@@ -46,7 +46,8 @@ export const service = createAlova({
     beforeRequest: onAuthRequired(async (method: any) => {
         if (!method.meta?.ignoreToken) {
             const user = useStore().user;
-            method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.user.access_token}`;
+            method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.token}`;
+            method.config.headers['X-UID'] = user.user.uid;
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';
@@ -72,11 +73,9 @@ export const service = createAlova({
                         }, 1000);
                     },
                 });
-                return Promise.reject(response.data);
+                return Promise.reject();
             }
             return response.data;
-
-
         },
         onError:
             (error: AxiosError, _method: any) => {
