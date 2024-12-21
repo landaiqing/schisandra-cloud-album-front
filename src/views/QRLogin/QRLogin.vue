@@ -93,19 +93,20 @@ async function handleListenMessage() {
   websocket.on('message', async (res: any) => {
     if (res && res.code === 200) {
       qrStatus.value = 'scanned';
-      const {openid, client_id } = res.data;
+      const {openid, client_id} = res.data;
       const param: WechatOffiaccountLogin = {
         openid: openid,
         client_id: client_id
       };
       const response: any = await wechatOffiaccountLoginApi(param);
-      const {uid, access_token, username, avatar, nickname, status} = response.data;
+      const {uid, access_token, expire_at, username, avatar, nickname, status} = response.data;
       userStore.user.uid = uid;
       userStore.user.username = username;
       userStore.user.avatar = avatar;
       userStore.user.nickname = nickname;
       userStore.user.status = status;
-      userStore.token = access_token;
+      userStore.token.accessToken = access_token;
+      userStore.token.expireAt = expire_at;
       message.success(t('login.loginSuccess'));
       setTimeout(() => {
         router.push('/main/photo/all');

@@ -378,7 +378,8 @@ async function phoneLoginSubmit() {
           userStore.user.avatar = res.data.avatar;
           userStore.user.nickname = res.data.nickname;
           userStore.user.status = res.data.status;
-          userStore.token = res.data.access_token;
+          userStore.token.accessToken = res.data.access_token;
+          userStore.token.expireAt = res.data.expire_at;
           message.success(t('login.loginSuccess'));
           loginLoading.value = false;
           setTimeout(() => {
@@ -465,7 +466,8 @@ async function checkAccountLoginCaptcha(angle: number) {
     userStore.user.avatar = res.data.avatar;
     userStore.user.nickname = res.data.nickname;
     userStore.user.status = res.data.status;
-    userStore.token = res.data.access_token;
+    userStore.token.accessToken = res.data.access_token;
+    userStore.token.expireAt = res.data.expire_at;
     message.success(t('login.loginSuccess'));
     loginLoading.value = false;
     showAccountRotateCaptcha.value = false;

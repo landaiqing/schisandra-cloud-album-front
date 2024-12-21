@@ -14,7 +14,10 @@ export const useAuthStore = defineStore(
             avatar: '',
             status: '',
         });
-        const token: any = ref<string>('');
+        const token: any = reactive({
+            accessToken: '',
+            expireAt: '',
+        });
         const clientId = ref<string>('');
         const githubRedirectUrl = ref<string>('');
         const giteeRedirectUrl = ref<string>('');
@@ -70,13 +73,14 @@ export const useAuthStore = defineStore(
             if (typeof e.data === 'string') {
                 const res: any = JSON.parse(e.data);
                 if (res && res.code === 200) {
-                    const {uid, access_token, username, avatar, nickname, status} = res.data;
+                    const {uid, access_token, expire_at, username, avatar, nickname, status} = res.data;
                     user.uid = uid;
                     user.username = username;
                     user.avatar = avatar;
                     user.nickname = nickname;
                     user.status = status;
-                    token.value = access_token;
+                    token.accessToken = access_token;
+                    token.expireAt = expire_at;
                     message.success(t('login.loginSuccess'));
                     window.removeEventListener("message", messageHandler);
                     setTimeout(() => {
@@ -126,7 +130,8 @@ export const useAuthStore = defineStore(
         }
 
         function clear() {
-            token.value = "";
+            token.accessToken = "";
+            token.expireAt = "";
             user.avatar = "";
             user.uid = "";
             user.username = "";

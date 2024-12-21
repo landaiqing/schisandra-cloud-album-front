@@ -1,5 +1,5 @@
 import {createAlova} from 'alova';
-
+import CryptoJS from 'crypto-js';
 import VueHook from 'alova/vue';
 import useStore from "@/store";
 import {localforageStorageAdapter} from "@/utils/alova/adapter/localforageStorageAdapter.ts";
@@ -28,7 +28,9 @@ const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication
             const user = useStore().user;
             const res: any = await refreshToken();
             if (res && res.code === 200) {
-                user.token = res.data;
+                const {access_token, expire_at} = res.data;
+                user.token.accessToken = access_token;
+                user.token.expireAt = expire_at;
             }
         }
     }
@@ -46,11 +48,16 @@ export const service = createAlova({
     beforeRequest: onAuthRequired(async (method: any) => {
         if (!method.meta?.ignoreToken) {
             const user = useStore().user;
-            method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.token}`;
+            method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.token.accessToken}`;
             method.config.headers['X-UID'] = user.user.uid;
+            method.config.headers['X-Expire-At'] = user.token.expireAt;
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';
+
+        // 令牌
+        method.config.headers['X-Nonce'] = CryptoJS.lib.WordArray.random(16).toString();
+
         if (method.meta?.signature) {
             method.config.headers['X-Content-Security'] = generateKeySecretSignature(0, method.type, method.url, method.config.params, method.data);
         }

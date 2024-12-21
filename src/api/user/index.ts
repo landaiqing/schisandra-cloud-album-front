@@ -114,8 +114,9 @@ export const wechatOffiaccountLoginApi = (param: WechatOffiaccountLogin) => {
  */
 export const generateQrCode = (clientId: string) => {
     return service.Post('/api/user/wechat/offiaccount/qrcode', {
-            client_id: clientId
-        }, {
+        client_id: clientId
+        },
+        {
             cacheFor: 60 * 60 * 24,
             meta: {
                 ignoreToken: true,
