@@ -210,14 +210,16 @@ async function replyReplySubmit(point: any) {
       reply_nickname: props.item.nickname,
       reply_to: result.data.reply_to,
     };
-    if (!comment.replyVisibility[props.item.id].data.comments) {
+    if (!comment.replyVisibility[props.item.id].data) {
       comment.replyVisibility[props.item.id].data.comments = []; // 初始化 comments 数组
     }
     comment.replyVisibility[props.item.id].data.comments.unshift(tmpData);
     comment.commentMap[props.item.id].reply_count++;
+    comment.replyVisibility[props.item.id].visible = true;
     replyReplyContent.value = "";
     await comment.clearFileList();
     showSubmitCaptcha.value = false;
+    comment.replyLoading[props.item.id] = false;
     // await getReplyList();
     comment.closeReplyInput();
 

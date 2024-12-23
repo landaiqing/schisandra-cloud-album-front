@@ -387,7 +387,7 @@ async function phoneLoginSubmit() {
           }, 1000);
         } else {
           loginLoading.value = false;
-          message.error(res.message);
+          message.error(res.msg);
         }
       })
       .catch((error: any) => {
@@ -475,8 +475,9 @@ async function checkAccountLoginCaptcha(angle: number) {
       router.push('/main/photo/all');
     }, 1000);
   } else {
+    showAccountRotateCaptcha.value = false;
     loginLoading.value = false;
-    message.error(res.message);
+    message.error(res.msg);
   }
 
 }
@@ -490,7 +491,7 @@ async function sendMessageByPhone(params: any): Promise<boolean> {
     message.success(t('login.sendCaptchaSuccess'));
     return true;
   } else {
-    message.error(res.message);
+    message.error(res.msg);
     return false;
   }
 }

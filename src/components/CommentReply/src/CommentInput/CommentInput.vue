@@ -201,7 +201,7 @@ async function commentSubmit(point: any) {
     message.success(t('comment.commentSuccess'));
   } else {
     await comment.getSlideCaptchaData();
-    message.warning(result.message || t('comment.commentError'));
+    message.warning(result.msg || t('comment.commentError'));
   }
 }
 

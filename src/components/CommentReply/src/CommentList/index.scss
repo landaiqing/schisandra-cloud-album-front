@@ -22,7 +22,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         border-radius: 50%;
 
-        .reply-popover{
+        .reply-popover {
             padding: 0;
         }
     }
@@ -61,8 +61,9 @@
             font-weight: 600;
             cursor: pointer;
         }
+
         .reply-name:hover {
-           color: rgba(15, 15, 16, 0.68);
+            color: rgba(15, 15, 16, 0.68);
         }
 
         .reply-tag {
@@ -94,6 +95,10 @@
             //margin-top: 5px;
             .reply-text {
                 overflow: auto;
+                white-space: normal; /* 允许自动换行 */
+                word-wrap: break-word; /* 在长单词内部进行换行 */
+                overflow-wrap: break-word; /* 在长单词内部进行换行 */
+
             }
 
             .reply-images {

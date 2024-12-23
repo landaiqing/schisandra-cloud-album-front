@@ -111,6 +111,8 @@ async function handleListenMessage() {
       setTimeout(() => {
         router.push('/main/photo/all');
       }, 1000);
+    } else {
+      message.warning(t('login.loginError'));
     }
   });
 }

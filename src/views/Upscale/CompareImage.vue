@@ -154,7 +154,7 @@ const updateQrcodeSize = () => {
 };
 
 function generateQrCodeUrl(): string {
-  return import.meta.env.VITE_APP_WEB_URL + "/upscale/app?user_id=" + user.user.uid + "&token=" + user.user.access_token;
+  return import.meta.env.VITE_APP_WEB_URL + "/upscale/app?user_id=" + user.user.uid + "&token=" + user.token.accessToken;
 }
 
 /**

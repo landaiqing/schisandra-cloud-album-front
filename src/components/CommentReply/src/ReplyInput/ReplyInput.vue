@@ -206,15 +206,17 @@ async function replySubmit(point: any) {
       is_liked: false,
       reply_nickname: props.item.nickname,
     };
-    if (!comment.replyVisibility[props.item.id].data.comments) {
+    if (!comment.replyVisibility[props.item.id].data) {
       comment.replyVisibility[props.item.id].data.comments = []; // 初始化 comments 数组
     }
     comment.replyVisibility[props.item.id].data.comments.unshift(tmpData);
     comment.commentMap[props.item.id].reply_count++;
+    comment.replyVisibility[props.item.id].visible = true;
     comment.closeReplyInput();
     replyContent.value = "";
     await comment.clearFileList();
     showSubmitCaptcha.value = false;
+    comment.replyLoading[props.item.id] = false;
     message.success(t('comment.replySuccess'));
   } else {
     await comment.getSlideCaptchaData();

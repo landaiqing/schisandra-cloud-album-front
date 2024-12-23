@@ -60,6 +60,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 525px;
 
+            .reply-text-child {
+                white-space: normal; /* 允许自动换行 */
+                word-wrap: break-word; /* 在长单词内部进行换行 */
+                overflow-wrap: break-word; /* 在长单词内部进行换行 */
+            }
+
             .reply-action-item-child {
                 margin-top: 10px;
 

@@ -30,7 +30,7 @@ export const useAuthStore = defineStore(
          */
         async function getGithubRedirectUrl() {
             const res: any = await getGithubUrl(clientId.value);
-            if (res && res.code === 200 && res.data) {
+            if (res && res.code === 200) {
                 githubRedirectUrl.value = res.data;
             }
         }

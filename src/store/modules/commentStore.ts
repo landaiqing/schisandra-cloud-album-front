@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import {reactive, ref} from "vue";
-import {Comment} from "@/types/comment";
+import {Comment, CommentContent} from "@/types/comment";
 import {cancelCommentLikeApi, commentLikeApi, commentListApi, replyListApi} from "@/api/comment";
 import {message} from "ant-design-vue";
 import {getSlideCaptchaDataApi} from "@/api/captcha";
@@ -69,6 +69,16 @@ export const useCommentStore = defineStore(
          *  显示回复输入框
          */
         const handleShowReplyInput = (index: any) => {
+            if (!replyVisibility.value[index]) {
+                replyVisibility.value[index] = {
+                    visible: false, data: {
+                        comments: [] as CommentContent[],
+                        current: 0,
+                        total: 0,
+                        size: 0,
+                    } as Comment
+                };
+            }
             showReplyInput.value = showReplyInput.value === index ? null : index;
         };
         /**
@@ -95,7 +105,14 @@ export const useCommentStore = defineStore(
             };
             if (!replyVisibility.value[commentId]) {
                 // 如果不存在这个评论的状态，初始化
-                replyVisibility.value[commentId] = {visible: false, data: {} as Comment};
+                replyVisibility.value[commentId] = {
+                    visible: false, data: {
+                        comments: [] as CommentContent[],
+                        current: 0,
+                        total: 0,
+                        size: 0,
+                    } as Comment
+                };
                 await getReplyList(params);
             } else {
                 // 切换可见性
@@ -136,7 +153,7 @@ export const useCommentStore = defineStore(
             };
             const result: any = await commentLikeApi(params);
             if (result && result.code !== 200) {
-                message.error(result.message);
+                message.error(result.msg);
                 return false;
             }
             return true;
@@ -153,7 +170,7 @@ export const useCommentStore = defineStore(
             };
             const result: any = await cancelCommentLikeApi(params);
             if (result && result.code !== 200) {
-                message.error(result.message);
+                message.error(result.msg);
                 return false;
             }
             return true;

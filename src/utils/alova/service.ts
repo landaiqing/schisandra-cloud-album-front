@@ -57,7 +57,7 @@ export const service = createAlova({
 
         // 令牌
         method.config.headers['X-Nonce'] = CryptoJS.lib.WordArray.random(16).toString();
-
+        // 签名
         if (method.meta?.signature) {
             method.config.headers['X-Content-Security'] = generateKeySecretSignature(0, method.type, method.url, method.config.params, method.data);
         }
