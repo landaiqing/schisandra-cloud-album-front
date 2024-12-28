@@ -3,9 +3,9 @@
       :locale="lang.lang === 'en' ? enUS : zhCN"
       :theme="app.themeConfig"
   >
-    <router-view v-slot="{ Component, route }">
+    <router-view v-slot="{ Component }">
       <transition name="animation" mode="out-in">
-        <component :is="Component" :key="route.path"/>
+        <component :is="Component"/>
       </transition>
     </router-view>
   </AConfigProvider>

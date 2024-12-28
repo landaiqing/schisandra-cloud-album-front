@@ -156,7 +156,7 @@ function onChecked() {
 
       &:not(.checkbox-disabled):hover {
         .checkbox-box {
-          border-color: @themeColor;
+          border-color: #40a9ff;
         }
       }
 
@@ -195,8 +195,8 @@ function onChecked() {
       }
 
       .checkbox-checked {
-        background-color: @themeColor;
-        border-color: @themeColor;
+        background-color: #40a9ff;
+        border-color: #40a9ff;
 
         &::after {
           opacity: 1;
@@ -211,7 +211,7 @@ function onChecked() {
           left: 50%;
           width: 8px;
           height: 8px;
-          background-color: @themeColor;
+          background-color: #40a9ff;
           border: 0;
           transform: translate(-50%, -50%) scale(1);
           opacity: 1;

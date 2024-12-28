@@ -5,14 +5,14 @@
         <span class="upscale-params-title">类型:</span>
         <ASelect style="width: 100%" size="large"
                  v-model:value="upscale.model_type"
-                 :options="upscale.TypeData.map(item => ({label: item, value: item}))">
+                 :options="upscale.TypeData.map(item => ({label: item, value: item,key: item}))">
         </ASelect>
       </div>
       <div class="upscale-params-item-content">
         <span class="upscale-params-title">模型:</span>
         <ASelect style="width: 100%" size="large"
                  v-model:value="upscale.model"
-                 :options="upscale.modes.map((item: any) => ({label: item, value: item}))">
+                 :options="upscale.modes.map((item: any) => ({label: item, value: item,key: item}))">
         </ASelect>
       </div>
     </div>
@@ -21,7 +21,7 @@
         <span class="upscale-params-title">比列:</span>
         <ASelect style="width: 100%" size="large"
                  v-model:value="upscale.factor"
-                 :options="upscale.scales.map((item: any) => ({label: item, value: item}))">
+                 :options="upscale.scales.map((item: any) => ({label: item, value: item,key: item}))">
 
         </ASelect>
       </div>
@@ -29,7 +29,7 @@
         <span class="upscale-params-title">分块大小:</span>
         <ASelect style="width: 100%" size="large"
                  v-model:value="upscale.tile_size"
-                 :options="upscale.tileSize.map((item: any) => ({label: item, value: item}))">
+                 :options="upscale.tileSize.map((item: any) => ({label: item, value: item,key: item}))">
 
         </ASelect>
       </div>
@@ -39,14 +39,14 @@
         <span class="upscale-params-title">重复:</span>
         <ASelect style="width: 100%" size="large"
                  v-model:value="upscale.min_lap"
-                 :options="upscale.overlapList.map((item: any) => ({label: item, value: item}))">
+                 :options="upscale.overlapList.map((item: any) => ({label: item, value: item,key: item}))">
         </ASelect>
       </div>
       <div class="upscale-params-item-content">
         <span class="upscale-params-title">运行环境：</span>
         <ASelect style="width: 100%" size="large"
                  v-model:value="upscale.backend"
-                 :options="upscale.backendList.map((item: any) => ({label: item, value: item}))">
+                 :options="upscale.backendList.map((item: any) => ({label: item, value: item,key: item}))">
         </ASelect>
       </div>
     </div>

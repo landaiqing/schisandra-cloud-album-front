@@ -174,7 +174,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 write: true, // 启用将构建后的文件写入磁盘
                 emptyOutDir: true, // 构建时清空该目录
                 brotliSize: true, // 启用 brotli 压缩大小报告
-                chunkSizeWarningLimit: 10000, // chunk 大小警告的限制
+                chunkSizeWarningLimit: 15000, // chunk 大小警告的限制
                 watch: null, // 设置为 {} 则会启用 rollup 的监听器
                 rollupOptions: {  // 自定义底层的 Rollup 打包配置
                     output: {

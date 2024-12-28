@@ -9,5 +9,5 @@ import lazyLoad from "@/directives/v-lazy-load.ts";
  */
 export const registerDirectives = (app: any) => {
     app.directive('click-outside', clickOutside);
-    app.directive('lazy-load', lazyLoad);
+    app.directive('lazy.ts-load', lazyLoad);
 };

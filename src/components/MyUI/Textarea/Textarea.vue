@@ -67,7 +67,7 @@ const showCountNum = computed(() => {
   return props.value.length;
 });
 const lazyTextarea = computed(() => {
-  return 'lazy' in props.valueModifiers;
+  return 'lazy.ts' in props.valueModifiers;
 });
 watch(
     () => props.value,

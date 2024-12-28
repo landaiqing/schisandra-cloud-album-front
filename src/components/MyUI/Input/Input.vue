@@ -70,7 +70,7 @@ const showAfter = computed(() => {
   return slotsExist.addonAfter || props.addonAfter;
 });
 const lazyInput = computed(() => {
-  return 'lazy' in props.valueModifiers;
+  return 'lazy.ts' in props.valueModifiers;
 });
 
 function onInput(e: InputEvent) {

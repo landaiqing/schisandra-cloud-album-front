@@ -11,13 +11,13 @@
           @select="handleClick"
       >
         <AMenuItemGroup :title="t('album.photo')" type="group" key="photo">
-          <AMenuItem :title="t('album.allAlbums')" key="photo/all">
+          <AMenuItem :title="t('album.allAlbums')" key="photo/all" :style="menuCSSStyle">
             <template #icon>
               <AAvatar shape="square" size="small" :src="allPhoto"/>
             </template>
             <span class="ant-menu-item-title">{{ t('album.allAlbums') }}</span>
           </AMenuItem>
-          <AMenuItem :title="t('album.recentUploads')" key="photo/recent">
+          <AMenuItem :title="t('album.recentUploads')" key="photo/recent" :style="menuCSSStyle">
             <template #icon>
               <AAvatar shape="square" size="small" :src="recentUpload"/>
             </template>
@@ -25,25 +25,25 @@
           </AMenuItem>
         </AMenuItemGroup>
         <AMenuItemGroup :title="t('album.albums')" key="album">
-          <AMenuItem :title="t('album.albums')" key="album/albums">
+          <AMenuItem :title="t('album.albums')" key="album/albums" :style="menuCSSStyle">
             <template #icon>
               <AAvatar shape="square" size="small" :src="album"/>
             </template>
             <span class="ant-menu-item-title">{{ t('album.albums') }}</span>
           </AMenuItem>
-          <AMenuItem :title="t('album.peopleAlbums')" key="album/people">
+          <AMenuItem :title="t('album.peopleAlbums')" key="album/people" :style="menuCSSStyle">
             <template #icon>
               <AAvatar shape="square" size="small" :src="peopleAlbum"/>
             </template>
             <span class="ant-menu-item-title">{{ t('album.peopleAlbums') }}</span>
           </AMenuItem>
-          <AMenuItem :title="t('album.locationAlbums')" key="album/location">
+          <AMenuItem :title="t('album.locationAlbums')" key="album/location" :style="menuCSSStyle">
             <template #icon>
               <AAvatar shape="square" size="small" :src="loactionAlbum"/>
             </template>
             <span class="ant-menu-item-title">{{ t('album.locationAlbums') }}</span>
           </AMenuItem>
-          <AMenuItem :title="t('album.thingsAlbums')" key="album/thing">
+          <AMenuItem :title="t('album.thingsAlbums')" key="album/thing" :style="menuCSSStyle">
             <template #icon>
               <AAvatar shape="square" size="small" :src="thingAlbum"/>
             </template>
@@ -51,19 +51,19 @@
           </AMenuItem>
         </AMenuItemGroup>
         <ADivider/>
-        <AMenuItem :title="t('album.recyclingBin')" key="photo/share">
+        <AMenuItem :title="t('album.recyclingBin')" key="photo/share" :style="menuCSSStyle">
           <template #icon>
             <AAvatar shape="square" size="small" :src="share"/>
           </template>
           <span class="ant-menu-item-title">{{ t('album.share') }}</span>
         </AMenuItem>
-        <AMenuItem :title="t('album.recyclingBin')" key="photo/recycling">
+        <AMenuItem :title="t('album.recyclingBin')" key="photo/recycling" :style="menuCSSStyle">
           <template #icon>
             <AAvatar shape="square" size="small" :src="recyclingbin"/>
           </template>
           <span class="ant-menu-item-title">{{ t('album.recyclingBin') }}</span>
         </AMenuItem>
-        <AMenuItem :title="t('album.recyclingBin')" key="photo/upscale">
+        <AMenuItem :title="t('album.recyclingBin')" key="photo/upscale" :style="menuCSSStyle">
           <template #icon>
             <AAvatar shape="square" size="small" :src="ai"/>
           </template>
@@ -101,8 +101,6 @@ const {t} = useI18n();
 const router = useRouter();
 const route = useRoute();
 
-
-
 /**
  * handle click event of menu item
  * @param key
@@ -111,6 +109,32 @@ function handleClick({key}) {
   router.push(`/main/${key}`);
 }
 
+const menuCSSStyle: any = reactive({
+  display: 'flex',
+  alignItems: 'center',
+});
+
+
+watch(
+    () => route.path,
+    () => {
+      scrollToSelectedMenuItem();
+    }
+);
+
+// scroll to selected menu item
+function scrollToSelectedMenuItem() {
+  nextTick(() => {
+    const selected = document.querySelector(`.ant-menu-item-selected`);
+    if (selected) {
+      selected.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+  });
+}
+
+onMounted(() => {
+  scrollToSelectedMenuItem();
+});
 </script>
 <style scoped lang="scss" src="./index.scss">
 

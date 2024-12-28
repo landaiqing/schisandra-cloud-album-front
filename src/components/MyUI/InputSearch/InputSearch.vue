@@ -70,7 +70,7 @@ const showBefore = computed(() => {
   return slotsExist.addonBefore || props.addonBefore;
 });
 const lazyInput = computed(() => {
-  return 'lazy' in props.valueModifiers;
+  return 'lazy.ts' in props.valueModifiers;
 });
 
 function onInput(e: InputEvent) {
