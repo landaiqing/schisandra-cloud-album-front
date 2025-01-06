@@ -4,6 +4,8 @@ import {langStore} from "@/store/modules/langStore.ts";
 import {useCommentStore} from "@/store/modules/commentStore.ts";
 import {useWebSocketStore} from "@/store/modules/websocketStore.ts";
 import {useUpscaleStore} from "@/store/modules/upscaleStore.ts";
+import {useMenuStore} from "@/store/modules/menuStore.ts";
+import {useUploadStore} from "@/store/modules/uploadStore.ts";
 
 export default function useStore() {
     return {
@@ -13,5 +15,7 @@ export default function useStore() {
         comment: useCommentStore(),
         websocket: useWebSocketStore(),
         upscale: useUpscaleStore(),
+        menu: useMenuStore(),
+        upload: useUploadStore(),
     };
 }

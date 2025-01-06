@@ -2,7 +2,7 @@
   <div>
     <div class="sidebar">
       <AMenu
-          :selectedKeys="[route.path.split('/').slice(-2).join('/')]"
+          :selectedKeys="[menu.currentMenu]"
           :selectable="true"
           :multiple="false"
           mode="vertical"
@@ -96,10 +96,12 @@ import recyclingbin from '@/assets/svgs/recyclingbin.svg';
 import Folder from "@/components/Folder/Folder.vue";
 import ai from '@/assets/svgs/ai.svg';
 import share from '@/assets/svgs/share.svg';
+import useStore from "@/store";
 
 const {t} = useI18n();
 const router = useRouter();
 const route = useRoute();
+const menu = useStore().menu;
 
 /**
  * handle click event of menu item
@@ -107,6 +109,7 @@ const route = useRoute();
  */
 function handleClick({key}) {
   router.push(`/main/${key}`);
+  menu.currentMenu = key;
 }
 
 const menuCSSStyle: any = reactive({
@@ -135,6 +138,17 @@ function scrollToSelectedMenuItem() {
 onMounted(() => {
   scrollToSelectedMenuItem();
 });
+
+// watch(
+//     () => route.path,
+//     (newPath) => {
+//       if (!newPath.includes(menu.currentMenu)) {
+//         router.push(`/main/${menu.currentMenu}`);
+//       }
+//       scrollToSelectedMenuItem();
+//     }
+// );
+
 </script>
 <style scoped lang="scss" src="./index.scss">
 

@@ -1,7 +1,7 @@
 <template>
   <div class="all-photo">
     <div class="photo-header">
-      <AButton type="primary" shape="round" size="middle">
+      <AButton type="primary" shape="round" size="middle" @click="upload.openUploadDrawer = true">
         <template #icon>
           <PlusOutlined/>
         </template>
@@ -83,11 +83,13 @@
                          :breakpoints="breakpoints">
                 <template #default="{ item, url, index }">
                   <CheckCard :key="index"
+                             class="photo-item"
                              margin="0"
                              border-radius="0"
                              v-model="selected"
                              :showHoverCircle="true"
                              :iconSize="20"
+                             :showSelectedEffect="true"
                              :value="url">
                     <AImage :src="url"
                             :alt="item.title"
@@ -113,6 +115,7 @@
         </ATabPane>
       </ATabs>
     </div>
+    <Upload/>
   </div>
 </template>
 
@@ -121,9 +124,12 @@ import {Waterfall} from 'vue-waterfall-plugin-next';
 import 'vue-waterfall-plugin-next/dist/style.css';
 import loading from '@/assets/gif/loading.gif';
 import error from '@/assets/svgs/no-image.svg';
+import Upload from "@/views/Photograph/Upload/Upload.vue";
+import useStore from "@/store";
 
 const selected = ref<(string | number)[]>([]);
 const switchValue = ref<boolean>(false);
+const upload = useStore().upload;
 const breakpoints = reactive({
   breakpoints: {
     1200: {
@@ -161,6 +167,11 @@ function loadImages() {
       src: `https://cdn.jsdelivr.net/gh/themusecatcher/resources@0.0.5/${i}.jpg`,
       tag: '全部',
       date: '2022-01-01',
+    });
+    images.value.push({
+      title: `image-${i}`,
+      link: '',
+      src: `/test/${i}.png`,
     });
   }
 }
@@ -272,5 +283,11 @@ onBeforeMount(() => { // 组件已完成响应式状态设置，但未创建DOM�
 .slide-fade-enter-to {
   transform: translateY(0);
   opacity: 1;
+}
+
+.photo-item:hover {
+  transition: all 0.3s ease-in-out, transform 0.3s ease-in-out;
+  //transform: scale(0.99);
+  box-shadow: 0 0 10px 0 rgba(77, 167, 255, 0.89);
 }
 </style>

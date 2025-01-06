@@ -110,11 +110,8 @@ import deleted from '@/assets/svgs/deleted.svg';
 import getImageSizeWithUnit from "@/utils/imageUtils/getImageSizeWithUnit.ts";
 
 const canvasContainer = ref<HTMLDivElement | null>(null);
-const dragging = ref<boolean>(false);
-const linePosition = ref(0);
 const dpr = window.devicePixelRatio || 1;
 const canvas = ref<HTMLCanvasElement | null>(null);
-const draggingLine = ref(false);
 const imgX = ref(0);
 const imgY = ref(0);
 const imgScale = ref(1);
@@ -197,8 +194,8 @@ function deletedImage() {
   store.isProcessing = false;
   store.progressBar = 0;
   store.msg = "";
-  draggingLine.value = false;
-  dragging.value = false;
+  store.draggingLine = false;
+  store.dragging = false;
   imgX.value = 0;
   imgY.value = 0;
   imgScale.value = 1;
@@ -217,11 +214,11 @@ function startDragging(event: any) {
   if (canvas.value) {
     const rect = canvas.value.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
-    if (Math.abs(mouseX - linePosition.value / dpr) < 12) {
+    if (Math.abs(mouseX - store.linePosition / dpr) < 12) {
       startDraggingLine(event);
       return;
     }
-    dragging.value = true;
+    store.dragging = true;
   }
 }
 
@@ -229,11 +226,11 @@ function startDragging(event: any) {
  *  停止拖动
  */
 function stopDragging() {
-  if (draggingLine.value) {
+  if (store.draggingLine) {
     stopDraggingLine();
     return;
   }
-  dragging.value = false;
+  store.dragging = false;
 }
 
 /**
@@ -241,12 +238,12 @@ function stopDragging() {
  * @param event
  */
 function dragImage(event: any) {
-  if (dragging.value) {
+  if (store.dragging) {
     imgX.value += event.movementX * dpr;
     imgY.value += event.movementY * dpr;
     drawImage();
   }
-  if (draggingLine.value) {
+  if (store.draggingLine) {
     updateLinePosition(event);
     drawImage();
   }
@@ -290,9 +287,9 @@ function touchStart(event: any) {
   touchStartImgY.value = imgY.value;
   if (event.touches.length == 1) {
     if (
-        Math.abs(event.touches[0].clientX - linePosition.value / dpr) < 12
+        Math.abs(event.touches[0].clientX - store.linePosition / dpr) < 12
     ) {
-      draggingLine.value = true;
+      store.draggingLine = true;
       return;
     }
     touchStartX.value = event.touches[0].clientX * dpr;
@@ -332,7 +329,7 @@ function touchMove(event: any) {
         touchStartY.value +
         touchStartImgY.value -
         imgY.value;
-    if (draggingLine.value) {
+    if (store.draggingLine) {
       updateLinePosition(event.touches[0]);
       drawImage();
       return;
@@ -402,7 +399,7 @@ function touchEnd(event: any) {
     return;
   }
   touching.value = false;
-  draggingLine.value = false;
+  store.draggingLine = false;
   touchStartImgX.value = 0;
   touchStartImgY.value = 0;
   touchStartX.value = 0;
@@ -416,14 +413,14 @@ function touchEnd(event: any) {
  */
 function startDraggingLine(event: any) {
   event.preventDefault();
-  draggingLine.value = true;
+  store.draggingLine = true;
 }
 
 /**
  * 停止拖动线
  */
 function stopDraggingLine() {
-  draggingLine.value = false;
+  store.draggingLine = false;
 }
 
 /**
@@ -454,17 +451,17 @@ function drawImage_() {
         ctx.drawImage(
             processedImg.value,
             ((processedImg.value.width / img.value.width) *
-                (linePosition.value - imgX.value)) /
+                (store.linePosition - imgX.value)) /
             imgScale.value,
             0,
             processedImg.value.width -
             ((processedImg.value.width / img.value.width) *
-                (linePosition.value - imgX.value)) /
+                (store.linePosition - imgX.value)) /
             imgScale.value,
             processedImg.value.height,
-            linePosition.value,
+            store.linePosition,
             imgY.value,
-            imgX.value + img.value.width * imgScale.value - linePosition.value,
+            imgX.value + img.value.width * imgScale.value - store.linePosition,
             img.value.height * imgScale.value
         );
       }
@@ -488,7 +485,7 @@ function updateLinePosition(event: any) {
     newPosition = Math.max(0, Math.min(newPosition, containerRect.width - lineWidth));
 
     // 更新线的位置
-    linePosition.value = newPosition * dpr;
+    store.linePosition = newPosition * dpr;
     const line: any = dragLine.value;
     line.style.left = Math.floor(newPosition) + "px";
   }
@@ -500,7 +497,7 @@ function updateLinePosition(event: any) {
  */
 function dragLineFn(event: any) {
   event.preventDefault();
-  if (draggingLine.value) {
+  if (store.draggingLine) {
     requestAnimationFrame(() => {
       updateLinePosition(event);
       drawImage();
@@ -522,8 +519,8 @@ function updateCanvasSize() {
     //         canvas.value.height) * container.offsetHeight * dpr - (img.value.height * imgScale.value) / 2;
     imgX.value = (container.offsetWidth * dpr - img.value.width * imgScale.value) / 2;
     imgY.value = (container.offsetHeight * dpr - img.value.height * imgScale.value) / 2;
-    linePosition.value = (linePosition.value / canvas.value.width) * container.offsetWidth * dpr;
-    // dragLine.value.style.left = linePosition.value / dpr + "px";
+    store.linePosition = (store.linePosition / canvas.value.width) * container.offsetWidth * dpr;
+    // dragLine.value.style.left = store.linePosition / dpr + "px";
   }
   if (canvas.value) {
     canvas.value.width = container.offsetWidth * dpr;

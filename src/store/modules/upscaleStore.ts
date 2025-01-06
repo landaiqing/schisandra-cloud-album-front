@@ -101,6 +101,13 @@ export const useUpscaleStore = defineStore(
             const msg = ref<string>("");
             const progressBar = ref<number>(0);
             const status = ref<string>('loading');
+
+
+            const dragging = ref<boolean>(false);
+            const linePosition = ref(0);
+            const draggingLine = ref(false);
+
+
             /**
              * 图片上传前的校验
              * @param file
@@ -118,10 +125,11 @@ export const useUpscaleStore = defineStore(
                     uploading.value = false;
                     return false;
                 }
+                await clear();
                 fileData.value = urlData;
                 await loadImg(image);
                 uploading.value = false;
-                await clear();
+
                 return true;
             }
 
@@ -142,6 +150,12 @@ export const useUpscaleStore = defineStore(
                 msg.value = "";
                 progressBar.value = 0;
                 isProcessing.value = false;
+                dragging.value = false;
+                linePosition.value = 0;
+                draggingLine.value = false;
+                input.value = null;
+                inputAlpha.value = null;
+                wasmModule.value = null;
             }
 
             /**
@@ -203,6 +217,9 @@ export const useUpscaleStore = defineStore(
                 msg,
                 progressBar,
                 status,
+                dragging,
+                linePosition,
+                draggingLine,
                 loadImg,
                 beforeUpload,
                 customUploadRequest,

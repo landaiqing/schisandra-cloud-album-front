@@ -1,5 +1,9 @@
 <template>
-  <div class="check-card" :class="{ 'selected': isSelected }" @click="handleClick" :style="cardStyle">
+  <div
+      class="check-card"
+      :class="{ 'selected': isSelected && props.showSelectedEffect }"
+      @click="handleClick"
+      :style="cardStyle">
     <div class="hover-circle" @click.stop="toggleSelection"
          v-if="showHoverCircle"
          :style="{ width: iconSize + 'px', height: iconSize + 'px' }">
@@ -35,6 +39,7 @@ interface Props {
   backgroundColor?: string;
   showHoverCircle?: boolean; // 控制是否显示悬停圆环
   iconSize?: number; // 控制图标大小
+  showSelectedEffect?: boolean; // 控制是否显示选中效果
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -45,6 +50,7 @@ const props = withDefaults(defineProps<Props>(), {
   backgroundColor: '#e5eeff',
   showHoverCircle: true, // 默认显示悬停圆环
   iconSize: 24, // 默认图标大小
+  showSelectedEffect: true, // 默认显示选中效果
 });
 
 const emits = defineEmits(['update:modelValue']);
@@ -90,6 +96,7 @@ function toggleSelection() {
   transition: border-color 0.3s, background-color 0.3s;
   overflow: visible; /* Ensure the icon is not cut off */
 }
+
 .check-card.selected {
   border: 1px solid rgba(125, 167, 255, 0.68);
   box-shadow: 0 0 2px rgba(77, 167, 255, 0.89);
