@@ -4,7 +4,8 @@ import i18n from "@/locales";
 import {NSFWJS} from "nsfwjs";
 import {message} from "ant-design-vue";
 
-import {loadCocoSsd, loadMobileNet} from "@/utils/tfjs";
+// import {loadCocoSsd, loadMobileNet} from "@/utils/tfjs/tfjs.ts";
+import {loadModel, predictImage} from "@/utils/tfjs/anime_classifier.ts";
 
 export const useUploadStore = defineStore(
     'upload',
@@ -25,11 +26,19 @@ export const useUploadStore = defineStore(
                 message.error(i18n.global.t('comment.illegalImage'));
                 return false;
             }
-            const predictions = await loadMobileNet(image);
-            console.log(predictions);
+            // const predictions = await loadMobileNet(image);
+            // console.log(predictions);
+            //
+            // const prediction = await loadCocoSsd(image);
+            // console.log(prediction);
 
-            const prediction = await loadCocoSsd(image);
-            console.log(prediction);
+            const model = await loadModel('/tfjs/anime_classifier/model.json');
+
+            // 进行预测
+            const output = await predictImage(model, image);
+            console.log(output);
+
+            // console.log('Predicted Class:', predictedClass);
             return true;
         }
 
