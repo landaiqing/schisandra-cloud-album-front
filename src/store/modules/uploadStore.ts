@@ -1,80 +1,45 @@
-import {initNSFWJs, predictNSFW} from "@/utils/nsfw/nsfw.ts";
-import i18n from "@/locales";
+interface UploadPredictResult {
+    isAnime: boolean;
+    hasFace: boolean;
+    objectArray: string[] | unknown[];
+    landscape: 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | 'none' | undefined;
+}
 
-import {NSFWJS} from "nsfwjs";
-import {message} from "ant-design-vue";
-
-// import {loadCocoSsd, loadMobileNet} from "@/utils/tfjs/tfjs.ts";
-import {loadModel, predictImage} from "@/utils/tfjs/anime_classifier.ts";
 
 export const useUploadStore = defineStore(
     'upload',
     () => {
         const openUploadDrawer = ref<boolean>(false);
-        const image: HTMLImageElement = document.createElement('img');
+
+        const predictResult = reactive<UploadPredictResult>({
+            isAnime: false,
+            hasFace: false,
+            objectArray: [],
+            landscape: undefined as 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | 'none' | undefined,
+        });
 
         /**
-         * 图片上传前的校验
-         * @param file
+         * 打开上传抽屉
          */
-        async function beforeUpload(file: File) {
-            image.src = URL.createObjectURL(file);
-            // 图片 NSFW 检测
-            const nsfw: NSFWJS = await initNSFWJs();
-            const isNSFW: boolean = await predictNSFW(nsfw, image);
-            if (isNSFW) {
-                message.error(i18n.global.t('comment.illegalImage'));
-                return false;
-            }
-            // const predictions = await loadMobileNet(image);
-            // console.log(predictions);
-            //
-            // const prediction = await loadCocoSsd(image);
-            // console.log(prediction);
-
-            const model = await loadModel('/tfjs/anime_classifier/model.json');
-
-            // 进行预测
-            const output = await predictImage(model, image);
-            console.log(output);
-
-            // console.log('Predicted Class:', predictedClass);
-            return true;
+        async function openUploadDrawerFn() {
+            openUploadDrawer.value = true;
         }
 
         /**
-         * 自定义上传请求
-         * @param file
+         *  清除预测结果
          */
-        async function customUploadRequest(file: any) {
-
-            const progress = {percent: 1};
-
-
-            const intervalId = setInterval(() => {
-                if (progress.percent < 100) {
-                    progress.percent++;
-                    file.onProgress(progress);
-                } else {
-                    clearInterval(intervalId);
-                }
-            }, 100);
-            file.onSuccess(true);
-
-            // file.onSuccess = () => {
-            //     message.success(i18n.global.t('comment.uploadSuccess'));
-            // };
-            // file.onError = () => {
-            //     message.error(i18n.global.t('comment.uploadError'));
-            // };
-            // return Promise.resolve(file);
-
+        function clearPredictResult() {
+            predictResult.isAnime = false;
+            predictResult.hasFace = false;
+            predictResult.objectArray = [];
+            predictResult.landscape = undefined;
         }
 
         return {
             openUploadDrawer,
-            beforeUpload,
-            customUploadRequest
+            predictResult,
+            openUploadDrawerFn,
+            clearPredictResult
         };
     },
     {

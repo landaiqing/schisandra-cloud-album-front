@@ -64,7 +64,7 @@
 <script setup lang="ts">
 
 import {message} from "ant-design-vue";
-import Img from "@/workers/image.ts";
+import Img from "@/workers/upscale/image.ts";
 import useStore from "@/store";
 import run from '@/assets/svgs/run.svg';
 
@@ -82,7 +82,7 @@ async function startTask() {
   if (upscale.input === null) return;
   upscale.isProcessing = true;
   const start = Date.now();
-  const worker = new Worker(new URL("@/workers/upscale.worker.ts", import.meta.url), {
+  const worker = new Worker(new URL("@/workers/upscale/upscale.worker.ts", import.meta.url), {
     type: "module",
   });
   worker.onmessage = (e: MessageEvent<any>) => {

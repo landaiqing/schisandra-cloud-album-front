@@ -5,8 +5,8 @@ import i18n from "@/locales";
 import {NSFWJS} from "nsfwjs";
 import localForage from "localforage";
 import {message} from "ant-design-vue";
-import Img from "@/workers/image.ts";
-import Module from "@/workers/imghelper.ts";
+import Img from "@/workers/upscale/image.ts";
+import Module from "@/workers/upscale/imghelper.ts";
 
 
 export const useUpscaleStore = defineStore(

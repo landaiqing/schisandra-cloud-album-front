@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
   accept: '*', // 默认支持所有类型
   multiple: false,
   maxCount: undefined,
-  tip: 'Upload',
+  tip: 'ImageUpload',
   fit: 'contain',
   draggable: true,
   disabled: false,

@@ -1,7 +1,7 @@
 <template>
   <div class="all-photo">
     <div class="photo-header">
-      <AButton type="primary" shape="round" size="middle" @click="upload.openUploadDrawer = true">
+      <AButton type="primary" shape="round" size="middle" @click="upload.openUploadDrawerFn()">
         <template #icon>
           <PlusOutlined/>
         </template>
@@ -115,7 +115,7 @@
         </ATabPane>
       </ATabs>
     </div>
-    <Upload/>
+    <ImageUpload/>
   </div>
 </template>
 
@@ -124,7 +124,7 @@ import {Waterfall} from 'vue-waterfall-plugin-next';
 import 'vue-waterfall-plugin-next/dist/style.css';
 import loading from '@/assets/gif/loading.gif';
 import error from '@/assets/svgs/no-image.svg';
-import Upload from "@/views/Photograph/Upload/Upload.vue";
+import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 import useStore from "@/store";
 
 const selected = ref<(string | number)[]>([]);

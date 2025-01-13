@@ -2,21 +2,23 @@ import * as nsfwjs from "nsfwjs";
 import {NSFWJS} from "nsfwjs";
 import * as tf from "@tensorflow/tfjs";
 
-/**
- * Initializes the NSFWJS model and returns it.
- */
-let isInit: boolean = false;
+
 const initNSFWJs = async (): Promise<NSFWJS> => {
-    tf.enableProdMode();
-    if (!isInit) {
-        const initialLoad: nsfwjs.NSFWJS = await nsfwjs.load("/nsfw/mobilenet_v2_mid/", {
-            size: 224,
-            type: "graph"
-        });
-        await initialLoad.model.save("indexeddb://nsfwjs-model");
-        isInit = true;
+    let nsfwModelCache: NSFWJS | null = null; // 缓存模型实例
+    // 如果模型已经加载，则直接返回缓存
+    try {
+        // 首先尝试从 IndexedDB 加载模型
+        nsfwModelCache = await nsfwjs.load("indexeddb://nsfwjs-model", {size: 224, type: "graph"});
+        console.log("NSFWJS 模型成功从 IndexedDB 加载");
+    } catch (_error) {
+        console.warn("IndexedDB 中未找到模型，正在从网络加载...");
+        // 如果 IndexedDB 加载失败，从 URL 加载模型并保存到 IndexedDB
+        nsfwModelCache = await nsfwjs.load("/nsfw/mobilenet_v2_mid/", {size: 224, type: "graph"});
+        await nsfwModelCache.model.save("indexeddb://nsfwjs-model");
+        console.log("NSFWJS 模型已从网络加载并保存到 IndexedDB");
     }
-    return await nsfwjs.load("indexeddb://nsfwjs-model", {size: 224, type: "graph"});
+
+    return nsfwModelCache;
 };
 /**
  * Predicts the NSFW score of an image using the NSFWJS model.

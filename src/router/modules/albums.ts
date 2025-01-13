@@ -1,20 +1,20 @@
-import PhoalbumIndex from "@/views/Album/Phoalbum/Index.vue";
-import PeopleAlbumIndex from "@/views/Album/PeopleAlbum/Index.vue";
-import LocationAlbum from "@/views/Album/LocationAlbum/LocationAlbum.vue";
-import LocationAlbumIndex from "@/views/Album/LocationAlbum/Index.vue";
-import ThingAlbum from "@/views/Album/ThingAlbum/ThingAlbum.vue";
-import ThingAlbumIndex from "@/views/Album/ThingAlbum/Index.vue";
-import Phoalbum from "@/views/Album/Phoalbum/Phoalbum.vue";
-import PeopleAlbum from "@/views/Album/PeopleAlbum/PeopleAlbum.vue";
-import PhoalbumDetail from "@/views/Album/Phoalbum/Detail.vue";
-import PeopleAlbumDetail from "@/views/Album/PeopleAlbum/Detail.vue";
-import LocationAlbumDetail from "@/views/Album/LocationAlbum/Detail.vue";
-import ThingAlbumDetail from "@/views/Album/ThingAlbum/Detail.vue";
+import PhoalbumPhoalbum from "@/views/Album/Phoalbum/Phoalbum.vue";
+import PeopleAlbumPeopleAlbum from "@/views/Album/PeopleAlbum/PeopleAlbum.vue";
+import LocationAlbum from "@/views/Album/LocationAlbum/LocationAlbumList.vue";
+import LocationAlbumIndex from "@/views/Album/LocationAlbum/LocationAlbum.vue";
+import ThingAlbum from "@/views/Album/ThingAlbum/ThingAlbumList.vue";
+import ThingAlbumThingAlbum from "@/views/Album/ThingAlbum/ThingAlbum.vue";
+import Phoalbum from "@/views/Album/Phoalbum/PhoalbumList.vue";
+import PeopleAlbum from "@/views/Album/PeopleAlbum/PeopleAlbumList.vue";
+import PhoalbumDetail from "@/views/Album/Phoalbum/PhoalbumDetail.vue";
+import PeopleAlbumDetail from "@/views/Album/PeopleAlbum/PeopleAlbumDetail.vue";
+import LocationAlbumDetail from "@/views/Album/LocationAlbum/LocationAlbumDetail.vue";
+import ThingAlbumDetail from "@/views/Album/ThingAlbum/ThingAlbumDetail.vue";
 
 export default [
     {
         path: '/main/album/albums',
-        component: PhoalbumIndex,
+        component: PhoalbumPhoalbum,
         redirect: '/main/album/albums',
         children: [
             {
@@ -39,7 +39,7 @@ export default [
     },
     {
         path: '/main/album/people',
-        component: PeopleAlbumIndex,
+        component: PeopleAlbumPeopleAlbum,
         redirect: '/main/album/people',
         children: [
             {
@@ -89,7 +89,7 @@ export default [
     },
     {
         path: '/main/album/thing',
-        component: ThingAlbumIndex,
+        component: ThingAlbumThingAlbum,
         redirect: '/main/album/thing',
         children: [
             {
