@@ -8,7 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AAvatar: typeof import('ant-design-vue/es')['Avatar']
-    AAvatarGroup: typeof import('ant-design-vue/es')['AvatarGroup']
     ABadge: typeof import('ant-design-vue/es')['Badge']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
@@ -89,6 +88,7 @@ declare module 'vue' {
     Ellipsis: typeof import('./src/components/MyUI/Ellipsis/Ellipsis.vue')['default']
     Empty: typeof import('./src/components/MyUI/Empty/Empty.vue')['default']
     EyeOutlined: typeof import('@ant-design/icons-vue')['EyeOutlined']
+    FileImageOutlined: typeof import('@ant-design/icons-vue')['FileImageOutlined']
     Flex: typeof import('./src/components/MyUI/Flex/Flex.vue')['default']
     FloatButton: typeof import('./src/components/MyUI/FloatButton/FloatButton.vue')['default']
     Folder: typeof import('./src/components/Folder/Folder.vue')['default']

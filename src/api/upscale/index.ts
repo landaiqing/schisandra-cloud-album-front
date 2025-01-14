@@ -2,7 +2,7 @@ import {service} from "@/utils/alova/service.ts";
 import {uploadImageRequest} from "@/types/upscale";
 
 export const uploadImage = (data: uploadImageRequest) => {
-    return service.Post('/api/auth/upscale/upload', {
+    return service.Post('/api/auth/upscale/phone/upload', {
         image: data.image,
         access_token: data.access_token,
         user_id: data.user_id,
