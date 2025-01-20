@@ -1,8 +1,12 @@
+import localforage from 'localforage';
+
 interface UploadPredictResult {
     isAnime: boolean;
     hasFace: boolean;
     objectArray: string[] | unknown[];
-    landscape: 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | 'none' | undefined;
+    landscape: 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | 'none';
+    isScreenshot: boolean;
+    topCategory: string | undefined;
 }
 
 
@@ -11,11 +15,14 @@ export const useUploadStore = defineStore(
     () => {
         const openUploadDrawer = ref<boolean>(false);
 
+        const exifData = ref<any>();
         const predictResult = reactive<UploadPredictResult>({
             isAnime: false,
             hasFace: false,
             objectArray: [],
-            landscape: undefined as 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | 'none' | undefined,
+            landscape: 'none',
+            isScreenshot: false,
+            topCategory: ''
         });
 
         /**
@@ -32,21 +39,25 @@ export const useUploadStore = defineStore(
             predictResult.isAnime = false;
             predictResult.hasFace = false;
             predictResult.objectArray = [];
-            predictResult.landscape = undefined;
+            predictResult.landscape = 'none';
+            predictResult.isScreenshot = false;
+            predictResult.topCategory = '';
         }
+
 
         return {
             openUploadDrawer,
             predictResult,
+            exifData,
             openUploadDrawerFn,
-            clearPredictResult
+            clearPredictResult,
         };
     },
     {
         // 开启数据持久化
         persistedState: {
             persist: false,
-            storage: localStorage,
+            storage: localforage,
             key: 'upload',
             includePaths: []
         }

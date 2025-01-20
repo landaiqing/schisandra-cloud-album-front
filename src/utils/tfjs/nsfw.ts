@@ -29,9 +29,9 @@ const predictNSFW = async (model: NSFWJS, image: tf.Tensor3D | ImageData | HTMLI
     const predictions = await model.classify(image, 5);
     // 定义阈值与对应的类别
     const thresholds = {
-        'Porn': 0.5,
+        'Porn': 0.6,
         'Hentai': 0.3,
-        'Sexy': 0.5
+        'Sexy': 0.6
     };
 
     // 使用一个变量来确定是否为色情内容

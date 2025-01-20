@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {initNSFWJs, predictNSFW} from "@/utils/nsfw/nsfw.ts";
+import {initNSFWJs, predictNSFW} from "@/utils/tfjs/nsfw.ts";
 import i18n from "@/locales";
 
 import {NSFWJS} from "nsfwjs";

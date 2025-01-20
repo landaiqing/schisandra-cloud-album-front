@@ -5,7 +5,7 @@ import {cancelCommentLikeApi, commentLikeApi, commentListApi, replyListApi} from
 import {message} from "ant-design-vue";
 import {getSlideCaptchaDataApi} from "@/api/captcha";
 import QQ_EMOJI from "@/constant/qq_emoji.ts";
-import {initNSFWJs, predictNSFW} from "@/utils/nsfw/nsfw.ts";
+import {initNSFWJs, predictNSFW} from "@/utils/tfjs/nsfw.ts";
 import {NSFWJS} from "nsfwjs";
 import i18n from "@/locales";
 import localForage from "localforage";

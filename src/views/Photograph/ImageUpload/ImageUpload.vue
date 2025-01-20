@@ -36,7 +36,8 @@
         <p v-show="predicting" class="ant-upload-hint">
           AI 正在识别图片，请稍候...
         </p>
-        <AProgress :stroke-color="{'0%': '#108ee9','100%': '#87d068',}" :percent="progressPercent" status="active"
+        <AProgress :stroke-color="{'0%': '#108ee9','100%': '#87d068',}" :percent="progressPercent"
+                   :status="progressStatus"
                    :show-info="true" size="small" type="line" v-show="predicting" style="width: 80%"/>
       </AUploadDragger>
     </div>
@@ -46,20 +47,32 @@
 import useStore from "@/store";
 import type {UploadProps} from 'ant-design-vue';
 import {message} from "ant-design-vue";
-import {initNSFWJs, predictNSFW} from "@/utils/nsfw/nsfw.ts";
+import {initNSFWJs, predictNSFW} from "@/utils/tfjs/nsfw.ts";
 import i18n from "@/locales";
 
 import {NSFWJS} from "nsfwjs";
-import {animePredictImage} from "@/utils/tfjs/anime_classifier.ts";
 import {animePredictImagePro} from "@/utils/tfjs/anime_classifier_pro.ts";
 import {fnDetectFace} from "@/utils/tfjs/face_extraction.ts";
 import {cocoSsdPredict} from "@/utils/tfjs/mobilenet.ts";
 import {predictLandscape} from "@/utils/tfjs/landscape_recognition.ts";
 import {useRequest} from 'alova/client';
-import {uploadFile} from "@/api/file";
+import {uploadFile} from "@/api/storage";
+import imageCompression from "browser-image-compression";
+import exifr from 'exifr';
+import isScreenshot from "@/utils/imageUtils/isScreenshot.ts";
+import {getCategoryByLabel} from "@/constant/coco_ssd_label_category.ts";
 
 const predicting = ref<boolean>(false);
 const progressPercent = ref<number>(0);
+const progressStatus = ref<string>('active');
+
+// 压缩图片配置
+const options = {
+  maxSizeMB: 0.4,
+  maxWidthOrHeight: 750,
+  maxIteration: 2,
+  useWebWorker: true,
+};
 
 const upload = useStore().upload;
 const image: HTMLImageElement = document.createElement('img');
@@ -84,9 +97,11 @@ async function beforeUpload(file: File) {
   predicting.value = true;
   upload.clearPredictResult();
   progressPercent.value = 0; // 初始化进度条
-
+  progressStatus.value = 'active'; // 开始状态
+  // 压缩图片
+  const compressedFile = await imageCompression(file, options);
   // 创建图片对象
-  image.src = URL.createObjectURL(file);
+  image.src = URL.createObjectURL(compressedFile);
 
   image.addEventListener('webglcontextlost', (_event) => {
     window.location.reload();
@@ -107,53 +122,85 @@ async function beforeUpload(file: File) {
     });
   };
 
-  // 图片 NSFW 检测
-  const nsfw: NSFWJS = await initNSFWJs();
-  await smoothUpdateProgress(10, 500); // 平滑更新进度条
+  try {
+    // NSFW 检测
+    const nsfw: NSFWJS = await initNSFWJs();
+    await smoothUpdateProgress(30, 500); // 平滑更新进度条
 
-  const isNSFW: boolean = await predictNSFW(nsfw, image);
-  await smoothUpdateProgress(20, 500); // 平滑更新进度条
+    const isNSFW: boolean = await predictNSFW(nsfw, image);
+    await smoothUpdateProgress(50, 500); // 平滑更新进度条
 
-  if (isNSFW) {
-    message.error(i18n.global.t('comment.illegalImage'));
+    if (isNSFW) {
+      message.error(i18n.global.t('comment.illegalImage'));
+      predicting.value = false;
+      progressPercent.value = 100; // 重置进度条
+      progressStatus.value = 'exception'; // 异常状态
+      return false;
+    }
+
+    // 提取 EXIF 数据
+    const exifData = await extractAllExifData(file);
+    if (exifData) {
+      upload.exifData = exifData;
+    }
+
+    // 判断是否为截图
+    upload.predictResult.isScreenshot = await isScreenshot(file);
+
+    // 动漫类型识别
+    const prediction: string = await animePredictImagePro(image);
+    await smoothUpdateProgress(70, 500); // 平滑更新进度条
+
+    // 如果是动漫类型，直接返回
+    if ((prediction === 'Furry' || prediction === 'Anime')) {
+      upload.predictResult.isAnime = true;
+      predicting.value = false;
+      progressPercent.value = 100; // 直接完成
+      return true;
+    }
+    // 人脸检测
+    const faceImageData = await fnDetectFace(image);
+    if (faceImageData) {
+      upload.predictResult.hasFace = true;
+      predicting.value = false;
+      progressPercent.value = 100; // 直接完成
+      return true;
+    }
+    //目标检测和风景检测并行处理
+    const [cocoResults, landscape] = await Promise.all([
+      cocoSsdPredict(image), // 目标检测
+      predictLandscape(image), // 风景检测
+    ]);
+    await smoothUpdateProgress(100, 500); // 平滑更新进度条
+
+    if (cocoResults.length > 0) {
+      // 取置信度最高的结果
+      // 如果只有一个结果，直接取第一个
+      if (cocoResults.length === 1) {
+        upload.predictResult.topCategory = getCategoryByLabel(cocoResults[0].class);
+      } else {
+        // 多个结果时，按 score 排序，取置信度最高的结果
+        const sortedResults = cocoResults.sort((a, b) => b.score - a.score);
+        upload.predictResult.topCategory = getCategoryByLabel(sortedResults[0].class);
+      }
+      const classSet = new Set(cocoResults.map(result => result.class));
+      upload.predictResult.objectArray = Array.from(classSet);
+    }
+    upload.predictResult.landscape = landscape as 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | 'none';
+
+    predicting.value = false;
+    return true;
+
+  } catch (error) {
+    console.error('识别过程中发生错误:', error);
     predicting.value = false;
     progressPercent.value = 0; // 重置进度条
     return false;
+  } finally {
+    image.removeEventListener('webglcontextlost', () => void 0);
   }
-
-  // Step 1: 动漫预测
-  const prediction1 = await animePredictImage(image);
-  await smoothUpdateProgress(40, 500); // 平滑更新进度条
-
-  const prediction2 = await animePredictImagePro(image);
-  await smoothUpdateProgress(60, 500); // 平滑更新进度条
-
-  upload.predictResult.isAnime = prediction1 === 'Anime' && (prediction2 === 'Furry' || prediction2 === 'Anime');
-
-  // Step 2: 人脸检测
-  const faceImageData = await fnDetectFace(image);
-  await smoothUpdateProgress(80, 500); // 平滑更新进度条
-
-  upload.predictResult.hasFace = !!faceImageData;
-
-  // Step 3: 目标识别
-  const cocoResults = await cocoSsdPredict(image);
-  await smoothUpdateProgress(90, 500); // 平滑更新进度条
-
-  if (cocoResults.length > 0) {
-    const classSet = new Set(cocoResults.map(result => result.class));
-    upload.predictResult.objectArray = Array.from(classSet);
-  }
-
-  // Step 4: 风景识别
-  upload.predictResult.landscape = await predictLandscape(image);
-  await smoothUpdateProgress(100, 500); // 平滑更新进度条
-
-  // 完成
-  predicting.value = false;
-  image.removeEventListener('webglcontextlost', () => void 0);
-  return true;
 }
+
 
 const {uploading, send: submitFile, abort} = useRequest(uploadFile, {
   immediate: false,
@@ -168,11 +215,10 @@ async function customUploadRequest(file: any) {
 
   const formData = new FormData();
   formData.append("file", file.file);
-  formData.append("result", JSON.stringify({
-    uid: file.file.uid,
-    fileName: file.file.name, // 添加文件名
-    fileType: file.file.type, // 添加文件类型
-    detectionResult: upload.predictResult,
+  formData.append("data", JSON.stringify({
+    fileType: file.file.type,
+    ...upload.predictResult,
+    exif: JSON.stringify(upload.exifData) || '',
   }));
   watch(
       () => uploading.value,
@@ -183,7 +229,11 @@ async function customUploadRequest(file: any) {
       },
   );
   submitFile(formData).then((response: any) => {
-    file.onSuccess(response.data, file);
+    if (response && response.code === 200) {
+      file.onSuccess(response.data, file);
+    } else {
+      file.onError(response.data, file);
+    }
   }).catch(file.onError);
 }
 
@@ -204,6 +254,29 @@ function cancelUpload() {
  */
 function removeFile(file: any) {
   fileList.value = fileList.value.filter((item: any) => item.uid !== file.uid);
+}
+
+
+/**
+ * 提取 EXIF 数据
+ * @param {File} file - 图片文件
+ * @returns {Promise<Object|null>} - 返回所有 EXIF 数据或 null（如果格式不支持或提取失败）
+ */
+async function extractAllExifData(file) {
+  const supportedFormats = ['image/jpeg', 'image/tiff', 'image/iiq', 'image/heif', 'image/heic', 'image/avif', 'image/png'];
+
+  // 判断文件格式是否支持
+  if (!supportedFormats.includes(file.type)) {
+    return null;
+  }
+
+  try {
+    // 提取所有 EXIF 数据
+    return await exifr.parse(file, {ifd0: false, exif: true} as any);
+  } catch (error) {
+    console.error("提取 EXIF 数据失败:", error);
+    return null;
+  }
 }
 
 </script>
