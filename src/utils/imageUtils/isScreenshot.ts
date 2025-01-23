@@ -16,8 +16,11 @@ async function isScreenshot(file) {
         'screenshot', '屏幕截图', '截屏', 'Snip', 'Capture', 'Snapshot', '截图'
     ];
 
+    // 获取文件的 MIME 类型
+    const fileType = file.type.toLowerCase();
+
     try {
-        // 文件名匹配
+        // 判断文件名是否包含截图相关关键词
         const fileName = file.name.toLowerCase();
         const matchesFilename = screenshotFilenameKeywords.some(keyword =>
             fileName.includes(keyword.toLowerCase())
@@ -26,44 +29,47 @@ async function isScreenshot(file) {
             return true; // 如果文件名包含截图相关关键词，直接判断为截图
         }
 
-        // 提取 EXIF 数据
-        const exifData = await exifr.parse(file, ['ImageWidth', 'ImageHeight', 'Software', 'XResolution', 'YResolution']);
-        const {ImageWidth, ImageHeight, Software} = exifData || {};
+        // 判断文件类型是否为支持的格式
+        const isSupportedFormat = ['image/jpeg', 'image/tiff', 'image/heif', 'image/png'].includes(fileType);
 
-        // 如果图片没有宽高信息，直接返回 false
-        if (!ImageWidth || !ImageHeight) {
-            return false;
-        }
+        if (isSupportedFormat) {
+            // 如果是支持的格式，提取 EXIF 数据
+            const exifData = await exifr.parse(file, ['ImageWidth', 'ImageHeight', 'Software', 'XResolution', 'YResolution']);
+            const {ImageWidth, ImageHeight, Software} = exifData || {};
 
-        // 校验宽高比是否接近常见屏幕比例
-        const aspectRatio = Math.max(ImageWidth, ImageHeight) / Math.min(ImageWidth, ImageHeight);
-        const matchesAspectRatio = commonAspectRatios.some(
-            (ratio) => Math.abs(ratio - aspectRatio) <= aspectRatioTolerance
-        );
-
-        // 如果宽高比匹配，进一步检查
-        if (matchesAspectRatio) {
-            // 检查软件标记是否与截图工具相关
-            const screenshotSoftwareKeywords = ['Screenshot', 'Snipping Tool', 'Screen Capture', 'Grab', 'Sketch'];
-            if (Software && screenshotSoftwareKeywords.some((keyword) => Software.includes(keyword))) {
-                return true;
+            // 如果图片没有宽高信息，直接返回 false
+            if (!ImageWidth || !ImageHeight) {
+                return false;
             }
 
-            // 检查文件大小（截图通常较小）
-            const fileSizeMB = file.size / (1024 * 1024);
-            if (fileSizeMB <= maxScreenshotSizeMB) {
-                return true;
+            // 校验宽高比是否接近常见屏幕比例
+            const aspectRatio = Math.max(ImageWidth, ImageHeight) / Math.min(ImageWidth, ImageHeight);
+            const matchesAspectRatio = commonAspectRatios.some(
+                (ratio) => Math.abs(ratio - aspectRatio) <= aspectRatioTolerance
+            );
+
+            // 如果宽高比匹配，进一步检查
+            if (matchesAspectRatio) {
+                // 检查软件标记是否与截图工具相关
+                const screenshotSoftwareKeywords = ['Screenshot', 'Snipping Tool', 'Screen Capture', 'Grab', 'Sketch'];
+                if (Software && screenshotSoftwareKeywords.some((keyword) => Software.includes(keyword))) {
+                    return true;
+                }
+
+                // 检查文件大小（截图通常较小）
+                const fileSizeMB = file.size / (1024 * 1024);
+                if (fileSizeMB <= maxScreenshotSizeMB) {
+                    return true;
+                }
             }
         }
 
         // 无 EXIF 数据或不匹配时，通过宽高比的容差检测
         const img: any = await getImageDimensions(file);
         const imgAspectRatio = img.width / img.height;
-        const imgMatchesAspectRatio = commonAspectRatios.some(
+        return commonAspectRatios.some(
             (ratio) => Math.abs(ratio - imgAspectRatio) <= aspectRatioTolerance
         );
-
-        return imgMatchesAspectRatio;
 
     } catch (error) {
         console.error('判断截图时发生错误:', error);

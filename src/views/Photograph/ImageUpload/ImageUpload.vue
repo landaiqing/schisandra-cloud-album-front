@@ -21,6 +21,8 @@
           :disabled="predicting"
           :progress="progress"
           @remove="removeFile"
+          @reject="rejectFile"
+          :openFileDialogOnClick="true"
           accept="image/*"
           list-type="picture"
           method="post"
@@ -52,7 +54,6 @@ import i18n from "@/locales";
 
 import {NSFWJS} from "nsfwjs";
 import {animePredictImagePro} from "@/utils/tfjs/anime_classifier_pro.ts";
-import {fnDetectFace} from "@/utils/tfjs/face_extraction.ts";
 import {cocoSsdPredict} from "@/utils/tfjs/mobilenet.ts";
 import {predictLandscape} from "@/utils/tfjs/landscape_recognition.ts";
 import {useRequest} from 'alova/client';
@@ -92,8 +93,9 @@ const progress: UploadProps['progress'] = {
 /**
  * 图片上传前的校验
  * @param file
+ * @param fileList
  */
-async function beforeUpload(file: File) {
+async function beforeUpload(file: File, fileList: File[]) {
   predicting.value = true;
   upload.clearPredictResult();
   progressPercent.value = 0; // 初始化进度条
@@ -132,16 +134,18 @@ async function beforeUpload(file: File) {
 
     if (isNSFW) {
       message.error(i18n.global.t('comment.illegalImage'));
-      predicting.value = false;
+
       progressPercent.value = 100; // 重置进度条
       progressStatus.value = 'exception'; // 异常状态
+      fileList.pop(); // 清空文件列表
+      predicting.value = false;
       return false;
     }
 
     // 提取 EXIF 数据
     const exifData = await extractAllExifData(file);
     if (exifData) {
-      upload.exifData = exifData;
+      upload.predictResult.exif = exifData;
     }
 
     // 判断是否为截图
@@ -158,14 +162,7 @@ async function beforeUpload(file: File) {
       progressPercent.value = 100; // 直接完成
       return true;
     }
-    // 人脸检测
-    const faceImageData = await fnDetectFace(image);
-    if (faceImageData) {
-      upload.predictResult.hasFace = true;
-      predicting.value = false;
-      progressPercent.value = 100; // 直接完成
-      return true;
-    }
+
     //目标检测和风景检测并行处理
     const [cocoResults, landscape] = await Promise.all([
       cocoSsdPredict(image), // 目标检测
@@ -218,7 +215,6 @@ async function customUploadRequest(file: any) {
   formData.append("data", JSON.stringify({
     fileType: file.file.type,
     ...upload.predictResult,
-    exif: JSON.stringify(upload.exifData) || '',
   }));
   watch(
       () => uploading.value,
@@ -246,6 +242,14 @@ function cancelUpload() {
   upload.clearPredictResult();
   predicting.value = false;
   progressPercent.value = 0; // 重置进度条
+}
+
+/**
+ * 拒绝文件回调
+ * @param fileList
+ */
+function rejectFile(fileList: any) {
+  fileList.value.pop();
 }
 
 /**

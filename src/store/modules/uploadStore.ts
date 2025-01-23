@@ -2,11 +2,11 @@ import localforage from 'localforage';
 
 interface UploadPredictResult {
     isAnime: boolean;
-    hasFace: boolean;
     objectArray: string[] | unknown[];
     landscape: 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | 'none';
     isScreenshot: boolean;
     topCategory: string | undefined;
+    exif: object | null;
 }
 
 
@@ -15,14 +15,13 @@ export const useUploadStore = defineStore(
     () => {
         const openUploadDrawer = ref<boolean>(false);
 
-        const exifData = ref<any>();
         const predictResult = reactive<UploadPredictResult>({
             isAnime: false,
-            hasFace: false,
             objectArray: [],
             landscape: 'none',
             isScreenshot: false,
-            topCategory: ''
+            topCategory: '',
+            exif: {}
         });
 
         /**
@@ -37,18 +36,17 @@ export const useUploadStore = defineStore(
          */
         function clearPredictResult() {
             predictResult.isAnime = false;
-            predictResult.hasFace = false;
             predictResult.objectArray = [];
             predictResult.landscape = 'none';
             predictResult.isScreenshot = false;
             predictResult.topCategory = '';
+            predictResult.exif = {};
         }
 
 
         return {
             openUploadDrawer,
             predictResult,
-            exifData,
             openUploadDrawerFn,
             clearPredictResult,
         };
