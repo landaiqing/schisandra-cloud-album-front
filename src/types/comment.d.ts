@@ -23,14 +23,14 @@ interface CommentContent {
     avatar: string;
     nickname: string;
     level?: number;
-    images: string[];
+    images: string;
     is_liked: boolean;
 }
 
 export interface ReplyCommentParams {
     topic_id: string,
     content: string,
-    images: string[],
+    images: string,
     author: string,
     reply_id: number,
     reply_user: string,

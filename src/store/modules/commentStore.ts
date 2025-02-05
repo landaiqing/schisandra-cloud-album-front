@@ -29,8 +29,7 @@ export const useCommentStore = defineStore(
             thumbX: 0,
             thumbY: 0
         });
-        const fileList = ref<any[]>([]);
-        const imageList = ref<any[]>([]);
+        const imageList = ref<string>("");
         const uploadLoading = ref<boolean>(false);
         const emojiList = ref<any[]>(QQ_EMOJI);
         const commentId = ref<number | null>(null);
@@ -199,8 +198,7 @@ export const useCommentStore = defineStore(
          *  清空文件列表
          */
         async function clearFileList() {
-            fileList.value = [];
-            imageList.value = [];
+            imageList.value = "";
         }
 
 
@@ -221,25 +219,21 @@ export const useCommentStore = defineStore(
             const reader = new FileReader();
             reader.readAsDataURL(file); // 文件转换
             reader.onloadend = async function () {
-                if (fileList.value.length < 3) {
-                    const img: HTMLImageElement = document.createElement('img');
-                    img.src = reader.result as string;
-                    img.onload = async () => {
-                        // 图片 NSFW 检测
-                        const nsfw: NSFWJS = await initNSFWJs();
-                        const isNSFW: boolean = await predictNSFW(nsfw, img);
-                        if (isNSFW) {
-                            message.error(i18n.global.t('comment.illegalImage'));
-                            fileList.value.pop();
-                            uploadLoading.value = false;
-                            return false;
-                        }
-                        fileList.value.push(img.src);
+                const img: HTMLImageElement = document.createElement('img');
+                img.src = reader.result as string;
+                img.onload = async () => {
+                    // 图片 NSFW 检测
+                    const nsfw: NSFWJS = await initNSFWJs();
+                    const isNSFW: boolean = await predictNSFW(nsfw, img);
+                    if (isNSFW) {
+                        message.error(i18n.global.t('comment.illegalImage'));
+                        imageList.value = "";
                         uploadLoading.value = false;
-                    };
-                } else {
-                    return false;
-                }
+                        return false;
+                    }
+                    imageList.value = img.src;
+                    uploadLoading.value = false;
+                };
             };
 
             return true;
@@ -249,16 +243,14 @@ export const useCommentStore = defineStore(
          *  自定义上传图片请求
          */
         async function customUploadRequest() {
-            imageList.value = fileList.value;
+
         }
 
         /**
          *  移除图片
-         * @param index
          */
-        async function removeBase64Image(index: number) {
-            fileList.value.splice(index, 1);
-            imageList.value.splice(index, 1);
+        async function removeBase64Image() {
+            imageList.value = "";
         }
 
         /**
@@ -316,7 +308,6 @@ export const useCommentStore = defineStore(
             replyLoading,
             slideCaptchaData,
             commentMap,
-            fileList,
             imageList,
             uploadLoading,
             emojiList,

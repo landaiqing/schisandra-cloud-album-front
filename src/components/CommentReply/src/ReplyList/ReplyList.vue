@@ -51,8 +51,7 @@
                   <AImagePreviewGroup>
                     <AImagePreviewGroup>
                       <ASpace direction="horizontal">
-                        <AImage :width="80" :height="80" v-for="(image, index) in child.images" :key="index"
-                                :src="image">
+                        <AImage :width="80" :height="80" :src="child.images">
                           <template #previewMask>
                             <EyeOutlined style="font-size: 20px;"/>
                           </template>

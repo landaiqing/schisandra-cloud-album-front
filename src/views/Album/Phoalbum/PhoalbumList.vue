@@ -77,7 +77,11 @@
 <script setup lang="ts">
 import more from "@/assets/svgs/more.svg";
 
+
 const isHovered = ref<boolean>(false);
+
+
+
 </script>
 <style scoped lang="scss">
 .phoalbum {

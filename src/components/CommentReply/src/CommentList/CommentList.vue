@@ -68,8 +68,7 @@
                   <AFlex :vertical="false" align="center" class="reply-images" v-if="item.images">
                     <AImagePreviewGroup>
                       <ASpace direction="horizontal">
-                        <AImage :width="80" :height="80" v-for="(image, index) in item.images" :key="index"
-                                :src="image">
+                        <AImage :width="80" :height="80" :src="item.images">
                           <template #previewMask>
                             <EyeOutlined style="font-size: 20px;"/>
                           </template>

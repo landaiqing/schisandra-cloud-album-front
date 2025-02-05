@@ -5,7 +5,7 @@
       @click="handleClick"
       :style="cardStyle">
     <div class="hover-circle" @click.stop="toggleSelection"
-         v-if="showHoverCircle"
+         v-if="showHoverCircle && !isSelected"
          :style="{ width: iconSize + 'px', height: iconSize + 'px' }">
       <img :src="greyComplete" alt="Hover" class="hover-icon"
            :style="{ width: iconSize + 'px', height: iconSize + 'px' }"/>

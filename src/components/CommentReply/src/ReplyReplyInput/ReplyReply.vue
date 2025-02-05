@@ -59,26 +59,25 @@
                   :show-upload-list="false"
                   :custom-request="comment.customUploadRequest"
                   :before-upload="comment.beforeUpload"
-                  :disabled="comment.imageList.length >= 3 || comment.uploadLoading"
+                  :disabled="comment.uploadLoading"
               >
-                <ABadge :count="comment.imageList.length">
+                <ABadge>
                   <AButton type="text" size="small" :icon="h(PictureOutlined)"
                            class="comment-action-icon-reply-child" :loading="comment.uploadLoading">
                     {{ t('comment.picture') }}
                   </AButton>
                 </ABadge>
               </AUpload>
-              <template v-if="comment.imageList.length > 0">
+              <template v-if="comment.imageList">
                 <AImagePreviewGroup>
-                  <ABadge style="margin-left: 10px;" v-for="(item, index) in comment.imageList"
-                          :key="index">
+                  <ABadge style="margin-left: 10px;">
                     <template #count>
-                      <CloseCircleOutlined @click="comment.removeBase64Image(index)"
+                      <CloseCircleOutlined @click="comment.removeBase64Image()"
                                            style="color: #f5222d"/>
                     </template>
                     <AAvatar shape="square" size="small">
                       <template #icon>
-                        <AImage v-if="item" :width="24" :height="24" :src="item"/>
+                        <AImage :width="24" :height="24" :src="comment.imageList"/>
                       </template>
                     </AAvatar>
                   </ABadge>
@@ -168,10 +167,6 @@ async function replyReplySubmit(point: any) {
   if (replyReplyContent.value.trim() === "") {
     return;
   }
-  if (comment.imageList.length > 3) {
-    message.warning(t('comment.maxImageCount'));
-    return;
-  }
   const content = replyReplyContent.value.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
   const regex = /\[((1[0-6][0-6]|[1-9]?[0-9])\.gif)]/g; // 匹配 [1.gif] 的字符串
   const contentWithEmoji = content.replace(regex, (_match, p1) => {
@@ -238,10 +233,6 @@ const getSlideCaptchaDataThrottled = useThrottleFn(comment.getSlideCaptchaData, 
 async function showSlideCaptcha() {
   if (replyReplyContent.value.trim() === "") {
     message.warning(t('comment.commentContentNotEmpty'));
-    return;
-  }
-  if (comment.imageList.length > 3) {
-    message.warning(t('comment.maxImageCount'));
     return;
   }
   const res = await comment.getSlideCaptchaData();
