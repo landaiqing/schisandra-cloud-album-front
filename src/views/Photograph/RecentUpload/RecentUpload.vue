@@ -1,7 +1,7 @@
 <template>
   <div class="recent-upload">
     <div class="photo-header">
-      <AButton type="primary" shape="round" size="middle">
+      <AButton type="primary" shape="round" size="middle" @click="upload.openUploadDrawerFn()">
         <template #icon>
           <PlusOutlined/>
         </template>
@@ -51,6 +51,7 @@
         </AImagePreviewGroup>
       </div>
     </div>
+    <ImageUpload/>
   </div>
 </template>
 <script setup lang="ts">
@@ -58,7 +59,10 @@ import {Waterfall} from 'vue-waterfall-plugin-next';
 import 'vue-waterfall-plugin-next/dist/style.css';
 import loading from '@/assets/gif/loading.gif';
 import error from '@/assets/svgs/no-image.svg';
+import useStore from "@/store";
+import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 
+const upload = useStore().upload;
 const selected = ref<(string | number)[]>([]);
 const breakpoints = reactive({
   breakpoints: {

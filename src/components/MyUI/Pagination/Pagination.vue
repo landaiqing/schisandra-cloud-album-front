@@ -368,10 +368,10 @@ function onPageSizeChange(pageSize: number) {
     }
 
     &:hover {
-      border-color: @themeColor;
+      border-color: #00aced;
 
       .arrow-svg {
-        color: @themeColor;
+        color: #00aced;
       }
     }
   }
@@ -383,8 +383,8 @@ function onPageSizeChange(pageSize: number) {
   .item-active {
     // 悬浮/选中样式
     font-weight: 600;
-    color: @themeColor;
-    border-color: @themeColor;
+    color: #00aced;
+    border-color: #00aced;
   }
 
   .item-disabled {
@@ -443,7 +443,7 @@ function onPageSizeChange(pageSize: number) {
       right: 0;
       margin: auto;
       display: inline-block;
-      fill: @themeColor;
+      fill: #000;
       width: 12px;
       height: 12px;
       opacity: 0;

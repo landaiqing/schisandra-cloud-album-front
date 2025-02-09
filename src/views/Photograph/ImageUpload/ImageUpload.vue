@@ -104,10 +104,12 @@ async function beforeUpload(file: File, fileList: File[]) {
   const compressedFile = await imageCompression(file, options);
   // 创建图片对象
   image.src = URL.createObjectURL(compressedFile);
-
-  image.addEventListener('webglcontextlost', (_event) => {
-    window.location.reload();
-  });
+  // 获取图片宽高
+  image.onload = () => {
+    const {width, height} = image;
+    upload.predictResult.width = width;
+    upload.predictResult.height = height;
+  };
 
   // 更新进度条函数，逐步增加
   const smoothUpdateProgress = async (targetPercent, duration) => {
@@ -145,7 +147,7 @@ async function beforeUpload(file: File, fileList: File[]) {
     // 提取 EXIF 数据
     const exifData = await extractAllExifData(file);
     if (exifData) {
-      upload.predictResult.exif = exifData;
+      upload.predictResult.exif = exifData ? exifData : "";
     }
 
     // 判断是否为截图
@@ -183,7 +185,7 @@ async function beforeUpload(file: File, fileList: File[]) {
       const classSet = new Set(cocoResults.map(result => result.class));
       upload.predictResult.objectArray = Array.from(classSet);
     }
-    upload.predictResult.landscape = landscape as 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | 'none';
+    upload.predictResult.landscape = landscape as 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | null;
 
     predicting.value = false;
     return true;
@@ -193,8 +195,6 @@ async function beforeUpload(file: File, fileList: File[]) {
     predicting.value = false;
     progressPercent.value = 0; // 重置进度条
     return false;
-  } finally {
-    image.removeEventListener('webglcontextlost', () => void 0);
   }
 }
 
@@ -213,6 +213,8 @@ async function customUploadRequest(file: any) {
   const formData = new FormData();
   formData.append("file", file.file);
   formData.append("data", JSON.stringify({
+    provider: 'ali',
+    bucket: 'schisandra',
     fileType: file.file.type,
     ...upload.predictResult,
   }));

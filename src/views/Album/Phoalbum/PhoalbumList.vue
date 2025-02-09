@@ -1,12 +1,28 @@
 <template>
   <div class="phoalbum">
     <div class="phoalbum-header">
-      <AButton type="primary" shape="round" size="middle">
-        <template #icon>
-          <PlusSquareOutlined/>
+      <APopover placement="bottom" trigger="click">
+        <AButton type="primary" shape="round" size="middle">
+          <template #icon>
+            <PlusSquareOutlined/>
+          </template>
+          创建相册
+        </AButton>
+        <template #content>
+          <span style="color: #999; font-size: 15px;">创建相册</span>
+          <AInputGroup compact style="display: flex;flex-direction: row;margin-top: 15px">
+            <AInput placeholder="请填写相册名称" class="phoalbum-create-input"
+                    v-model:value="albumNameValue" size="large">
+              <template #suffix>
+                <AButton type="text" @click.prevent size="middle" style="color: #0e87cc" @click="createAlbumSubmit">
+                  确认
+                </AButton>
+              </template>
+            </AInput>
+          </AInputGroup>
         </template>
-        创建相册
-      </AButton>
+
+      </APopover>
       <ADropdown>
         <AButton type="default" shape="round" size="middle">
           <template #icon>
@@ -15,9 +31,9 @@
           排序
         </AButton>
         <template #overlay>
-          <AMenu>
-            <AMenuItem key="1">按时间排序</AMenuItem>
-            <AMenuItem key="2">按名称排序</AMenuItem>
+          <AMenu selectable :selectedKeys="[selecetedKey]" @select="handleSelect">
+            <AMenuItem :key="true">按时间排序</AMenuItem>
+            <AMenuItem :key="false">按名称排序</AMenuItem>
           </AMenu>
         </template>
       </ADropdown>
@@ -33,42 +49,64 @@
     </div>
     <div class="phoalbum-content">
       <ATabs size="small" :tabBarGutter="50" type="line" tabPosition="top" :tabBarStyle="{position:'unset'}"
-             style="width: 100%;">
+             style="width: 100%;" @change="handleTabChange">
         <template #rightExtra>
-          <span style="color: #999; font-size: 12px;">已全部加载，共 0 个相册</span>
+          <span
+              style="color: #999; font-size: 12px;">已全部加载，共 {{ albumList ? albumList.length : 0 }} 个相册</span>
         </template>
-        <ATabPane key="1" tab="全部相册">
-          <div class="phoalbum-item-container">
-            <div class="phoalbum-item" @mouseover="isHovered = true" @mouseleave="isHovered = false">
-              <PhotoStack :src="'/test/1.png'" default-src=""/>
-              <div class="phoalbum-item-info">
-                <span class="phoalbum-item-name">我的相册</span>
-                <span class="phoalbum-item-date">2022-01-01</span>
-              </div>
-              <div class="phoalbum-item-operation" :class="{ 'fade-in': isHovered, 'fade-out': !isHovered }">
-                <ADropdown trigger="click">
-                  <AButton type="text" shape="circle" size="small">
-                    <template #icon>
-                      <AAvatar shape="circle" size="small" :src="more"/>
+        <ATabPane key="0" tab="全部相册">
+          <ASpin tip="Loading..." :spinning="loading" size="large">
+            <div class="phoalbum-item-container">
+              <div class="phoalbum-item"
+                   v-for="(album, index) in albumList"
+                   :key="album.id"
+                   @mouseover="isHovered = index"
+                   @mouseleave="isHovered = null">
+                <PhotoStack :src="album.cover_image" :default-src="default_cover"/>
+                <div class="phoalbum-item-info">
+                  <span class="phoalbum-item-name">{{ album.name }}</span>
+                  <span class="phoalbum-item-date">{{ album.created_at }}</span>
+                </div>
+                <div class="phoalbum-item-operation"
+                     :class="{ 'fade-in': isHovered === index, 'fade-out': isHovered !== index }">
+                  <ADropdown trigger="click">
+                    <AButton type="text" shape="circle" size="small">
+                      <template #icon>
+                        <AAvatar shape="circle" size="small" :src="more"/>
+                      </template>
+                    </AButton>
+                    <template #overlay>
+                      <AMenu>
+                        <APopover placement="left" trigger="click">
+                          <AMenuItem key="1">重命名相册</AMenuItem>
+                          <template #content>
+                            <AInput :placeholder="album.name" class="phoalbum-create-input"
+                                    v-model:value="albumRenameValue">
+                              <template #suffix>
+                                <AButton type="text" @click.prevent size="small" style="color: #0e87cc"
+                                         @click="renameAlbum(album.id, albumRenameValue)">
+                                  确认
+                                </AButton>
+                              </template>
+                            </AInput>
+                          </template>
+                        </APopover>
+                        <AMenuItem key="2">分享相册</AMenuItem>
+                        <AMenuItem key="3" @click.prevent="deleteAlbum(album.id)">删除相册</AMenuItem>
+                        <AMenuItem key="4">下载相册</AMenuItem>
+                      </AMenu>
                     </template>
-                  </AButton>
-                  <template #overlay>
-                    <AMenu>
-                      <AMenuItem key="1">重命名相册</AMenuItem>
-                      <AMenuItem key="2">分享相册</AMenuItem>
-                      <AMenuItem key="3">删除相册</AMenuItem>
-                      <AMenuItem key="4">下载相册</AMenuItem>
-                    </AMenu>
-                  </template>
-                </ADropdown>
+                  </ADropdown>
+                </div>
               </div>
             </div>
-          </div>
+          </ASpin>
         </ATabPane>
-        <ATabPane key="2" tab="我的相册">
+        <ATabPane key="1" tab="我的相册">
 
         </ATabPane>
-        <ATabPane key="3" tab="收藏相册">
+        <ATabPane key="2" tab="收藏相册">
+
         </ATabPane>
       </ATabs>
     </div>
@@ -76,11 +114,103 @@
 </template>
 <script setup lang="ts">
 import more from "@/assets/svgs/more.svg";
+import {albumListApi, createAlbumApi, deleteAlbumApi, renameAlbumApi} from "@/api/storage";
+import {message} from "ant-design-vue";
+import default_cover from "@/assets/images/default-cover.png";
 
+const isHovered = ref<number | null>(null);
 
-const isHovered = ref<boolean>(false);
+const albumNameValue = ref<string>("未命名相册");
+const albumRenameValue = ref<string>("");
 
+const selecetedKey = ref<boolean>(true);
 
+const albumList = ref<any[]>([]);
+
+const loading = ref<boolean>(false);
+
+/**
+ * 创建相册
+ */
+async function createAlbumSubmit() {
+  if (albumNameValue.value.trim() === "") {
+    message.error("相册名称不能为空");
+    return;
+  }
+  const res: any = await createAlbumApi(albumNameValue.value);
+  if (res && res.code === 200) {
+    albumNameValue.value = "未命名相册";
+    await getAlbumList("0", selecetedKey.value);
+  } else {
+    message.error("创建相册失败");
+  }
+}
+
+/**
+ * 选择排序方式
+ * @param key
+ */
+async function handleSelect({key}) {
+  selecetedKey.value = key;
+  await getAlbumList("0", key);
+}
+
+/**
+ * 切换相册列表
+ * @param activeKey
+ */
+async function handleTabChange(activeKey: string) {
+  await getAlbumList(activeKey, selecetedKey.value);
+}
+
+/**
+ * 获取相册列表
+ * @param type
+ * @param sort
+ */
+async function getAlbumList(type: string = "0", sort: boolean = true) {
+  albumList.value = [];
+  loading.value = true;
+  const res: any = await albumListApi(type, sort);
+  if (res && res.code === 200) {
+    albumList.value = res.data.albums;
+  }
+  loading.value = false;
+}
+
+/**
+ * 重命名相册
+ * @param id
+ * @param name
+ */
+async function renameAlbum(id: number, name: string) {
+  if (name.trim() === "") {
+    message.warning("相册名称不能为空");
+    return;
+  }
+  const res: any = await renameAlbumApi(id, name);
+  if (res && res.code === 200) {
+    albumRenameValue.value = "";
+    await getAlbumList("0", selecetedKey.value);
+  }
+}
+
+/**
+ * 删除相册
+ * @param id
+ */
+async function deleteAlbum(id: number) {
+  const res: any = await deleteAlbumApi(id);
+  if (res && res.code === 200) {
+    await getAlbumList("0", selecetedKey.value);
+  } else {
+    message.error("删除相册失败");
+  }
+}
+
+onMounted(() => {
+  getAlbumList("0", selecetedKey.value);
+});
 
 </script>
 <style scoped lang="scss">
@@ -120,9 +250,10 @@ const isHovered = ref<boolean>(false);
     .phoalbum-item-container {
       display: flex;
       flex-direction: row;
+      flex-wrap: wrap;
       align-items: flex-start;
       justify-content: flex-start;
-      gap: 20px;
+      gap: 40px;
       width: 100%;
       height: 100%;
       overflow-y: auto;
@@ -180,5 +311,10 @@ const isHovered = ref<boolean>(false);
     }
 
   }
+}
+
+.phoalbum-create-popover-text {
+  //font-size: 13px;
+  color: rgba(102, 102, 102, 0.87);
 }
 </style>

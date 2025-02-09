@@ -89,7 +89,7 @@ function toggleSelection() {
 <style scoped lang="scss">
 .check-card {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -100,11 +100,16 @@ function toggleSelection() {
 .check-card.selected {
   border: 1px solid rgba(125, 167, 255, 0.68);
   box-shadow: 0 0 2px rgba(77, 167, 255, 0.89);
-  padding: 10px;
 }
 
 .card-content {
+  display: inline-block;
   flex: 1;
+  transition: transform 0.3s ease-in-out;
+}
+
+.check-card.selected .card-content {
+  transform: scale(0.95);
 }
 
 .card-selected-icon {

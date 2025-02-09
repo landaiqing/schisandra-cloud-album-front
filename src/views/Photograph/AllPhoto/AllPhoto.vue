@@ -63,54 +63,44 @@
         <template #rightExtra>
           <ASwitch size="small" v-model:checked="switchValue"/>
         </template>
-        <ATabPane key="1" tab="全部">
-          <div style="width:100%;height:100%;" v-if="images.length !== 0">
-            <span style="margin-left: 10px;font-size: 13px">2024年12月27日 星期日</span>
-            <AImagePreviewGroup>
-              <Waterfall :list="images"
-                         :backgroundColor="`transparent`"
-                         :width="400"
-                         :gutter="15"
-                         align="left"
-                         :lazyload="true"
-                         :animationDelay="300"
-                         :animationDuration="1000"
-                         :animationCancel="false"
-                         :hasAroundGutter="true"
-                         rowKey="id"
-                         :imgSelector="'src'"
-                         :loadProps="loadProps"
-                         :breakpoints="breakpoints">
-                <template #default="{ item, url, index }">
-                  <CheckCard :key="index"
-                             class="photo-item"
-                             margin="0"
-                             border-radius="0"
-                             v-model="selected"
-                             :showHoverCircle="true"
-                             :iconSize="20"
-                             :showSelectedEffect="true"
-                             :value="url">
-                    <AImage :src="url"
-                            :alt="item.title"
-                            :key="index"
-                            :previewMask="false"
-                            loading="lazy"/>
-                  </CheckCard>
-                </template>
-              </Waterfall>
-            </AImagePreviewGroup>
+        <ATabPane key="image" tab="全部">
+          <div style="width:100%;height:100%;">
+            <div v-for="(itemList, index) in images" :key="index">
+              <span style="margin-left: 10px;font-size: 14px">{{ itemList.date }}</span>
+              <AImagePreviewGroup>
+                <Vue3JustifiedLayout v-model:list="itemList.list" :options="options">
+                  <template #default="{ item }">
+                    <CheckCard :key="index"
+                               class="photo-item"
+                               margin="0"
+                               border-radius="0"
+                               v-model="selected"
+                               :showHoverCircle="true"
+                               :iconSize="20"
+                               :showSelectedEffect="true"
+                               :value="item.id">
+                      <AImage :src="item.url"
+                              :alt="item.file_name"
+                              :key="index"
+                              style="height: 200px"
+                              :previewMask="false"
+                              loading="lazy"/>
+                    </CheckCard>
+                  </template>
+                </Vue3JustifiedLayout>
+              </AImagePreviewGroup>
+            </div>
           </div>
         </ATabPane>
-        <ATabPane key="2" tab="视频">
+        <ATabPane key="video" tab="视频">
           <div style="width:100%;height:100%;">
 
           </div>
         </ATabPane>
-        <ATabPane key="3" tab="动图">
+        <ATabPane key="gif" tab="动图">
 
         </ATabPane>
-        <ATabPane key="4" tab="截图">
+        <ATabPane key="screenshot" tab="截图">
 
         </ATabPane>
       </ATabs>
@@ -120,64 +110,36 @@
 </template>
 
 <script setup lang="ts">
-import {Waterfall} from 'vue-waterfall-plugin-next';
-import 'vue-waterfall-plugin-next/dist/style.css';
-import loading from '@/assets/gif/loading.gif';
-import error from '@/assets/svgs/no-image.svg';
+
+import Vue3JustifiedLayout from "vue3-justified-layout";
+import 'vue3-justified-layout/dist/style.css';
 import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 import useStore from "@/store";
+import {queryAllImagesApi} from "@/api/storage";
+
 
 const selected = ref<(string | number)[]>([]);
 const switchValue = ref<boolean>(false);
 const upload = useStore().upload;
-const breakpoints = reactive({
-  breakpoints: {
-    1200: {
-      // 当屏幕宽度小于等于1200
-      rowPerView: 4,
-    },
-    800: {
-      // 当屏幕宽度小于等于800
-      rowPerView: 3,
-    },
-    500: {
-      // 当屏幕宽度小于等于500
-      rowPerView: 2,
-    },
-  },
-});
-const loadProps = reactive({
-  loading,
-  error,
-  ratioCalculator: (_width: number, _height: number) => {
-    // 我设置了最小宽高比
-    const minRatio = 3 / 4;
-    const maxRatio = 4 / 3;
-    return Math.random() > 0.5 ? minRatio : maxRatio;
-  },
+
+const options = reactive({
+  targetRowHeight: 200 // 高度
 });
 
 const images = ref<any[]>([]);
 
-function loadImages() {
-  for (let i = 1; i < 10; i++) {
-    images.value.push({
-      title: `image-${i}`,
-      link: '',
-      src: `https://cdn.jsdelivr.net/gh/themusecatcher/resources@0.0.5/${i}.jpg`,
-      tag: '全部',
-      date: '2022-01-01',
-    });
-    images.value.push({
-      title: `image-${i}`,
-      link: '',
-      src: `/test/${i}.png`,
-    });
+
+async function getAllImages() {
+  const res: any = await queryAllImagesApi("image", false, "ali", "schisandra-album");
+  if (res && res.code === 200) {
+    console.log(res);
+    images.value = res.data.records;
   }
 }
 
-onBeforeMount(() => { // 组件已完成响应式状态设置，但未创建DOM节点
-  loadImages();
+
+onMounted(() => {
+  getAllImages();
 });
 </script>
 <style scoped lang="scss">

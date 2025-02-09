@@ -11,7 +11,8 @@
       </div>
       <!--  上传按钮 -->
       <div class="button-wrapper">
-        <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
+        <AButton type="text" shape="circle" size="large" class="header-menu-item-btn"
+                 @click="uploadStore.openUploadDrawerFn">
           <template #icon>
             <AAvatar size="default" shape="circle" :src="upload"/>
           </template>
@@ -116,6 +117,7 @@
         </template>
       </APopover>
     </AFlex>
+    <ImageUpload/>
   </AFlex>
 </template>
 <script setup lang="ts">
@@ -130,7 +132,9 @@ import personalCenter from "@/assets/svgs/personal-center.svg";
 import accountSetting from "@/assets/svgs/setting.svg";
 import logout from "@/assets/svgs/logout.svg";
 import useStore from "@/store";
+import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 
+const uploadStore = useStore().upload;
 const user = useStore().user;
 </script>
 

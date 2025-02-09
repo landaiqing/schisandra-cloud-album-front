@@ -26,6 +26,7 @@ declare module 'vue' {
     AImage: typeof import('ant-design-vue/es')['Image']
     AImagePreviewGroup: typeof import('ant-design-vue/es')['ImagePreviewGroup']
     AInput: typeof import('ant-design-vue/es')['Input']
+    AInputGroup: typeof import('ant-design-vue/es')['InputGroup']
     AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
     Alert: typeof import('./src/components/MyUI/Alert/Alert.vue')['default']
     AList: typeof import('ant-design-vue/es')['List']
@@ -187,5 +188,7 @@ declare module 'vue' {
     Video: typeof import('./src/components/MyUI/Video/Video.vue')['default']
     VueCompareImage: typeof import('./src/components/VueCompareImage/VueCompareImage.vue')['default']
     WarningOutlined: typeof import('@ant-design/icons-vue')['WarningOutlined']
+    Waterfall: typeof import('./src/views/Photograph/WaterfallList/Waterfall.vue')['default']
+    WaterfallList: typeof import('./src/views/Photograph/WaterfallList/WaterfallList.vue')['default']
   }
 }
