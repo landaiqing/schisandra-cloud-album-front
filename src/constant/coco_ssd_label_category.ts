@@ -9,14 +9,14 @@ export const CATEGORIES = {
     ELECTRONICS: {en: 'electronics', zh: '电子产品'},
     EVERYDAY_ITEMS: {en: 'everyday_items', zh: '日常物品'},
     HOUSEHOLD: {en: 'household', zh: '家居用品'},
-    HUMAN: {en: 'human', zh: '人类'},
+    HUMAN: {en: 'human', zh: '人物'},
 } as const;
 
 // 为每个标签提供中文名称的映射
 export const LABELS = {
 
     // Human 人类
-    'person': {en: 'person', zh: '人'},
+    'person': {en: 'person', zh: '人物'},
 
     // Vehicles 交通工具
     'bicycle': {en: 'bicycle', zh: '自行车'},
@@ -236,6 +236,17 @@ export function getLabelName(label: string, lang: 'en' | 'zh' = 'en'): string | 
     const labelInfo = LABELS[label];
     return labelInfo ? labelInfo[lang] : undefined;
 }
+
+// 获取标签的中文名称
+export const getZhCategoryNameByEnName = (enName: string): string | undefined => {
+    const category = Object.values(CATEGORIES).find(cat => cat.en.toLowerCase() === enName.toLowerCase());
+    return category?.zh;
+};
+// 获取标签的中文名称
+export const getZhLabelNameByEnName = (enName: string): string | undefined => {
+    const labelInfo = LABELS[enName.toLowerCase()];
+    return labelInfo?.zh;
+};
 
 // 使用示例
 // console.log(getLabelName('person')); // 输出: 'person' (英文)

@@ -60,6 +60,7 @@
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
+                   @click.prevent="handleClick(album.id)"
                    @mouseover="isHovered = index"
                    @mouseleave="isHovered = null">
                 <PhotoStack :src="album.cover_image" :default-src="default_cover"/>
@@ -69,8 +70,8 @@
                 </div>
                 <div class="phoalbum-item-operation"
                      :class="{ 'fade-in': isHovered === index, 'fade-out': isHovered !== index }">
-                  <ADropdown trigger="click">
-                    <AButton type="text" shape="circle" size="small">
+                  <ADropdown trigger="click" @click.stop>
+                    <AButton type="text" shape="circle" size="small" @click.prevent>
                       <template #icon>
                         <AAvatar shape="circle" size="small" :src="more"/>
                       </template>
@@ -206,6 +207,17 @@ async function deleteAlbum(id: number) {
   } else {
     message.error("删除相册失败");
   }
+}
+
+const route = useRoute();
+const router = useRouter();
+
+/**
+ *  点击相册跳转到详情页
+ * @param id
+ */
+function handleClick(id: number) {
+  router.push({path: route.path + `/${id}`});
 }
 
 onMounted(() => {

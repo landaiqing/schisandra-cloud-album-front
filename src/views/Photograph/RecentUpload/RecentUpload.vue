@@ -14,99 +14,65 @@
         创建相册
       </AButton>
     </div>
+    <image-toolbar :selected="selected" />
     <div class="photo-list">
       <div style="width:100%;height:100%;" v-if="images.length !== 0">
-        <span style="margin-left: 10px;font-size: 13px">2024年12月27日 星期日</span>
-        <AImagePreviewGroup>
-          <Waterfall :list="images"
-                     :backgroundColor="`transparent`"
-                     :width="400"
-                     :gutter="15"
-                     align="left"
-                     :lazyload="true"
-                     :animationDelay="300"
-                     :animationDuration="1000"
-                     :animationCancel="false"
-                     :hasAroundGutter="true"
-                     rowKey="id"
-                     :imgSelector="'src'"
-                     :loadProps="loadProps"
-                     :breakpoints="breakpoints">
-            <template #default="{ item, url, index }">
-              <CheckCard :key="index"
-                         margin="0"
-                         border-radius="0"
-                         v-model="selected"
-                         :showHoverCircle="true"
-                         :iconSize="20"
-                         :value="url">
-                <AImage :src="url"
-                        :alt="item.title"
-                        :key="index"
-                        :previewMask="false"
-                        loading="lazy"/>
-              </CheckCard>
-            </template>
-          </Waterfall>
-        </AImagePreviewGroup>
+        <div v-for="(itemList, index) in images" :key="index">
+          <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
+          <AImagePreviewGroup>
+            <Vue3JustifiedLayout v-model:list="itemList.list" :options="options">
+              <template #default="{ item }">
+                <CheckCard :key="index"
+                           class="photo-item"
+                           margin="0"
+                           border-radius="0"
+                           v-model="selected"
+                           :showHoverCircle="true"
+                           :iconSize="20"
+                           :showSelectedEffect="true"
+                           :value="item.id">
+                  <AImage :src="item.url"
+                          :alt="item.file_name"
+                          :key="index"
+                          style="height: 200px"
+                          :previewMask="false"
+                          loading="lazy"/>
+                </CheckCard>
+              </template>
+            </Vue3JustifiedLayout>
+          </AImagePreviewGroup>
+        </div>
       </div>
     </div>
     <ImageUpload/>
   </div>
 </template>
 <script setup lang="ts">
-import {Waterfall} from 'vue-waterfall-plugin-next';
-import 'vue-waterfall-plugin-next/dist/style.css';
-import loading from '@/assets/gif/loading.gif';
-import error from '@/assets/svgs/no-image.svg';
+
+import Vue3JustifiedLayout from "vue3-justified-layout";
+import 'vue3-justified-layout/dist/style.css';
 import useStore from "@/store";
 import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
+import {queryRecentImagesApi} from "@/api/storage";
+import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
 
-const upload = useStore().upload;
 const selected = ref<(string | number)[]>([]);
-const breakpoints = reactive({
-  breakpoints: {
-    1200: {
-      // 当屏幕宽度小于等于1200
-      rowPerView: 4,
-    },
-    800: {
-      // 当屏幕宽度小于等于800
-      rowPerView: 3,
-    },
-    500: {
-      // 当屏幕宽度小于等于500
-      rowPerView: 2,
-    },
-  },
-});
-const loadProps = reactive({
-  loading,
-  error,
-  ratioCalculator: (_width: number, _height: number) => {
-    // 我设置了最小宽高比
-    const minRatio = 3 / 4;
-    const maxRatio = 4 / 3;
-    return Math.random() > 0.5 ? minRatio : maxRatio;
-  },
-});
-
+const upload = useStore().upload;
 const images = ref<any[]>([]);
+const options = reactive({
+  targetRowHeight: 200 // 高度
+});
 
-function loadImages() {
-  for (let i = 1; i < 10; i++) {
-    images.value.push({
-      title: `image-${i}`,
-      link: '',
-      src: `https://cdn.jsdelivr.net/gh/themusecatcher/resources@0.0.5/${i}.jpg`,
-      tag: '全部',
-      date: '2022-01-01',
-    });
+const getRecentImages = async () => {
+  const res: any = await queryRecentImagesApi();
+  console.log(res);
+  if (res && res.code === 200) {
+    images.value = res.data.records;
   }
-}
+};
 
-onBeforeMount(() => { // 组件已完成响应式状态设置，但未创建DOM节点
-  loadImages();
+onMounted(() => {
+  getRecentImages();
 });
 
 </script>

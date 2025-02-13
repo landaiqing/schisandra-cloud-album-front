@@ -2,27 +2,49 @@
   <div class="location-album">
     <div class="location-album-header">
       <AButton type="link" size="large" class="location-album-button">地点</AButton>
-      <span class="location-album-count">你一共在2个地点留下足迹</span>
+      <span class="location-album-count">你一共在{{ locationAlbums ? locationAlbums.length : 0 }}个地点留下足迹</span>
     </div>
     <div class="location-album-content">
-      <div class="location-album-container" @click="handleClick">
-        <img class="background-image" src="/test/5.png" alt=""/>
-        <div class="overlay">
-          <span>乌鲁木齐市</span>
-          <span class="location-album-overlay-count">---</span>
-          <span class="location-album-overlay-count">16张照片</span>
+      <div class="location-album-content-item" v-for="(item, index) in locationAlbums" :key="index">
+        <span class="location-album-description">{{ item.location }}</span>
+        <div class="location-album-location-list">
+          <div class="location-album-container" @click="handleClick(itemList.id)"
+               v-for="(itemList, indexItem) in item.list" :key="indexItem">
+            <img class="background-image" :src="itemList.cover_image" :alt="itemList.city"/>
+            <div class="overlay">
+              <span>{{ itemList.city }}</span>
+              <span class="location-album-overlay-count">---</span>
+              <span class="location-album-overlay-count">{{ itemList.total }}张照片</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import {queryLocationAlbumApi} from "@/api/storage";
+
 const route = useRoute();
 const router = useRouter();
 
-function handleClick() {
-  router.push({ path: route.path + '/1' });
+function handleClick(id: number) {
+  router.push({path: route.path + `/${id}`});
 }
+
+const locationAlbums = ref<any[]>([]);
+
+async function getLocationAlbums(provider: string, bucket: string) {
+  const res: any = await queryLocationAlbumApi(provider, bucket);
+  console.log(res);
+  if (res && res.code === 200) {
+    locationAlbums.value = res.data.records;
+  }
+}
+
+onMounted(() => {
+  getLocationAlbums("ali", "schisandra-album");
+});
 </script>
 <style scoped lang="scss">
 .location-album {
@@ -61,58 +83,83 @@ function handleClick() {
 
   .location-album-content {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
     height: 100%;
     overflow-y: auto;
     padding-top: 20px;
+    padding-left: 25px;
     gap: 20px;
 
-    .location-album-container {
-      width: 180px;
-      height: 180px;
-      position: relative;
-      display: inline-block;
-      background-color: #f5f5f5;
+    .location-album-content-item {
+      display: flex;
+      flex-direction: column;
 
-      .background-image {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+      .location-album-description {
+        font-size: 13px;
+        color: #333;
+        padding-bottom: 10px;
       }
 
-      .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
-        backdrop-filter: blur(2px); /* 背景虚化 */
+      .location-album-location-list {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 16px;
-        transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
-        gap: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 20px;
 
-        .location-album-overlay-count {
-          font-size: 12px;
-          color: white;
+        .location-album-container {
+          width: 180px;
+          height: 180px;
+          position: relative;
+          display: inline-block;
+          background-color: #f5f5f5;
+
+          .background-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
+            backdrop-filter: blur(2px); /* 背景虚化 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+            gap: 0;
+
+            .location-album-overlay-count {
+              font-size: 12px;
+              color: white;
+            }
+          }
+
+          .overlay:hover {
+            background-color: rgba(0, 0, 0, 0.1); /* 黑色半透明 */
+            backdrop-filter: blur(0px); /* 背景虚化 */
+            cursor: pointer;
+          }
         }
       }
 
-      .overlay:hover {
-        background-color: rgba(0, 0, 0, 0.1); /* 黑色半透明 */
-        backdrop-filter: blur(0px); /* 背景虚化 */
-        cursor: pointer;
-      }
+
     }
+
 
     .location-album-container:hover {
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);

@@ -55,6 +55,7 @@
           <CheckCard
               v-for="(item, index) in faceList"
               :key="index"
+              @click="handleClick(item.id)"
               class="photo-item"
               margin="0"
               border-radius="0"
@@ -206,6 +207,17 @@ async function hiddenFace() {
     await getFaceList();
     selected.value = [];
   }
+}
+
+const route = useRoute();
+const router = useRouter();
+
+/**
+ *     点击人物跳转到详情页
+ * @param id
+ */
+function handleClick(id: number) {
+  router.push({path: route.path + `/${id}`});
 }
 
 onMounted(() => {

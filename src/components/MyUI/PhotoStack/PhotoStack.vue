@@ -25,7 +25,7 @@ const imageSrc = computed(() => props.src || props.defaultSrc);
   height: 180px;
   vertical-align: bottom;
   border: 5px #fff solid;
-  border-radius: 10px;
+  border-radius: 15px;
   box-sizing: border-box;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }

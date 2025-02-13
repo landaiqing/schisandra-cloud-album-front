@@ -34,6 +34,29 @@ export const getFaceSamplesList = (type: number) => {
     });
 };
 /**
+ * 获取人脸样本详情列表
+ * @param face_id
+ * @param provider
+ * @param bucket
+ */
+export const getFaceSamplesDetailList = (face_id: number, provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/face/detail/list', {
+        face_id: face_id,
+        provider: provider,
+        bucket: bucket,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        hitSource: ["modify-face-sample-name", "modify-face-sample-type"],
+    });
+};
+/**
  * 修改人脸样本名称
  * @param id
  * @param face_name
@@ -103,6 +126,28 @@ export const albumListApi = (type: string, sort: boolean) => {
         hitSource: ["create-album", "rename-album", "delete-album"],
     });
 };
+/**
+ * 获取相册详情列表
+ * @param id
+ * @param provider
+ * @param bucket
+ */
+export const queryAlbumDetailListApi = (id: number, provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/album/detail/list', {
+        id: id,
+        provider: provider,
+        bucket: bucket,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+    });
+};
 
 /**
  *  重命名相册
@@ -149,6 +194,110 @@ export const queryAllImagesApi = (type: string, sort: boolean, provider: string,
         sort: sort,
         provider: provider,
         bucket: bucket,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        hitSource: ["upload-file"],
+    });
+};
+
+
+/**
+ * 获取最近照片列表
+ */
+export const queryRecentImagesApi = () => {
+    return service.Post('/api/auth/storage/image/recent/list', {}, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        hitSource: ["upload-file"],
+    });
+};
+/**
+ *  获取地址相册列表
+ */
+export const queryLocationAlbumApi = (provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/image/location/list', {
+        provider: provider,
+        bucket: bucket,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        hitSource: ["upload-file"],
+    });
+};
+/**
+ * 获取地址相册列表详情
+ * @param id
+ * @param provider
+ * @param bucket
+ */
+export const queryLocationDetailListApi = (id: number, provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/image/location/detail/list', {
+        provider: provider,
+        bucket: bucket,
+        id: id,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        hitSource: ["upload-file"],
+    });
+};
+
+/**
+ *  获取标签相册列表
+ */
+export const queryThingAlbumApi = (provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/image/thing/list', {
+        provider: provider,
+        bucket: bucket,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        hitSource: ["upload-file"],
+    });
+};
+
+/**
+ * 获取事物标签列表详情
+ * @param tag_name
+ * @param provider
+ * @param bucket
+ */
+export const queryThingDetailListApi = (tag_name: string, provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/image/thing/detail/list', {
+        provider: provider,
+        bucket: bucket,
+        tag_name: tag_name,
     }, {
         cacheFor: {
             expire: 60 * 60 * 24 * 7,

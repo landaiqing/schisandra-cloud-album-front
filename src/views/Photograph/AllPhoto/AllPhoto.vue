@@ -14,49 +14,7 @@
         创建相册
       </AButton>
     </div>
-    <transition name="slide-fade">
-      <div v-show="selected.length !== 0" class="photo-toolbar-header">
-        <div class="photo-toolbar-left">
-          <AButton type="text" shape="circle" size="large" class="photo-toolbar-btn">
-            <template #icon>
-              <CloseOutlined class="photo-toolbar-icon"/>
-            </template>
-          </AButton>
-          <span style="font-size: 16px;font-weight: bold">
-          已选择 {{ selected.length }} 张照片
-        </span>
-          <AButton type="text" shape="default" class="photo-toolbar-btn" size="middle">
-            全选
-          </AButton>
-        </div>
-        <div class="photo-toolbar-right">
-          <AButton type="text" shape="default" size="middle" class="photo-toolbar-btn">
-            <template #icon>
-              <PlusSquareOutlined class="photo-toolbar-icon"/>
-            </template>
-            添加到
-          </AButton>
-          <AButton type="text" shape="default" size="middle" class="photo-toolbar-btn">
-            <template #icon>
-              <DownloadOutlined class="photo-toolbar-icon"/>
-            </template>
-            下载原图
-          </AButton>
-          <AButton type="text" shape="default" size="middle" class="photo-toolbar-btn">
-            <template #icon>
-              <ShareAltOutlined class="photo-toolbar-icon"/>
-            </template>
-            分享
-          </AButton>
-          <AButton type="text" shape="default" size="middle" class="photo-toolbar-btn">
-            <template #icon>
-              <DeleteOutlined class="photo-toolbar-icon"/>
-            </template>
-            删除
-          </AButton>
-        </div>
-      </div>
-    </transition>
+    <image-toolbar :selected="selected" />
     <div class="photo-list">
       <ATabs size="small" :tabBarGutter="50" type="line" tabPosition="top" :tabBarStyle="{position:'unset'}"
              style="width: 99%;">
@@ -66,7 +24,7 @@
         <ATabPane key="image" tab="全部">
           <div style="width:100%;height:100%;">
             <div v-for="(itemList, index) in images" :key="index">
-              <span style="margin-left: 10px;font-size: 14px">{{ itemList.date }}</span>
+              <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
               <AImagePreviewGroup>
                 <Vue3JustifiedLayout v-model:list="itemList.list" :options="options">
                   <template #default="{ item }">
@@ -116,6 +74,7 @@ import 'vue3-justified-layout/dist/style.css';
 import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 import useStore from "@/store";
 import {queryAllImagesApi} from "@/api/storage";
+import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
 
 
 const selected = ref<(string | number)[]>([]);
@@ -132,7 +91,6 @@ const images = ref<any[]>([]);
 async function getAllImages() {
   const res: any = await queryAllImagesApi("image", false, "ali", "schisandra-album");
   if (res && res.code === 200) {
-    console.log(res);
     images.value = res.data.records;
   }
 }
@@ -164,60 +122,6 @@ onMounted(() => {
 
   }
 
-  .photo-toolbar-header {
-    position: fixed;
-    width: calc(100% - 220px);
-    height: 70px;
-    top: 70px;
-    z-index: 3;
-
-    display: flex;
-    box-sizing: border-box;
-    justify-content: space-between;
-    align-items: center;
-    background-image: linear-gradient(45deg, #5789ff, #5c7bff 100%);
-    color: #fff;
-    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .06);
-    padding: 0 20px;
-
-
-    .photo-toolbar-left {
-      width: 50%;
-      height: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 20px;
-
-    }
-
-    .photo-toolbar-right {
-      height: 100%;
-      width: 50%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 30px;
-    }
-
-    .photo-toolbar-icon {
-      font-size: 20px;
-      font-weight: bold;
-      color: #fff;
-    }
-
-    .photo-toolbar-btn {
-      font-size: 16px;
-      font-weight: bold;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-
   .photo-list {
     display: flex;
     flex-direction: column;
@@ -226,25 +130,6 @@ onMounted(() => {
     width: 100%;
     height: calc(100% - 65px);
   }
-}
-
-.slide-fade-enter-active, .slide-fade-leave-active {
-  transition: all 0.5s ease;
-}
-
-.slide-fade-enter-from, .slide-fade-leave-to { /* .slide-fade-leave-active 在离开之前 */
-  transform: translateY(-20px);
-  opacity: 0;
-}
-
-.slide-fade-enter-from {
-  transform: translateY(-30px);
-  opacity: 0;
-}
-
-.slide-fade-enter-to {
-  transform: translateY(0);
-  opacity: 1;
 }
 
 .photo-item:hover {

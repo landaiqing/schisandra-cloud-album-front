@@ -6,19 +6,53 @@
 
     </div>
     <div class="thing-album-content">
-      <span class="thing-album-title">动物</span>
-      <div class="thing-album-container">
-        <img class="background-image" src="/test/7.png" alt=""/>
-        <div class="overlay">
-          <span>猫</span>
-          <span class="thing-album-overlay-count">---</span>
-          <span class="thing-album-overlay-count">16张照片</span>
+      <div class="thing-album-content-item" v-for="(item, index) in thingAlbumList" :key="index">
+        <span class="thing-album-title">{{ getZhCategoryNameByEnName(item.category) }}</span>
+        <div class="thing-album-wrapper">
+          <div class="thing-album-container" v-for="(tags, indexList) in item.list" :key="indexList"
+               @click="handleClick(tags.tag_name)">
+            <img class="background-image" :src="tags.cover_image" :alt="tags.tag_name"/>
+            <div class="overlay">
+              <span>{{ getZhLabelNameByEnName(tags.tag_name) }}</span>
+              <span class="thing-album-overlay-count">---</span>
+              <span class="thing-album-overlay-count">{{ tags.tag_count }}张照片</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+
+
+import {queryThingAlbumApi} from "@/api/storage";
+import {getZhCategoryNameByEnName, getZhLabelNameByEnName} from "@/constant/coco_ssd_label_category.ts";
+
+const thingAlbumList = ref<any[]>([]);
+
+async function getThingAlbumList(provider: string, bucket: string) {
+  const res: any = await queryThingAlbumApi(provider, bucket);
+  console.log(res);
+  if (res && res.code === 200) {
+    thingAlbumList.value = res.data.records;
+  }
+}
+
+const route = useRoute();
+const router = useRouter();
+
+/**
+ * 点击事件
+ * @param id
+ */
+function handleClick(id: string) {
+  router.push({path: route.path + `/${id}`});
+}
+
+onMounted(() => {
+  getThingAlbumList("ali", 'schisandra-album');
+});
 
 </script>
 <style scoped lang="scss">
@@ -63,53 +97,71 @@
     padding-left: 25px;
     gap: 20px;
 
-    .thing-album-title {
-      font-size: 14px;
-      color: #999;
-    }
+    .thing-album-content-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 20px;
 
-    .thing-album-container {
-      width: 180px;
-      height: 180px;
-      position: relative;
-      display: inline-block;
-      background-color: #f5f5f5;
-
-      .background-image {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+      .thing-album-title {
+        font-size: 14px;
+        color: #999;
       }
 
-      .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
-        backdrop-filter: blur(2px); /* 背景虚化 */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 16px;
-        transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
-        gap: 0;
+      .thing-album-wrapper {
+        display: inline-flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 20px;
 
-        .thing-album-overlay-count {
-          font-size: 12px;
-          color: white;
+        .thing-album-container {
+          width: 180px;
+          height: 180px;
+          position: relative;
+          display: inline-block;
+          background-color: #f5f5f5;
+
+          .background-image {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.2); /* 黑色半透明 */
+            backdrop-filter: blur(2px); /* 背景虚化 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+            gap: 0;
+
+            .thing-album-overlay-count {
+              font-size: 12px;
+              color: white;
+            }
+          }
+
+          .overlay:hover {
+            background-color: rgba(0, 0, 0, 0.1); /* 黑色半透明 */
+            backdrop-filter: blur(0px); /* 背景虚化 */
+            cursor: pointer;
+          }
         }
       }
 
-      .overlay:hover {
-        background-color: rgba(0, 0, 0, 0.1); /* 黑色半透明 */
-        backdrop-filter: blur(0px); /* 背景虚化 */
-        cursor: pointer;
-      }
     }
 
     .thing-album-container:hover {

@@ -145,9 +145,10 @@ async function beforeUpload(file: File, fileList: File[]) {
     }
 
     // 提取 EXIF 数据
-    const exifData = await extractAllExifData(file);
-    if (exifData) {
-      upload.predictResult.exif = exifData ? exifData : "";
+    const gpsData = await extractGPSExifData(file);
+    if (gpsData) {
+      upload.predictResult.longitude = gpsData.longitude;
+      upload.predictResult.latitude = gpsData.latitude;
     }
 
     // 判断是否为截图
@@ -177,13 +178,13 @@ async function beforeUpload(file: File, fileList: File[]) {
       // 如果只有一个结果，直接取第一个
       if (cocoResults.length === 1) {
         upload.predictResult.topCategory = getCategoryByLabel(cocoResults[0].class);
+        upload.predictResult.tagName = cocoResults[0].class;
       } else {
         // 多个结果时，按 score 排序，取置信度最高的结果
         const sortedResults = cocoResults.sort((a, b) => b.score - a.score);
         upload.predictResult.topCategory = getCategoryByLabel(sortedResults[0].class);
+        upload.predictResult.tagName = sortedResults[0].class;
       }
-      const classSet = new Set(cocoResults.map(result => result.class));
-      upload.predictResult.objectArray = Array.from(classSet);
     }
     upload.predictResult.landscape = landscape as 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | null;
 
@@ -268,7 +269,7 @@ function removeFile(file: any) {
  * @param {File} file - 图片文件
  * @returns {Promise<Object|null>} - 返回所有 EXIF 数据或 null（如果格式不支持或提取失败）
  */
-async function extractAllExifData(file) {
+async function extractGPSExifData(file) {
   const supportedFormats = ['image/jpeg', 'image/tiff', 'image/iiq', 'image/heif', 'image/heic', 'image/avif', 'image/png'];
 
   // 判断文件格式是否支持
@@ -276,11 +277,11 @@ async function extractAllExifData(file) {
     return null;
   }
 
-  try {
-    // 提取所有 EXIF 数据
-    return await exifr.parse(file, {ifd0: false, exif: true} as any);
-  } catch (error) {
-    console.error("提取 EXIF 数据失败:", error);
+  // 提取GPS EXIF 数据
+  let {latitude, longitude} = await exifr.gps(file);
+  if (latitude && longitude) {
+    return {latitude, longitude};
+  } else {
     return null;
   }
 }

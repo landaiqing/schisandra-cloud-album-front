@@ -2,13 +2,14 @@ import localforage from 'localforage';
 
 interface UploadPredictResult {
     isAnime: boolean;
-    objectArray: string[] | unknown[];
+    tagName: string | null;
     landscape: 'building' | 'forest' | 'glacier' | 'mountain' | 'sea' | 'street' | null;
     isScreenshot: boolean;
     topCategory: string | undefined;
-    exif: object | "";
     width: number | null;
     height: number | null;
+    latitude: number | null;
+    longitude: number | null;
 }
 
 
@@ -19,13 +20,14 @@ export const useUploadStore = defineStore(
 
         const predictResult = reactive<UploadPredictResult>({
             isAnime: false,
-            objectArray: [],
+            tagName: null,
             landscape: null,
             isScreenshot: false,
             topCategory: '',
-            exif: "",
             width: null,
             height: null,
+            latitude: null,
+            longitude: null,
         });
 
         /**
@@ -40,11 +42,13 @@ export const useUploadStore = defineStore(
          */
         function clearPredictResult() {
             predictResult.isAnime = false;
-            predictResult.objectArray = [];
+            predictResult.tagName = null;
             predictResult.landscape = null;
             predictResult.isScreenshot = false;
             predictResult.topCategory = '';
-            predictResult.exif = "";
+            predictResult.width = null;
+            predictResult.height = null;
+            predictResult.latitude = null;
         }
 
 
