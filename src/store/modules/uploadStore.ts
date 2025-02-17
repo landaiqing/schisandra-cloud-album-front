@@ -10,6 +10,9 @@ interface UploadPredictResult {
     height: number | null;
     latitude: number | null;
     longitude: number | null;
+    thumb_w: number | null;
+    thumb_h: number | null;
+    thumb_size: number | null;
 }
 
 
@@ -28,6 +31,9 @@ export const useUploadStore = defineStore(
             height: null,
             latitude: null,
             longitude: null,
+            thumb_w: null,
+            thumb_h: null,
+            thumb_size: null,
         });
 
         /**
@@ -49,6 +55,10 @@ export const useUploadStore = defineStore(
             predictResult.width = null;
             predictResult.height = null;
             predictResult.latitude = null;
+            predictResult.longitude = null;
+            predictResult.thumb_w = null;
+            predictResult.thumb_h = null;
+            predictResult.thumb_size = null;
         }
 
 

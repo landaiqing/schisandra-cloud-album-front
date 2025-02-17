@@ -310,3 +310,22 @@ export const queryThingDetailListApi = (tag_name: string, provider: string, buck
         hitSource: ["upload-file"],
     });
 };
+
+/**
+ * 获取单个照片url
+ * @param id
+ */
+export const getSingleImageApi = (id: number) => {
+    return service.Post('/api/auth/storage/image/url/single', {
+        id: id,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+    });
+};

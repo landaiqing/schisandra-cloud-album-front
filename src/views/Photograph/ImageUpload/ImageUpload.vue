@@ -62,6 +62,7 @@ import imageCompression from "browser-image-compression";
 import exifr from 'exifr';
 import isScreenshot from "@/utils/imageUtils/isScreenshot.ts";
 import {getCategoryByLabel} from "@/constant/coco_ssd_label_category.ts";
+import {generateThumbnail} from "@/utils/imageUtils/generateThumb.ts";
 
 const predicting = ref<boolean>(false);
 const progressPercent = ref<number>(0);
@@ -145,7 +146,7 @@ async function beforeUpload(file: File, fileList: File[]) {
     }
 
     // 提取 EXIF 数据
-    const gpsData = await extractGPSExifData(file);
+    const gpsData: any = await extractGPSExifData(file);
     if (gpsData) {
       upload.predictResult.longitude = gpsData.longitude;
       upload.predictResult.latitude = gpsData.latitude;
@@ -210,12 +211,21 @@ const {uploading, send: submitFile, abort} = useRequest(uploadFile, {
  * @param file
  */
 async function customUploadRequest(file: any) {
+  const compressedFile = await imageCompression(file.file, options);
+  // 生成缩略图
+  const {binaryData, width, height, size} = await generateThumbnail(compressedFile);
+  upload.predictResult.thumb_w = width;
+  upload.predictResult.thumb_h = height;
+  upload.predictResult.thumb_size = size;
 
   const formData = new FormData();
   formData.append("file", file.file);
+  if (binaryData) {
+    formData.append("thumbnail", binaryData);
+  }
   formData.append("data", JSON.stringify({
     provider: 'ali',
-    bucket: 'schisandra',
+    bucket: 'schisandra-album',
     fileType: file.file.type,
     ...upload.predictResult,
   }));
@@ -276,14 +286,24 @@ async function extractGPSExifData(file) {
   if (!supportedFormats.includes(file.type)) {
     return null;
   }
+  const options: any = {
+    ifd0: false,
+    exif: false,
+    gps: ['GPSLatitudeRef', 'GPSLatitude', 0x0003, 0x0004],
+    interop: false,
+    ifd1: false // thumbnail
+  };
 
   // 提取GPS EXIF 数据
-  let {latitude, longitude} = await exifr.gps(file);
-  if (latitude && longitude) {
-    return {latitude, longitude};
-  } else {
+  const gpsData = await exifr.parse(file, options);
+  if (!gpsData) {
     return null;
   }
+  const {latitude, longitude} = gpsData;
+  if (latitude && longitude) {
+    return {latitude, longitude};
+  }
+  return null;
 }
 
 </script>

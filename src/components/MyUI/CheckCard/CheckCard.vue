@@ -47,7 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
   iconPosition: 'top-left',
   margin: '16px',
   borderRadius: '8px',
-  backgroundColor: '#e5eeff',
+  backgroundColor: 'transparent',
   showHoverCircle: true, // 默认显示悬停圆环
   iconSize: 24, // 默认图标大小
   showSelectedEffect: true, // 默认显示选中效果
@@ -100,6 +100,7 @@ function toggleSelection() {
 .check-card.selected {
   border: 1px solid rgba(125, 167, 255, 0.68);
   box-shadow: 0 0 2px rgba(77, 167, 255, 0.89);
+  background-color: #e5eeff;
 }
 
 .card-content {

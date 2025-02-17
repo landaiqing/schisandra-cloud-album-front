@@ -73,7 +73,7 @@
                 <AAvatar :size="86" shape="circle" :src="item.face_image"/>
               </div>
               <div class="people-album-item-name" v-show="!item.face_name">
-                <AButton @click="showAddNameInput(index)" class="people-album-add-name"
+                <AButton @click.stop="showAddNameInput(index)" class="people-album-add-name"
                          v-show="item.showButton && !item.showInput"
                          type="link"
                          size="small">
@@ -82,11 +82,12 @@
                 <AInput ref="addNameInput" v-model:value="addNameInputValue" v-show="item.showInput"
                         @blur="hideAddNameInput(index)" size="small"
                         :maxlength="10"
+                        @click.stop
                         :placeholder="item.face_name"
                         class="people-album-add-input">
                   <template #suffix>
                     <AButton type="link" style="font-size: 12px;" size="small" @mousedown.prevent
-                             @click="modifyFaceName(item.id,index)">完成
+                             @click.stop="modifyFaceName(item.id,index)">完成
                     </AButton>
                   </template>
                 </AInput>
