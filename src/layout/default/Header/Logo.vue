@@ -116,7 +116,7 @@ const cardStyle = computed(() => ({
 </script>
 <style scoped lang="scss">
 .header-logo-container {
-  min-width: 30%;
+  min-width: 20%;
   display: flex;
   align-items: center;
 

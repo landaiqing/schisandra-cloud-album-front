@@ -136,19 +136,12 @@ function scrollToSelectedMenuItem() {
 }
 
 onMounted(() => {
+  menu.currentMenu = route.path.replace('/main', '').split('/').slice(0, 3).join('/').substring(1);
   scrollToSelectedMenuItem();
 });
-
-// watch(
-//     () => route.path,
-//     (newPath) => {
-//       if (!newPath.includes(menu.currentMenu)) {
-//         router.push(`/main/${menu.currentMenu}`);
-//       }
-//       scrollToSelectedMenuItem();
-//     }
-// );
-
+router.afterEach((_to) => {
+  menu.currentMenu = route.path.replace('/main', '').split('/').slice(0, 3).join('/').substring(1);
+});
 </script>
 <style scoped lang="scss" src="./index.scss">
 

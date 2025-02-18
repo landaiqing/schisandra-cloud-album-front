@@ -70,7 +70,7 @@ const progressStatus = ref<string>('active');
 
 // 压缩图片配置
 const options = {
-  maxSizeMB: 0.4,
+  maxSizeMB: 0.2,
   maxWidthOrHeight: 750,
   maxIteration: 2,
   useWebWorker: true,
@@ -224,8 +224,8 @@ async function customUploadRequest(file: any) {
     formData.append("thumbnail", binaryData);
   }
   formData.append("data", JSON.stringify({
-    provider: 'ali',
-    bucket: 'schisandra-album',
+    provider: upload.storageSelected[0],
+    bucket: upload.storageSelected[1],
     fileType: file.file.type,
     ...upload.predictResult,
   }));

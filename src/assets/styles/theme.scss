@@ -76,3 +76,7 @@ html {
     }
 }
 
+// 取消antd table 最后一行的边框
+.ant-table-wrapper .ant-table:not(.ant-table-bordered) .ant-table-tbody > tr:last-child > td {
+    border-bottom: none !important;
+}

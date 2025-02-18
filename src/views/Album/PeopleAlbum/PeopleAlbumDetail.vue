@@ -57,6 +57,7 @@ import Vue3JustifiedLayout from "vue3-justified-layout";
 import 'vue3-justified-layout/dist/style.css';
 import {getFaceSamplesDetailList} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
+import useStore from "@/store";
 
 
 const selected = ref<(string | number)[]>([]);
@@ -64,12 +65,14 @@ const albumList = ref<any[]>([]);
 
 const route = useRoute();
 const router = useRouter();
+const upload = useStore().upload;
+
 const options = reactive({
   targetRowHeight: 200 // 高度
 });
 
 async function getAlbumList(id: number) {
-  const res: any = await getFaceSamplesDetailList(id, "ali", "schisandra-album");
+  const res: any = await getFaceSamplesDetailList(id, upload.storageSelected[0], upload.storageSelected[1]);
   if (res && res.code === 200) {
     albumList.value = res.data.records;
   }

@@ -28,6 +28,7 @@
 
 import {queryThingAlbumApi} from "@/api/storage";
 import {getZhCategoryNameByEnName, getZhLabelNameByEnName} from "@/constant/coco_ssd_label_category.ts";
+import useStore from "@/store";
 
 const thingAlbumList = ref<any[]>([]);
 
@@ -41,6 +42,7 @@ async function getThingAlbumList(provider: string, bucket: string) {
 
 const route = useRoute();
 const router = useRouter();
+const upload = useStore().upload;
 
 /**
  * 点击事件
@@ -51,7 +53,7 @@ function handleClick(id: string) {
 }
 
 onMounted(() => {
-  getThingAlbumList("ali", 'schisandra-album');
+  getThingAlbumList(upload.storageSelected[0], upload.storageSelected[1]);
 });
 
 </script>

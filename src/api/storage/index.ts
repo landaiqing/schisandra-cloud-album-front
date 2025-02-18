@@ -329,3 +329,18 @@ export const getSingleImageApi = (id: number) => {
         },
     });
 };
+/**
+ *  获取用户配置列表
+ */
+export const getStorageConfigListApi = () => {
+    return service.Post('/api/auth/storage/user/config/list', {}, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+    });
+};

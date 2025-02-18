@@ -24,9 +24,11 @@
 </template>
 <script setup lang="ts">
 import {queryLocationAlbumApi} from "@/api/storage";
+import useStore from "@/store";
 
 const route = useRoute();
 const router = useRouter();
+const upload = useStore().upload;
 
 function handleClick(id: number) {
   router.push({path: route.path + `/${id}`});
@@ -36,14 +38,13 @@ const locationAlbums = ref<any[]>([]);
 
 async function getLocationAlbums(provider: string, bucket: string) {
   const res: any = await queryLocationAlbumApi(provider, bucket);
-  console.log(res);
   if (res && res.code === 200) {
     locationAlbums.value = res.data.records;
   }
 }
 
 onMounted(() => {
-  getLocationAlbums("ali", "schisandra-album");
+  getLocationAlbums(upload.storageSelected[0], upload.storageSelected[1]);
 });
 </script>
 <style scoped lang="scss">

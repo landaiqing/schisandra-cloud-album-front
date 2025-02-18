@@ -83,6 +83,7 @@ import Vue3JustifiedLayout from "vue3-justified-layout";
 import 'vue3-justified-layout/dist/style.css';
 import {queryAlbumDetailListApi} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
+import useStore from "@/store";
 
 
 const selected = ref<(string | number)[]>([]);
@@ -93,9 +94,11 @@ const router = useRouter();
 const options = reactive({
   targetRowHeight: 200 // 高度
 });
+const upload = useStore().upload;
+
 
 async function getAlbumList(id: number) {
-  const res: any = await queryAlbumDetailListApi(id, "ali", "schisandra-album");
+  const res: any = await queryAlbumDetailListApi(id, upload.storageSelected[0], upload.storageSelected[1]);
   if (res && res.code === 200) {
     albumList.value = res.data.records;
   }

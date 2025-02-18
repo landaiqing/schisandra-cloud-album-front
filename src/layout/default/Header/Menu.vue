@@ -1,6 +1,16 @@
 <template>
   <AFlex :vertical="false" align="center" justify="flex-end" class="header-menu-container">
     <AFlex :vertical="false" align="center" justify="flex-start" class="header-menu-item" gap="large">
+      <!--   存储选择    -->
+      <div class="header-select-container">
+        <ACascader v-model:value="uploadStore.storageSelected"
+                   :options="configList"
+                   :show-search="{ filter }"
+                   :field-names="{ label: 'name', value: 'value', children: 'children' }"
+                   placeholder="选择存储桶">
+        </ACascader>
+      </div>
+
       <!--  社区按钮 -->
       <div class="button-wrapper">
         <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
@@ -133,15 +143,37 @@ import accountSetting from "@/assets/svgs/setting.svg";
 import logout from "@/assets/svgs/logout.svg";
 import useStore from "@/store";
 import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
+import {getStorageConfigListApi} from "@/api/storage";
+import type {ShowSearchType} from 'ant-design-vue/es/cascader';
 
 const uploadStore = useStore().upload;
 const user = useStore().user;
+
+
+const configList = ref<any[]>([]);
+
+async function getUserConfigList() {
+  const res: any = await getStorageConfigListApi();
+  if (res && res.code === 200) {
+    configList.value = res.data.records;
+  }
+}
+
+const filter: ShowSearchType['filter'] = (inputValue, path) => {
+  return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+};
+
+
+onMounted(() => {
+  getUserConfigList();
+});
+
 </script>
 
 
 <style scoped lang="scss">
 .header-menu-container {
-  width: 30%;
+  width: 40%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -150,6 +182,13 @@ const user = useStore().user;
     width: 85%;
     display: flex;
     justify-content: flex-end;
+
+    .header-select-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      //gap: 20px;
+    }
 
     .header-menu-item-btn {
       display: block;

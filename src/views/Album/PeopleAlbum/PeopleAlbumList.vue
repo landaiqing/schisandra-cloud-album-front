@@ -79,7 +79,7 @@
                          size="small">
                   添加名字
                 </AButton>
-                <AInput ref="addNameInput" v-model:value="addNameInputValue" v-show="item.showInput"
+                <AInput v-model:value="addNameInputValue" v-show="item.showInput"
                         @blur="hideAddNameInput(index)" size="small"
                         :maxlength="10"
                         @click.stop
@@ -98,7 +98,7 @@
                          size="small">
                   {{ item.face_name }}
                 </AButton>
-                <AInput ref="addNameInput" v-model:value="addNameInputValue" autofocus v-show="item.showInput"
+                <AInput v-model:value="addNameInputValue" autofocus v-show="item.showInput"
                         @blur="hideAddNameInput(index)" size="small"
                         :maxlength="10"
                         :placeholder="item.face_name"
@@ -122,8 +122,8 @@
 <script setup lang="ts">
 import {getFaceSamplesList, modifyFaceSampleName, modifyFaceTypeBatch} from "@/api/storage";
 
+
 const faceList = ref<any[]>([]);
-const addNameInput = ref<any>(null);
 const addNameInputValue = ref<string>('');
 const selecetedKey = ref<string>('0');
 const loading = ref<boolean>(false);

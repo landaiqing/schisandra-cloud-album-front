@@ -49,18 +49,20 @@
 import Vue3JustifiedLayout from "vue3-justified-layout";
 import 'vue3-justified-layout/dist/style.css';
 import {queryLocationDetailListApi} from "@/api/storage";
+import useStore from "@/store";
 
 const selected = ref<(string | number)[]>([]);
 const albumList = ref<any[]>([]);
 
 const route = useRoute();
 const router = useRouter();
+const upload = useStore().upload;
 const options = reactive({
   targetRowHeight: 200 // 高度
 });
 
 async function getImageList(id: number) {
-  const res: any = await queryLocationDetailListApi(id, "ali", "schisandra-album");
+  const res: any = await queryLocationDetailListApi(id, upload.storageSelected[0], upload.storageSelected[1]);
   console.log(res);
   if (res && res.code === 200) {
     albumList.value = res.data.records;

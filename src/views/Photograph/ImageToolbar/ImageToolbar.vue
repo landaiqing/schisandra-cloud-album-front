@@ -60,7 +60,7 @@ const props = defineProps({
   width: calc(100% - 220px);
   height: 70px;
   top: 70px;
-  z-index: 3;
+  z-index: 4;
 
   display: flex;
   box-sizing: border-box;

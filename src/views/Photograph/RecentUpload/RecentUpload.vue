@@ -65,7 +65,6 @@ const options = reactive({
 
 const getRecentImages = async () => {
   const res: any = await queryRecentImagesApi();
-  console.log(res);
   if (res && res.code === 200) {
     images.value = res.data.records;
   }

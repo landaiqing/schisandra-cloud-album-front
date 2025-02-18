@@ -1,4 +1,4 @@
-import localforage from 'localforage';
+// import localforage from 'localforage';
 
 interface UploadPredictResult {
     isAnime: boolean;
@@ -36,6 +36,8 @@ export const useUploadStore = defineStore(
             thumb_size: null,
         });
 
+        const storageSelected = ref<any[]>([]);
+
         /**
          * 打开上传抽屉
          */
@@ -65,6 +67,7 @@ export const useUploadStore = defineStore(
         return {
             openUploadDrawer,
             predictResult,
+            storageSelected,
             openUploadDrawerFn,
             clearPredictResult,
         };
@@ -72,10 +75,10 @@ export const useUploadStore = defineStore(
     {
         // 开启数据持久化
         persistedState: {
-            persist: false,
-            storage: localforage,
+            persist: true,
+            storage: localStorage,
             key: 'upload',
-            includePaths: []
+            includePaths: ["storageSelected"]
         }
     }
 );

@@ -1,7 +1,4 @@
-<script setup lang="ts">
-import {ref, watch} from 'vue';
-import Tooltip from '../Tooltip/Tooltip.vue';
-
+<script lang="ts">
 interface Props {
   allowClear?: boolean // 是否允许再次点击后清除
   allowHalf?: boolean // 是否允许半选
@@ -15,6 +12,10 @@ interface Props {
   tooltipProps?: object // Tooltip 组件属性配置，参考 Tooltip Props
   value?: number // (v-model) 当前数，受控值 0,1,2,3...
 }
+</script>
+<script setup lang="ts">
+import {ref, watch} from 'vue';
+import Tooltip from '../Tooltip/Tooltip.vue';
 
 const props = withDefaults(defineProps<Props>(), {
   allowClear: true,
