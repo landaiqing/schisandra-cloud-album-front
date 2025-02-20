@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import Vue3JustifiedLayout from "vue3-justified-layout";
 import 'vue3-justified-layout/dist/style.css';
+import {queryShareImageApi} from "@/api/share";
 
 
 const selected = ref<(string | number)[]>([]);
@@ -46,6 +47,13 @@ const options = reactive({
   targetRowHeight: 200 // 高度
 });
 
+
+async function getImages() {
+  const res = await queryShareImageApi("c09e3c571303448798c878095fbaa521", "123456");
+  console.log(res);
+}
+
+getImages();
 
 </script>
 <style scoped lang="scss">

@@ -44,7 +44,7 @@ async function getLocationAlbums(provider: string, bucket: string) {
 }
 
 onMounted(() => {
-  getLocationAlbums(upload.storageSelected[0], upload.storageSelected[1]);
+  getLocationAlbums(upload.storageSelected?.[0], upload.storageSelected?.[1]);
 });
 </script>
 <style scoped lang="scss">

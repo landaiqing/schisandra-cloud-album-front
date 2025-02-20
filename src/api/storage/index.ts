@@ -110,7 +110,7 @@ export const createAlbumApi = (name: string) => {
  * @param type
  * @param sort
  */
-export const albumListApi = (type: string, sort: boolean) => {
+export const albumListApi = (type: number, sort: boolean) => {
     return service.Post('/api/auth/storage/album/list', {
         type: type,
         sort: sort,
@@ -344,3 +344,5 @@ export const getStorageConfigListApi = () => {
         },
     });
 };
+
+

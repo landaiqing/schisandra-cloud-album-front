@@ -96,7 +96,7 @@ const images = ref<any[]>([]);
  * 获取所有图片
  */
 async function getAllImages() {
-  const res: any = await queryAllImagesApi("image", false, upload.storageSelected[0], upload.storageSelected[1]);
+  const res: any = await queryAllImagesApi("image", false, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
     images.value = res.data.records;
   }

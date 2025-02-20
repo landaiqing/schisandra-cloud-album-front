@@ -62,7 +62,7 @@ const options = reactive({
 });
 
 async function getImageList(id: number) {
-  const res: any = await queryLocationDetailListApi(id, upload.storageSelected[0], upload.storageSelected[1]);
+  const res: any = await queryLocationDetailListApi(id, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   console.log(res);
   if (res && res.code === 200) {
     albumList.value = res.data.records;

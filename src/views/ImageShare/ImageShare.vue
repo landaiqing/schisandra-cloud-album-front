@@ -45,8 +45,9 @@
         <div class="image-share-left-bottom-title">
           <h3>快传管理</h3>
           <ARangePicker
-              :value="hackValue || value"
+              :value="selectedDateRange"
               :disabled-date="disabledDate"
+              format="YYYY-MM-DD"
               @change="onChange"
               @openChange="onOpenChange"
               @calendarChange="onCalendarChange"
@@ -55,167 +56,82 @@
           />
         </div>
         <div class="image-share-left-bottom-content">
-          <ACard style="width: 100%;height: 100%;" :bodyStyle="{padding: 0}">
-            <ATable :columns="columns" size="large" style="width: 100%;height: 100%;" :bordered="false">
+          <ACard style="width: 100%;height: 100%;"
+                 :bodyStyle="{padding: 0, overflow: 'auto', display: 'flex', flexDirection: 'column'}">
+            <ATable :columns="columns" :data-source="dataSources" size="large"
+                    style="flex: 1"
+                    :pagination="false"
+                    :loading="loading"
+                    :scroll="{ y: '40vh',x:true }"
+                    :bordered="false" @resizeColumn="handleResizeColumn">
+              <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'cover_image'">
+                  <AAvatar shape="square" size="large" :src="`data:image/png;base64,`+record.cover_image"/>
+                </template>
+                <!-- 访问密码 -->
+                <template v-else-if="column.key === 'access_password'">
+                  <AInputPassword
+                      v-if="record.access_password"
+                      v-model:value="record.access_password"
+                      type="password"
+                      :visibilityToggle="true"
+                      :bordered="false"
+                      size="small"
+                      readOnly
+                      style="width: 100px;"
+                  />
+                  <p v-else style="color: #999">无密码</p>
+                </template>
+                <!-- 有效期 -->
+                <template v-else-if="column.key === 'validity_period'">
+
+                </template>
+                <template v-else-if="column.key === 'action'">
+                  <ATooltip title="复制分享链接">
+                    <AButton type="text" size="small" @click="copyToClipboard(record.share_code)">
+                      <LinkOutlined />
+                    </AButton>
+                  </ATooltip>
+                  <ATooltip title="删除快传记录">
+                    <APopconfirm
+                        title="确定删除该快传记录?"
+                        ok-text="确定"
+                        cancel-text="取消"
+                    >
+                      <AButton type="text" size="small" danger>
+                        <DeleteOutlined/>
+                      </AButton>
+                    </APopconfirm>
+                  </ATooltip>
+                </template>
+              </template>
 
             </ATable>
           </ACard>
         </div>
       </div>
     </div>
-    <div class="image-share-right">
-      <div class="image-share-right-top">
-        <h3>照片快传</h3>
-      </div>
-      <div class="image-share-right-bottom">
-        <div class="image-share-right-bottom-content">
-          <div class="image-share-right-bottom-upload" ref="qrContainer" v-if="fileList.length<=0">
-            <AUploadDragger
-                name="file"
-                :multiple="true"
-                :showUploadList="false"
-                :beforeUpload="beforeUpload"
-                v-model:fileList="fileList"
-                class="image-share-right-upload"
-            >
-              <div class="image-share-right-upload-item">
-                <p class="ant-upload-drag-icon">
-                  <ABadge :offset="[-15, 20]" :count="fileList.length">
-                    <AAvatar shape="square" :size="folderIconSize" :src="folder"/>
-                  </ABadge>
-                </p>
-                <p class="ant-upload-text" style="font-size: 2.6vh;font-weight: bolder">单击或拖动文件到此区域以上传</p>
-                <AButton type="primary" size="large" shape="round" style="width: 70%">上 传 照 片</AButton>
+    <ShareUpload/>
 
-                <div class="qr">
-                  <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)"
-                           :size="qrcodeSize"
-                           :value="`git.landaiqing.cneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjI1MTEyMjE3MzQyMDIxIiwidHlwZSI6ImFjY2VzcyIsImV4cCI6MTczOTg3ODIyOCwibmJmIjoxNzM5ODcxMDI4LCJpYXQiOjE3Mzk4NzEwMjh9.EUiZsVjhGqHx1V5o90S3W5li6nIqucxy9eEY9LWgqXY`"
-                           :icon="phone"
-                           :iconSize="iconSize"
-                           :status="`active`"
-                  />
-                  <span style="font-size: 2vh;color: #999999">手机扫码上传</span>
-                </div>
-              </div>
-            </AUploadDragger>
-          </div>
-          <div class="image-share-right-bottom-container" v-else>
-            <div class="image-share-right-bottom-container-header">
-              <AInput v-model:value="titleName" :bordered="false" size="large" placeholder="给快传起个标题"/>
-              <ADropdown placement="bottomLeft" :trigger="['click']">
-                <template #overlay>
-                  <AMenu>
-                    <AMenuItem key="1">
-                      <AUpload
-                          name="file"
-                          :multiple="true"
-                          :showUploadList="false"
-                          :beforeUpload="beforeUpload"
-                          v-model:fileList="fileList"
-                      >
-                        上传文件
-                      </AUpload>
-                    </AMenuItem>
-                    <AMenuItem key="2">
-                      <APopover placement="bottomLeft" trigger="hover">
-                        <template #content>
-                          <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)"
-                                   :size="qrcodeSize"
-                                   :value="`git.landaiqing.cneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjI1MTEyMjE3MzQyMDIxIiwidHlwZSI6ImFjY2VzcyIsImV4cCI6MTczOTg3ODIyOCwibmJmIjoxNzM5ODcxMDI4LCJpYXQiOjE3Mzk4NzEwMjh9.EUiZsVjhGqHx1V5o90S3W5li6nIqucxy9eEY9LWgqXY`"
-                                   :icon="phone"
-                                   :iconSize="iconSize"
-                                   :status="`active`"
-                          />
-                        </template>
-                        手机上传
-                      </APopover>
-                    </AMenuItem>
-                  </AMenu>
-                </template>
-                <AButton size="middle" shape="circle">
-                  <template #icon>
-                    <PlusOutlined/>
-                  </template>
-                </AButton>
-              </ADropdown>
-            </div>
-            <div class="image-share-right-bottom-content-list">
-              <p style="font-size: 2.0vh;color: #999999;cursor: default">共{{ fileList.length }}个文件
-                {{ calculateTotalSize(fileList) }}</p>
-              <div class="image-share-right-bottom-content-list-wrapper">
-                <div class="image-share-right-bottom-content-list-item" v-for="(item, index) in fileList" :key="index">
-                  <div class="file-thumbnail">
-                    <AImage :width="50" :height="50" :src="convertFileToUrl(item.originFileObj)">
-                      <template #previewMask>
-                      </template>
-                    </AImage>
-                  </div>
-                  <div class="file-info">
-                    <p style="font-size: 2.0vh;color: #333333;cursor: default;font-weight: bold">{{ item.name }}</p>
-                    <p style="font-size: 1.5vh;color: #999999;cursor: default">{{
-                        formatByteSize(item.size)
-                      }}</p>
-                  </div>
-                  <div class="file-operation">
-                    <AButton size="middle" shape="circle" type="text" @click="removeBase64Image(index)">
-                      <template #icon>
-                        <CloseOutlined/>
-                      </template>
-                    </AButton>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <ADivider/>
-            <div class="image-share-right-bottom-operation">
-              <div class="image-share-right-operation-select">
-                <div class="image-share-right-operation-item">
-                  <span class="label-text">访问时效</span>
-                  <ASelect style="width: 50%">
-                    <ASelectOption value="1">1天</ASelectOption>
-                    <ASelectOption value="3">3天</ASelectOption>
-                    <ASelectOption value="7">7天</ASelectOption>
-                    <ASelectOption value="15">15天</ASelectOption>
-                    <ASelectOption value="30">30天</ASelectOption>
-                    <ASelectOption value="0">永久</ASelectOption>
-                  </ASelect>
-                </div>
-                <div class="image-share-right-operation-item">
-                  <span class="label-text">访问密码</span>
-                  <AInputPassword style="width: 50%"></AInputPassword>
-                </div>
-                <div class="image-share-right-operation-item">
-                  <span class="label-text">访问限制</span>
-                  <AInputNumber style="width: 50%" :defaultValue="100" :min="1"></AInputNumber>
-                </div>
-              </div>
-              <div class="image-share-right-bottom-operation-btn">
-                <AButton type="primary" size="large" shape="default" style="width: 100%">开始上传</AButton>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 <script setup lang="ts">
 import {Dayjs} from 'dayjs';
-import folder from "@/assets/svgs/folder.svg";
-import {NSFWJS} from "nsfwjs";
-import {initNSFWJs, predictNSFW} from "@/utils/tfjs/nsfw.ts";
+import dayjs from 'dayjs';
+import ShareUpload from "@/views/ImageShare/ShareUpload.vue";
+import {queryShareRecordListApi} from "@/api/share";
 import {message} from "ant-design-vue";
-import i18n from "@/locales";
-import phone from "@/assets/svgs/qr-phone.svg";
+import 'dayjs/locale/zh-cn';
+
+dayjs.locale('zh-cn');
+
 
 type RangeValue = [Dayjs, Dayjs];
 const dates = ref<RangeValue>();
-const value = ref<RangeValue>();
+const selectedDateRange = ref<RangeValue>();
 const hackValue = ref<RangeValue>();
-const titleName = ref<string>("");
 
-const qrContainer = ref<HTMLDivElement | null>(null);
+const loading = ref<boolean>(false);
 
 
 const disabledDate = (current: Dayjs) => {
@@ -236,81 +152,65 @@ const onOpenChange = (open: boolean) => {
   }
 };
 
-const onChange = (val: RangeValue) => {
-  value.value = val;
+const onChange = async (val: RangeValue) => {
+  selectedDateRange.value = val;
+
+  // 将日期范围处理成一个数组
+  if (val && val.length === 2) {
+    const startDate = val[0].format('YYYY-MM-DD'); // 格式化开始日期
+    const endDate = val[1].format('YYYY-MM-DD'); // 格式化结束日期
+    const dateRangeArray = [startDate, endDate]; // 将日期范围存入数组
+    await getShareRecords(dateRangeArray);
+  } else {
+    console.log('No date range selected');
+  }
 };
 
 const onCalendarChange = (val: RangeValue) => {
   dates.value = val;
 };
 
-/**
- *  格式化字节大小
- * @param bytes
- */
-function formatByteSize(bytes) {
-  if (bytes < 1024) {
-    return `${bytes} Bytes`;
-  } else if (bytes < 1024 * 1024) {
-    return `${(bytes / 1024).toFixed(2)} KB`;
-  } else if (bytes < 1024 * 1024 * 1024) {
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-  } else {
-    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
-  }
-}
-
-/**
- *  格式化字节大小
- * @param bytes
- * @param decimals
- */
-function formatBytes(bytes: number, decimals: number = 2): string {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}
-
-/**
- *  计算文件总大小
- * @param fileDataArray
- */
-function calculateTotalSize(fileDataArray: { size: number }[]): string {
-  const totalSize = fileDataArray.reduce((acc, file) => acc + file.size, 0);
-  return formatBytes(totalSize);
-}
-
 
 const columns = [
   {
     title: '快传记录',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'cover_image',
+    key: 'cover_image',
+    ellipsis: true,
+    width: 90,
   },
   {
     title: '上传时间',
     dataIndex: 'created_at',
     key: 'created_at',
+    ellipsis: true,
+    customRender: ({text}) => {
+      return dayjs(text).format('YYYY-MM-DD'); // 格式化时间
+    },
   },
   {
-    title: '浏览次数',
-    dataIndex: 'views',
-    key: 'views',
+    title: '访问密码',
+    key: 'access_password',
+    dataIndex: 'access_password',
+    ellipsis: true,
   },
   {
-    title: '浏览人数',
-    key: 'viewers',
-    dataIndex: 'viewers',
+    title: '访问限制',
+    key: 'visit_limit',
+    dataIndex: 'visit_limit',
+    ellipsis: true,
+    customRender: ({text}) => {
+      return `${text}次`;
+    },
   },
   {
-    title: '传输状态',
-    key: 'status',
-    dataIndex: 'status',
+    title: '有效期',
+    key: 'validity_period',
+    dataIndex: 'validity_period',
+    ellipsis: true,
+    customRender: ({text}) => {
+      return formatValidityPeriod(text);
+    },
   },
   {
     title: '操作',
@@ -319,339 +219,44 @@ const columns = [
   },
 ];
 
-const qrcodeSize = ref<number>(220);
-const iconSize = ref<number>(30);
-const folderIconSize = ref<number>(100);
+function handleResizeColumn(w, col) {
+  col.width = w;
+}
 
-/**
- *  更新二维码大小
- */
-const updateQrcodeSize = () => {
-  if (qrContainer.value) {
-    // 设置 QRCode 大小
-    const containerWidth = qrContainer.value.clientWidth;
-    qrcodeSize.value = containerWidth * 0.5; // 设置 QRCode 为父盒子宽度的80%
-    folderIconSize.value = containerWidth * 0.3; // 设置文件夹图标大小为父盒子宽度的10%
-    iconSize.value = Math.min(containerWidth * 0.1, 40); // 设置 icon 大小为父盒子宽度的10%
-  }
+const formatValidityPeriod = (period: number) => {
+  return period === 0 ? '永久' : `${period}天`;
 };
 
-const fileList = ref<any[]>([]);
-
-/**
- * 上传文件前置
- * @param file
- */
-async function beforeUpload(file: any) {
-  if (!window.FileReader) return false; // 判断是否支持FileReader
-  const reader = new FileReader();
-  reader.readAsDataURL(file); // 文件转换
-  reader.onloadend = async function () {
-    const img: HTMLImageElement = document.createElement('img');
-    img.src = reader.result as string;
-    img.onload = async () => {
-      // 图片 NSFW 检测
-      const nsfw: NSFWJS = await initNSFWJs();
-      const isNSFW: boolean = await predictNSFW(nsfw, img);
-      if (isNSFW) {
-        message.error(i18n.global.t('comment.illegalImage'));
-        return false;
-      }
-    };
-  };
-  return true;
+// 复制功能
+function copyToClipboard(text: string) {
+  navigator.clipboard.writeText(text).then(() => {
+    message.success('复制成功');
+  }).catch(() => {
+    message.error('复制失败');
+  });
 }
 
-/**
- *  删除 base64 图片
- * @param index
- */
-async function removeBase64Image(index: number) {
-  fileList.value.splice(index, 1);
-}
+const dataSources = ref<any[]>([]);
 
 /**
- *  转换文件为 URL
- * @param file
+ * 获取分享记录
  */
-function convertFileToUrl(file: any) {
-  return URL.createObjectURL(file);
+async function getShareRecords(dateRange: string[]) {
+  loading.value = true;
+  const res: any = await queryShareRecordListApi(dateRange);
+  if (res && res.code === 200) {
+    dataSources.value = res.data.records;
+  }
+  loading.value = false;
 }
 
-onMounted(() => {
-  window.addEventListener("resize", updateQrcodeSize);
+onMounted(async () => {
+  const endDate = dayjs().format('YYYY-MM-DD'); // 当前日期
+  const startDate = dayjs().subtract(30, 'day').format('YYYY-MM-DD'); // 30 天前的日期
+  await getShareRecords([startDate, endDate]);
 });
+
 </script>
 
-<style scoped lang="scss">
-.image-share {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100%;
-  gap: 20px;
-
-  .image-share-left {
-    height: 100%;
-    width: 65%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-
-    .image-share-left-top {
-      width: 100%;
-      height: 30%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-
-      .image-share-left-title {
-        width: 100%;
-        height: 20%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .image-share-left-content {
-        width: 100%;
-        height: 80%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-
-        .image-share-left-content-item {
-          height: 100%;
-          width: 30%;
-          color: #fff;
-          overflow: auto;
-
-          .image-share-left-item-content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: flex-start;
-            overflow: hidden;
-          }
-        }
-      }
-
-    }
-
-    .image-share-left-bottom {
-      width: 100%;
-      height: 70%;
-      display: flex;
-      flex-direction: column;
-
-      .image-share-left-bottom-title {
-        width: 100%;
-        height: 20%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .image-share-left-bottom-content {
-        width: 100%;
-        height: 80%;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-      }
-    }
-  }
-
-  .image-share-right {
-    height: 100%;
-    width: 35%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 10px;
-
-    .image-share-right-top {
-      width: 100%;
-      height: 6%;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-    }
-
-    .image-share-right-bottom {
-      width: 100%;
-      height: 94%;
-      display: flex;
-      flex-direction: column;
-
-      .image-share-right-bottom-content {
-        width: 90%;
-        height: 100%;
-        padding: 20px;
-        background: #ffffff;
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        gap: 10px;
-
-        .image-share-right-bottom-upload {
-          width: 100%;
-          height: 100%;
-          overflow: auto;
-
-          .image-share-right-upload {
-            width: 100%;
-            height: 100%;
-
-          }
-        }
-
-        .image-share-right-bottom-container {
-          width: 100%;
-          height: 100%;
-
-          .image-share-right-bottom-container-header {
-            width: 100%;
-            height: 10%;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-          }
-
-          .image-share-right-bottom-content-list {
-            width: 95%;
-            height: 40%;
-            display: flex;
-            flex-direction: column;
-            align-content: flex-start;
-            justify-content: flex-start;
-            gap: 15px;
-            flex-wrap: nowrap;
-            padding: 10px;
-            overflow: auto;
-            background-color: #f5f5f5;
-            border-radius: 10px;
-
-            .image-share-right-bottom-content-list-wrapper {
-              width: 100%;
-              height: 27vh;
-              display: flex;
-              flex-direction: column;
-              align-content: flex-start;
-              justify-content: flex-start;
-              overflow: auto;
-              gap: 10px;
-
-              .image-share-right-bottom-content-list-item {
-                width: 100%;
-                height: 50px;
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-
-                .file-thumbnail {
-                  height: 100%;
-                  width: 17%;
-                }
-
-                .file-info {
-                  height: 100%;
-                  width: 63%;
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: space-between;
-                  align-items: flex-start;
-                }
-
-                .file-operation {
-                  height: 100%;
-                  width: 20%;
-                  display: flex;
-                  flex-direction: column;
-                  justify-content: center;
-                  align-items: center;
-                }
-              }
-            }
-          }
-
-
-          .image-share-right-bottom-operation {
-            width: 100%;
-            height: 40%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            .image-share-right-operation-select {
-              width: 100%;
-              height: 75%;
-              display: flex;
-              flex-direction: column;
-              align-items: flex-start;
-              justify-content: space-between;
-              flex-wrap: nowrap;
-
-              .image-share-right-operation-item {
-                width: 100%;
-                height: 5vh;
-                display: flex;
-                flex-direction: row;
-                align-items: baseline;
-                justify-content: space-between;
-
-                .label-text {
-                  width: 50%;
-                  color: #999999;
-                  font-size: 2.2vh;
-                }
-              }
-            }
-
-            .image-share-right-bottom-operation-btn {
-              width: 100%;
-              height: 35%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
-          }
-        }
-
-
-      }
-
-
-    }
-
-  }
-}
-
-
-.image-share-right-upload-item {
-  //width: 100% !important;
-  //height: 100% !important;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  //justify-content: center;
-  gap: 2vh;
-}
-
-
+<style scoped lang="scss" src="./index.scss">
 </style>

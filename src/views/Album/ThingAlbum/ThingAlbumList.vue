@@ -34,7 +34,6 @@ const thingAlbumList = ref<any[]>([]);
 
 async function getThingAlbumList(provider: string, bucket: string) {
   const res: any = await queryThingAlbumApi(provider, bucket);
-  console.log(res);
   if (res && res.code === 200) {
     thingAlbumList.value = res.data.records;
   }
@@ -53,7 +52,7 @@ function handleClick(id: string) {
 }
 
 onMounted(() => {
-  getThingAlbumList(upload.storageSelected[0], upload.storageSelected[1]);
+  getThingAlbumList(upload.storageSelected?.[0], upload.storageSelected?.[1]);
 });
 
 </script>

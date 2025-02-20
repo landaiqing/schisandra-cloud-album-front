@@ -224,8 +224,8 @@ async function customUploadRequest(file: any) {
     formData.append("thumbnail", binaryData);
   }
   formData.append("data", JSON.stringify({
-    provider: upload.storageSelected[0],
-    bucket: upload.storageSelected[1],
+    provider: upload.storageSelected?.[0],
+    bucket: upload.storageSelected?.[1],
     fileType: file.file.type,
     ...upload.predictResult,
   }));

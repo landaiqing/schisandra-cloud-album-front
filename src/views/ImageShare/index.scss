@@ -1,0 +1,100 @@
+.image-share {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+
+    .image-share-left {
+        height: 100%;
+        width: 65%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+
+        .image-share-left-top {
+            width: 100%;
+            height: 30%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .image-share-left-title {
+                width: 100%;
+                height: 20%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .image-share-left-content {
+                width: 100%;
+                height: 80%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+
+                .image-share-left-content-item {
+                    height: 100%;
+                    width: 30%;
+                    color: #fff;
+                    overflow: auto;
+
+                    .image-share-left-item-content {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        overflow: hidden;
+                    }
+                }
+            }
+
+        }
+
+        .image-share-left-bottom {
+            width: 100%;
+            height: 70%;
+            display: flex;
+            flex-direction: column;
+
+            .image-share-left-bottom-title {
+                width: 100%;
+                height: 20%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .image-share-left-bottom-content {
+                width: 100%;
+                height: 80%;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+
+                .ant-card {
+                    height: 100%;
+
+                    .ant-table {
+                        flex: 1; // 让 ATable 填满剩余空间
+                        height: 100%;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+

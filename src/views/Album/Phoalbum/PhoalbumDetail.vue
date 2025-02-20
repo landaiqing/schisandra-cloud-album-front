@@ -98,7 +98,7 @@ const upload = useStore().upload;
 
 
 async function getAlbumList(id: number) {
-  const res: any = await queryAlbumDetailListApi(id, upload.storageSelected[0], upload.storageSelected[1]);
+  const res: any = await queryAlbumDetailListApi(id, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
     albumList.value = res.data.records;
   }

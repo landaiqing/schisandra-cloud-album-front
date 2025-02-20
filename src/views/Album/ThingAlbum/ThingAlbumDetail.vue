@@ -52,11 +52,12 @@ import Vue3JustifiedLayout from "vue3-justified-layout";
 import 'vue3-justified-layout/dist/style.css';
 import {queryThingDetailListApi} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
+import useStore from "@/store";
 
 
 const selected = ref<(string | number)[]>([]);
 const albumList = ref<any[]>([]);
-
+const upload = useStore().upload;
 const route = useRoute();
 const router = useRouter();
 const options = reactive({
@@ -64,7 +65,7 @@ const options = reactive({
 });
 
 async function getImageList(tag_name: string) {
-  const res: any = await queryThingDetailListApi(tag_name, "ali", "schisandra-album");
+  const res: any = await queryThingDetailListApi(tag_name, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
     albumList.value = res.data.records;
   }
