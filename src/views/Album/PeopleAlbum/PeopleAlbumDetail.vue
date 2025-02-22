@@ -11,16 +11,16 @@
       </div>
       <div class="people-album-detail-toolbar">
         <AAvatar shape="circle" size="default"></AAvatar>
-        <span style="font-size: 14px;color: #333333">张皓扬</span>
+        <span style="font-size: 14px;color: #333333">{{ route.query.name }}</span>
       </div>
     </div>
-    <ImageToolbar :selected="selected"/>
+    <ImageToolbar :selected="imageStore.selected" :imageList="images"/>
     <div class="people-album-detail-info">
-      <span style="font-size: 14px;color: #999999">共12张照片</span>
+      <span style="font-size: 14px;color: #999999">共{{ imageStore.countTotalImages(images) }}张照片</span>
     </div>
     <div class="people-album-detail-list">
-      <div style="width:100%;height:100%;">
-        <div v-for="(itemList, index) in albumList" :key="index">
+      <div style="width:100%;height:100%;" v-if="images.length !== 0">
+        <div v-for="(itemList, index) in images" :key="index">
           <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
           <AImagePreviewGroup>
             <Vue3JustifiedLayout v-model:list="itemList.list" :options="options">
@@ -29,7 +29,7 @@
                            class="photo-item"
                            margin="0"
                            border-radius="0"
-                           v-model="selected"
+                           v-model="imageStore.selected"
                            :showHoverCircle="true"
                            :iconSize="20"
                            :showSelectedEffect="true"
@@ -49,6 +49,15 @@
           </AImagePreviewGroup>
         </div>
       </div>
+      <div v-else>
+        <AEmpty :image="empty">
+          <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无照片，快去上传吧
+                </span>
+          </template>
+        </AEmpty>
+      </div>
     </div>
   </div>
 </template>
@@ -58,10 +67,11 @@ import 'vue3-justified-layout/dist/style.css';
 import {getFaceSamplesDetailList} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
 import useStore from "@/store";
+import empty from "@/assets/svgs/empty.svg";
 
 
-const selected = ref<(string | number)[]>([]);
-const albumList = ref<any[]>([]);
+const imageStore = useStore().image;
+const images = ref<any[]>([]);
 
 const route = useRoute();
 const router = useRouter();
@@ -74,7 +84,7 @@ const options = reactive({
 async function getAlbumList(id: number) {
   const res: any = await getFaceSamplesDetailList(id, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
-    albumList.value = res.data.records;
+    images.value = res.data.records;
   }
 }
 

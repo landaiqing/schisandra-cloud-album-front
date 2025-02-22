@@ -3,11 +3,11 @@
     <div class="people-album-header">
       <ADropdown trigger="click">
         <AButton type="text" size="large" class="people-album-button">
-          {{ selecetedKey === '0' ? '人 物' : '已隐藏' }}
+          {{ selectedKey === '0' ? '人 物' : '已隐藏' }}
           <DownOutlined class="people-album-icon"/>
         </AButton>
         <template #overlay>
-          <AMenu selectable :selectedKeys="[selecetedKey]" @select="handleSelect">
+          <AMenu selectable :selectedKeys="[selectedKey]" @select="handleSelect">
             <AMenuItem key="0">人 物</AMenuItem>
             <AMenuItem key="1">已隐藏</AMenuItem>
           </AMenu>
@@ -33,7 +33,7 @@
         <div class="people-album-toolbar-right">
 
           <AButton type="text" shape="default" size="middle" class="people-album-toolbar-btn"
-                   :disabled="selected.length !== 2" v-if="selecetedKey === '0'">
+                   :disabled="selected.length !== 2" v-if="selectedKey === '0'">
             <template #icon>
               <BlockOutlined class="people-album-toolbar-icon"/>
             </template>
@@ -44,7 +44,7 @@
             <template #icon>
               <EyeInvisibleOutlined class="people-album-toolbar-icon"/>
             </template>
-            {{ selecetedKey === '0' ? '隐藏人物' : '取消隐藏' }}
+            {{ selectedKey === '0' ? '隐藏人物' : '取消隐藏' }}
           </AButton>
         </div>
       </div>
@@ -55,7 +55,7 @@
           <CheckCard
               v-for="(item, index) in faceList"
               :key="index"
-              @click="handleClick(item.id)"
+              @click="handleClick(item.id, item.face_name)"
               class="photo-item"
               margin="0"
               border-radius="0"
@@ -125,7 +125,7 @@ import {getFaceSamplesList, modifyFaceSampleName, modifyFaceTypeBatch} from "@/a
 
 const faceList = ref<any[]>([]);
 const addNameInputValue = ref<string>('');
-const selecetedKey = ref<string>('0');
+const selectedKey = ref<string>('0');
 const loading = ref<boolean>(false);
 const selected = ref<any[]>([]);
 
@@ -180,7 +180,7 @@ async function modifyFaceName(id: number, index: number) {
  * @param key
  */
 function handleSelect({key}) {
-  selecetedKey.value = key;
+  selectedKey.value = key;
   getFaceList(parseInt(key));
 }
 
@@ -203,7 +203,7 @@ function cancelSelectPeople() {
  */
 async function hiddenFace() {
   if (selected.value.length === 0) return;
-  const res: any = await modifyFaceTypeBatch(selected.value, selecetedKey.value === '0' ? 1 : 0);
+  const res: any = await modifyFaceTypeBatch(selected.value, selectedKey.value === '0' ? 1 : 0);
   if (res && res.code === 200) {
     await getFaceList();
     selected.value = [];
@@ -216,9 +216,10 @@ const router = useRouter();
 /**
  *     点击人物跳转到详情页
  * @param id
+ * @param name
  */
-function handleClick(id: number) {
-  router.push({path: route.path + `/${id}`});
+function handleClick(id: number, name: string | null) {
+  router.push({path: route.path + `/${id}`, query: {name: name}});
 }
 
 onMounted(() => {

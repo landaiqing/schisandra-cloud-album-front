@@ -8,7 +8,7 @@
       <div class="location-album-content-item" v-for="(item, index) in locationAlbums" :key="index">
         <span class="location-album-description">{{ item.location }}</span>
         <div class="location-album-location-list">
-          <div class="location-album-container" @click="handleClick(itemList.id)"
+          <div class="location-album-container" @click="handleClick(itemList.id,itemList.city)"
                v-for="(itemList, indexItem) in item.list" :key="indexItem">
             <img class="background-image" :src="itemList.cover_image" :alt="itemList.city"/>
             <div class="overlay">
@@ -30,8 +30,8 @@ const route = useRoute();
 const router = useRouter();
 const upload = useStore().upload;
 
-function handleClick(id: number) {
-  router.push({path: route.path + `/${id}`});
+function handleClick(id: number,name: string) {
+  router.push({path: route.path + `/${id}`, query: {name: name}});
 }
 
 const locationAlbums = ref<any[]>([]);

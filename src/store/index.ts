@@ -6,6 +6,7 @@ import {useWebSocketStore} from "@/store/modules/websocketStore.ts";
 import {useUpscaleStore} from "@/store/modules/upscaleStore.ts";
 import {useMenuStore} from "@/store/modules/menuStore.ts";
 import {useUploadStore} from "@/store/modules/uploadStore.ts";
+import {useImageStore} from "@/store/modules/imageStore.ts";
 
 export default function useStore() {
     return {
@@ -17,5 +18,6 @@ export default function useStore() {
         upscale: useUpscaleStore(),
         menu: useMenuStore(),
         upload: useUploadStore(),
+        image: useImageStore(),
     };
 }

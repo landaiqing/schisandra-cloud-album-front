@@ -84,7 +84,13 @@ export const useAuthStore = defineStore(
                     message.success(t('login.loginSuccess'));
                     window.removeEventListener("message", messageHandler);
                     setTimeout(() => {
-                        router.push('/main/photo/all');
+                        const currentUrl = new URL(window.location.href);
+                        const redirect = currentUrl.searchParams.get('redirect');
+                        if (redirect) {
+                            router.push(redirect);
+                        } else {
+                            router.push('/main/photo/all');
+                        }
                     }, 1000);
                 } else {
                     message.error(t('login.loginError'));

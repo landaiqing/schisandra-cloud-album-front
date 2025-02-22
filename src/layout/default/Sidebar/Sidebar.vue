@@ -74,11 +74,15 @@
     <div class="sidebar-bottom">
       <ACard :bordered="false" style="box-shadow: none">
         <Folder/>
-        <span class="sidebar-folder-text-title">30% In-used</span>
-        <AProgress :percent="30" size="small" :showInfo="false" style="width: 150px"/>
+        <span class="sidebar-folder-text-title">{{ bucketCapacityInfo?.percentage }}% In-used
+          <ATooltip placement="right" title="每天同步一次" :color="'rgba(191,189,189,0.83)'">
+          <QuestionCircleOutlined/>
+          </ATooltip>
+        </span>
+        <AProgress :percent="bucketCapacityInfo?.percentage" size="small" :showInfo="false" style="width: 150px"/>
         <AFlex :vertical="false" align="center" justify="space-between" style="width: 150px">
-          <span class="sidebar-folder-info-text1">500G</span>
-          <span class="sidebar-folder-info-text2">500G</span>
+          <span class="sidebar-folder-info-text1">{{ bucketCapacityInfo?.used }}</span>
+          <span class="sidebar-folder-info-text2">{{ bucketCapacityInfo?.capacity }}</span>
         </AFlex>
       </ACard>
     </div>
@@ -97,11 +101,13 @@ import Folder from "@/components/Folder/Folder.vue";
 import ai from '@/assets/svgs/ai.svg';
 import share from '@/assets/svgs/share.svg';
 import useStore from "@/store";
+import {getBucketCapacityApi} from "@/api/storage";
 
 const {t} = useI18n();
 const router = useRouter();
 const route = useRoute();
 const menu = useStore().menu;
+const upload = useStore().upload;
 
 /**
  * handle click event of menu item
@@ -117,6 +123,14 @@ const menuCSSStyle: any = reactive({
   alignItems: 'center',
 });
 
+const bucketCapacityInfo = ref<any>();
+
+async function getBucketCapacity() {
+  const res: any = await getBucketCapacityApi(upload.storageSelected?.[0], upload.storageSelected?.[1]);
+  if (res && res.code === 200) {
+    bucketCapacityInfo.value = res.data;
+  }
+}
 
 watch(
     () => route.path,
@@ -135,9 +149,10 @@ function scrollToSelectedMenuItem() {
   });
 }
 
-onMounted(() => {
+onMounted(async () => {
   menu.currentMenu = route.path.replace('/main', '').split('/').slice(0, 3).join('/').substring(1);
   scrollToSelectedMenuItem();
+  await getBucketCapacity();
 });
 router.afterEach((_to) => {
   menu.currentMenu = route.path.replace('/main', '').split('/').slice(0, 3).join('/').substring(1);

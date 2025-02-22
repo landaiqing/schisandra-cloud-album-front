@@ -30,7 +30,7 @@ export const getFaceSamplesList = (type: number) => {
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["modify-face-sample-name", "modify-face-sample-type"],
+        hitSource: ["modify-face-sample-name", "modify-face-sample-type", "delete-images"],
     });
 };
 /**
@@ -146,6 +146,8 @@ export const queryAlbumDetailListApi = (id: number, provider: string, bucket: st
             ignoreToken: false,
             signature: false,
         },
+        name: "album-detail-list",
+        hitSource: ["upload-file", "delete-images"],
     });
 };
 
@@ -203,7 +205,7 @@ export const queryAllImagesApi = (type: string, sort: boolean, provider: string,
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["upload-file"],
+        hitSource: ["upload-file", "delete-images"],
     });
 };
 
@@ -221,7 +223,7 @@ export const queryRecentImagesApi = () => {
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["upload-file"],
+        hitSource: ["upload-file", "delete-images"],
     });
 };
 /**
@@ -240,7 +242,7 @@ export const queryLocationAlbumApi = (provider: string, bucket: string) => {
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["upload-file"],
+        hitSource: ["upload-file", "delete-images"],
     });
 };
 /**
@@ -263,7 +265,7 @@ export const queryLocationDetailListApi = (id: number, provider: string, bucket:
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["upload-file"],
+        hitSource: ["upload-file", "delete-images"],
     });
 };
 
@@ -283,7 +285,7 @@ export const queryThingAlbumApi = (provider: string, bucket: string) => {
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["upload-file"],
+        hitSource: ["upload-file", "delete-images"],
     });
 };
 
@@ -307,7 +309,7 @@ export const queryThingDetailListApi = (tag_name: string, provider: string, buck
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["upload-file"],
+        hitSource: ["upload-file", "delete-images"],
     });
 };
 
@@ -327,6 +329,7 @@ export const getSingleImageApi = (id: number) => {
             ignoreToken: false,
             signature: false,
         },
+        name: "single-image-url",
     });
 };
 /**
@@ -342,7 +345,68 @@ export const getStorageConfigListApi = () => {
             ignoreToken: false,
             signature: false,
         },
+        name: "storage-config-list",
     });
 };
-
-
+/**
+ * 查询删除记录
+ * @param provider
+ * @param bucket
+ */
+export const getDeletedRecordApi = (provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/delete/record', {
+        provider: provider,
+        bucket: bucket,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "deleted-record",
+        hitSource: ["upload-file", "delete-images"],
+    });
+};
+/**
+ * 删除照片
+ * @param ids
+ * @param provider
+ * @param bucket
+ */
+export const deletedImagesApi = (ids: number[], provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/image/delete', {
+        ids: ids,
+        provider: provider,
+        bucket: bucket,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "delete-images",
+    });
+};
+/**
+ * 获取存储桶容量
+ * @param provider
+ * @param bucket
+ */
+export const getBucketCapacityApi = (provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/bucket/capacity', {
+        provider: provider,
+        bucket: bucket,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "delete-images",
+    });
+};

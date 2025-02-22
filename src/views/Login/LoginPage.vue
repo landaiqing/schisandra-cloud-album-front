@@ -383,7 +383,13 @@ async function phoneLoginSubmit() {
           message.success(t('login.loginSuccess'));
           loginLoading.value = false;
           setTimeout(() => {
-            router.push('/main/photo/all');
+            const currentUrl = new URL(window.location.href);
+            const redirect = currentUrl.searchParams.get('redirect');
+            if (redirect) {
+              router.push(redirect);
+            } else {
+              router.push('/main/photo/all');
+            }
           }, 1000);
         } else {
           loginLoading.value = false;
@@ -472,7 +478,13 @@ async function checkAccountLoginCaptcha(angle: number) {
     loginLoading.value = false;
     showAccountRotateCaptcha.value = false;
     setTimeout(() => {
-      router.push('/main/photo/all');
+      const currentUrl = new URL(window.location.href);
+      const redirect = currentUrl.searchParams.get('redirect');
+      if (redirect) {
+        router.push(redirect);
+      } else {
+        router.push('/main/photo/all');
+      }
     }, 1000);
   } else {
     showAccountRotateCaptcha.value = false;

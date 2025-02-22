@@ -2,10 +2,7 @@
   <ADrawer v-model:open="upload.openUploadDrawer" placement="right" title="上传照片" width="40%" @close="cancelUpload">
     <template #extra>
       <AFlex :vertical="false" align="center" gap="large" justify="center">
-        <ASelect size="middle" style="width: 150px">
-
-        </ASelect>
-        <ASelect size="middle" style="width: 150px">
+        <ASelect size="middle" style="width: 150px" placeholder="选择上传的相册">
 
         </ASelect>
       </AFlex>
@@ -42,6 +39,13 @@
                    :status="progressStatus"
                    :show-info="true" size="small" type="line" v-show="predicting" style="width: 80%"/>
       </AUploadDragger>
+      <AEmpty :image="empty" v-if="fileList.length === 0">
+        <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  上传列表为空，可直接拖动文件到此区域上传。
+                </span>
+        </template>
+      </AEmpty>
     </div>
   </ADrawer>
 </template>
@@ -63,6 +67,7 @@ import exifr from 'exifr';
 import isScreenshot from "@/utils/imageUtils/isScreenshot.ts";
 import {getCategoryByLabel} from "@/constant/coco_ssd_label_category.ts";
 import {generateThumbnail} from "@/utils/imageUtils/generateThumb.ts";
+import empty from "@/assets/svgs/empty.svg";
 
 const predicting = ref<boolean>(false);
 const progressPercent = ref<number>(0);

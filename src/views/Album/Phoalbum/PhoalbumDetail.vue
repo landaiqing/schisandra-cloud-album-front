@@ -26,17 +26,18 @@
         下载相册
       </AButton>
     </div>
-    <ImageToolbar :selected="selected"/>
+    <ImageToolbar :selected="imageStore.selected" :image-list="albumList"/>
     <div class="phoalbum-detail-content">
       <div class="phoalbum-detail-content-nav">
         <div class="phoalbum-detail-content-nav-left">
-          <AButton type="text" size="large" class="phoalbum-detail-content-nav-title" @click="goBack()">全部相册
+          <AButton type="text" size="large" class="phoalbum-detail-content-nav-title" @click="goBack()">
+            {{ imageStore.tabMap[imageStore.tabActiveKey] }}
           </AButton>
           <span class="phoalbum-detail-content-nav-separator"> > </span>
-          <span class="phoalbum-detail-content-nav-name">网盘导入</span>
+          <span class="phoalbum-detail-content-nav-name">{{ route.query.name }}</span>
         </div>
         <div class="phoalbum-detail-content-nav-right">
-          <span class="phoalbum-detail-content-nav-date">共15张照片,1个视频，创建于2025年1月1日</span>
+          <span class="phoalbum-detail-content-nav-date">共 {{ imageStore.countTotalImages(albumList) }} 张照片</span>
         </div>
       </div>
       <div class="phoalbum-detail-content-desc">
@@ -44,7 +45,7 @@
         <span>相册描述</span>
       </div>
       <div class="phoalbum-detail-content-list">
-        <div style="width:100%;height:100%;">
+        <div style="width:100%;height:100%;" v-if="albumList.length !== 0">
           <div v-for="(itemList, index) in albumList" :key="index">
             <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
             <AImagePreviewGroup>
@@ -54,7 +55,7 @@
                              class="photo-item"
                              margin="0"
                              border-radius="0"
-                             v-model="selected"
+                             v-model="imageStore.selected"
                              :showHoverCircle="true"
                              :iconSize="20"
                              :showSelectedEffect="true"
@@ -74,6 +75,15 @@
             </AImagePreviewGroup>
           </div>
         </div>
+        <div v-else>
+          <AEmpty :image="empty">
+            <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无照片，快去上传吧
+                </span>
+            </template>
+          </AEmpty>
+        </div>
       </div>
     </div>
   </div>
@@ -84,9 +94,10 @@ import 'vue3-justified-layout/dist/style.css';
 import {queryAlbumDetailListApi} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
 import useStore from "@/store";
+import empty from "@/assets/svgs/empty.svg";
 
 
-const selected = ref<(string | number)[]>([]);
+const imageStore = useStore().image;
 const albumList = ref<any[]>([]);
 
 const route = useRoute();

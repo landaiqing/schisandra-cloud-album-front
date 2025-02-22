@@ -14,57 +14,216 @@
         创建相册
       </AButton>
     </div>
-    <image-toolbar :selected="selected"/>
+    <image-toolbar :selected="imageStore.selected" :image-list="images"/>
     <div class="photo-list">
       <ATabs size="small" :tabBarGutter="50" type="line" tabPosition="top" :tabBarStyle="{position:'unset'}"
+             @change="handleTabChange"
+             v-model:activeKey="imageStore.homeTabActiveKey"
              style="width: 99%;">
         <template #rightExtra>
           <ASwitch size="small" v-model:checked="switchValue"/>
         </template>
-        <ATabPane key="image" tab="全部">
-          <div style="width:100%;height:100%;">
-            <div v-for="(itemList, index) in images" :key="index">
-              <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
-              <AImagePreviewGroup>
-                <Vue3JustifiedLayout v-model:list="itemList.list" :options="options" style="line-height: 0 !important;">
-                  <template #default="{ item }">
-                    <CheckCard :key="index"
-                               class="photo-item"
-                               margin="0"
-                               border-radius="0"
-                               v-model="selected"
-                               :showHoverCircle="true"
-                               :iconSize="20"
-                               :showSelectedEffect="true"
-                               :value="item.id">
-                      <AImage :src="item.thumbnail"
-                              :alt="item.file_name"
-                              :key="index"
-                              :height="200"
-                              :preview="{
+        <ATabPane key="all" :tab="imageStore.homeTabMap['all']">
+          <ASpin size="large" :spinning="loading" :delay="500">
+            <div style="width:100%;height:100%;" v-if="images">
+              <div v-for="(itemList, index) in images" :key="index">
+                <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
+                <AImagePreviewGroup>
+                  <Vue3JustifiedLayout v-model:list="itemList.list" :options="options"
+                                       style="line-height: 0 !important;">
+                    <template #default="{ item }">
+                      <CheckCard :key="index"
+                                 class="photo-item"
+                                 margin="0"
+                                 border-radius="0"
+                                 v-model="imageStore.selected"
+                                 :showHoverCircle="true"
+                                 :iconSize="20"
+                                 :showSelectedEffect="true"
+                                 :value="item.id">
+                        <AImage :src="item.thumbnail"
+                                :alt="item.file_name"
+                                :key="index"
+                                :height="200"
+                                :preview="{
                                 src: item.url,
                                }"
-                              loading="lazy">
-                        <template #previewMask>
-                        </template>
-                      </AImage>
-                    </CheckCard>
-                  </template>
-                </Vue3JustifiedLayout>
-              </AImagePreviewGroup>
+                                loading="lazy">
+                          <template #previewMask>
+                          </template>
+                        </AImage>
+                      </CheckCard>
+                    </template>
+                  </Vue3JustifiedLayout>
+                </AImagePreviewGroup>
+              </div>
             </div>
-          </div>
+            <div v-else class="empty-content">
+              <AEmpty :image="empty">
+                <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  还没检测到任何图片，快去上传吧！
+                </span>
+                </template>
+              </AEmpty>
+            </div>
+          </ASpin>
         </ATabPane>
-        <ATabPane key="video" tab="视频">
-          <div style="width:100%;height:100%;">
-
-          </div>
+        <ATabPane key="video" :tab="imageStore.homeTabMap['video']">
+          <ASpin size="large" :spinning="loading" :delay="500">
+            <div style="width:100%;height:100%;" v-if="images">
+              <div v-for="(itemList, index) in images" :key="index">
+                <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
+                <AImagePreviewGroup>
+                  <Vue3JustifiedLayout v-model:list="itemList.list" :options="options"
+                                       style="line-height: 0 !important;">
+                    <template #default="{ item }">
+                      <CheckCard :key="index"
+                                 class="photo-item"
+                                 margin="0"
+                                 border-radius="0"
+                                 v-model="imageStore.selected"
+                                 :showHoverCircle="true"
+                                 :iconSize="20"
+                                 :showSelectedEffect="true"
+                                 :value="item.id">
+                        <AImage :src="item.thumbnail"
+                                :alt="item.file_name"
+                                :key="index"
+                                :height="200"
+                                :preview="{
+                                src: item.url,
+                               }"
+                                loading="lazy">
+                          <template #previewMask>
+                          </template>
+                        </AImage>
+                      </CheckCard>
+                    </template>
+                  </Vue3JustifiedLayout>
+                </AImagePreviewGroup>
+              </div>
+            </div>
+            <div v-else class="empty-content">
+              <AEmpty
+                  :image="empty"
+                  :image-style="{
+                   height: '100%',
+                   width: '100%',
+                 }"
+              >
+                <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  还没检测到任何视频，快去上传吧！
+                </span>
+                </template>
+              </AEmpty>
+            </div>
+          </ASpin>
         </ATabPane>
-        <ATabPane key="gif" tab="动图">
-
+        <ATabPane key="gif" :tab="imageStore.homeTabMap['gif']">
+          <ASpin size="large" :spinning="loading" :delay="500">
+            <div style="width:100%;height:100%;" v-if="images">
+              <div v-for="(itemList, index) in images" :key="index">
+                <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
+                <AImagePreviewGroup>
+                  <Vue3JustifiedLayout v-model:list="itemList.list" :options="options"
+                                       style="line-height: 0 !important;">
+                    <template #default="{ item }">
+                      <CheckCard :key="index"
+                                 class="photo-item"
+                                 margin="0"
+                                 border-radius="0"
+                                 v-model="imageStore.selected"
+                                 :showHoverCircle="true"
+                                 :iconSize="20"
+                                 :showSelectedEffect="true"
+                                 :value="item.id">
+                        <AImage :src="item.thumbnail"
+                                :alt="item.file_name"
+                                :key="index"
+                                :height="200"
+                                :preview="{
+                                src: item.url,
+                               }"
+                                loading="lazy">
+                          <template #previewMask>
+                          </template>
+                        </AImage>
+                      </CheckCard>
+                    </template>
+                  </Vue3JustifiedLayout>
+                </AImagePreviewGroup>
+              </div>
+            </div>
+            <div v-else class="empty-content">
+              <AEmpty
+                  :image="empty"
+                  :image-style="{
+                   height: '100%',
+                   width: '100%',
+                 }"
+              >
+                <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  还没检测到任何动图，快去上传吧！
+                </span>
+                </template>
+              </AEmpty>
+            </div>
+          </ASpin>
         </ATabPane>
-        <ATabPane key="screenshot" tab="截图">
-
+        <ATabPane key="screenshot" :tab="imageStore.homeTabMap['screenshot']">
+          <ASpin size="large" :spinning="loading" :delay="500">
+            <div style="width:100%;height:100%;" v-if="images">
+              <div v-for="(itemList, index) in images" :key="index">
+                <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
+                <AImagePreviewGroup>
+                  <Vue3JustifiedLayout v-model:list="itemList.list" :options="options"
+                                       style="line-height: 0 !important;">
+                    <template #default="{ item }">
+                      <CheckCard :key="index"
+                                 class="photo-item"
+                                 margin="0"
+                                 border-radius="0"
+                                 v-model="imageStore.selected"
+                                 :showHoverCircle="true"
+                                 :iconSize="20"
+                                 :showSelectedEffect="true"
+                                 :value="item.id">
+                        <AImage :src="item.thumbnail"
+                                :alt="item.file_name"
+                                :key="index"
+                                :height="200"
+                                :preview="{
+                                src: item.url,
+                               }"
+                                loading="lazy">
+                          <template #previewMask>
+                          </template>
+                        </AImage>
+                      </CheckCard>
+                    </template>
+                  </Vue3JustifiedLayout>
+                </AImagePreviewGroup>
+              </div>
+            </div>
+            <div v-else class="empty-content">
+              <AEmpty
+                  :image="empty"
+                  :image-style="{
+                   height: '100%',
+                   width: '100%',
+                 }"
+              >
+                <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  还没检测到任何屏幕截图，快去上传吧！
+                </span>
+                </template>
+              </AEmpty>
+            </div>
+          </ASpin>
         </ATabPane>
       </ATabs>
     </div>
@@ -80,9 +239,10 @@ import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 import useStore from "@/store";
 import {queryAllImagesApi} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
+import empty from "@/assets/svgs/empty.svg";
 
+const imageStore = useStore().image;
 
-const selected = ref<(string | number)[]>([]);
 const switchValue = ref<boolean>(false);
 const upload = useStore().upload;
 
@@ -91,20 +251,29 @@ const options = reactive({
 });
 
 const images = ref<any[]>([]);
+const loading = ref<boolean>(false);
 
 /**
  * 获取所有图片
  */
-async function getAllImages() {
-  const res: any = await queryAllImagesApi("image", false, upload.storageSelected?.[0], upload.storageSelected?.[1]);
+async function getAllImages(type: string) {
+  images.value = [];
+  loading.value = true;
+  const res: any = await queryAllImagesApi(type, false, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
     images.value = res.data.records;
   }
+  loading.value = false;
+}
+
+async function handleTabChange(activeKey: string) {
+  imageStore.homeTabActiveKey = activeKey;
+  await getAllImages(activeKey);
 }
 
 
 onMounted(() => {
-  getAllImages();
+  getAllImages(imageStore.homeTabActiveKey);
 });
 </script>
 <style scoped lang="scss">
@@ -143,5 +312,14 @@ onMounted(() => {
   transition: all 0.3s ease-in-out, transform 0.3s ease-in-out;
   //transform: scale(0.99);
   box-shadow: 0 0 10px 0 rgba(77, 167, 255, 0.89);
+}
+
+.empty-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 }
 </style>

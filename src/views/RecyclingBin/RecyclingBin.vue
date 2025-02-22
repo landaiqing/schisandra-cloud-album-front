@@ -20,17 +20,32 @@
                            :iconSize="20"
                            :showSelectedEffect="true"
                            :value="item.id">
-                  <AImage :src="item.url"
+                  <AImage :src="item.thumbnail"
                           :alt="item.file_name"
                           :key="index"
                           style="height: 200px"
-                          :previewMask="false"
-                          loading="lazy"/>
+                          :preview="{
+                            src: item.url,
+                          }"
+                          loading="lazy">
+                    <template #previewMask>
+
+                    </template>
+                  </AImage>
                 </CheckCard>
               </template>
             </Vue3JustifiedLayout>
           </AImagePreviewGroup>
         </div>
+      </div>
+      <div v-else>
+        <AEmpty :image="empty">
+          <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无照片，快去上传吧
+                </span>
+          </template>
+        </AEmpty>
       </div>
     </div>
   </div>
@@ -38,7 +53,9 @@
 <script setup lang="ts">
 import Vue3JustifiedLayout from "vue3-justified-layout";
 import 'vue3-justified-layout/dist/style.css';
-import {queryShareImageApi} from "@/api/share";
+import {getDeletedRecordApi} from "@/api/storage";
+import useStore from "@/store";
+import empty from "@/assets/svgs/empty.svg";
 
 
 const selected = ref<(string | number)[]>([]);
@@ -46,14 +63,21 @@ const images = ref<any[]>([]);
 const options = reactive({
   targetRowHeight: 200 // 高度
 });
+const upload = useStore().upload;
 
-
-async function getImages() {
-  const res = await queryShareImageApi("c09e3c571303448798c878095fbaa521", "123456");
-  console.log(res);
+/**
+ * 查询回收站
+ */
+async function queryRecyclingBin() {
+  const res: any = await getDeletedRecordApi(upload.storageSelected?.[0], upload.storageSelected?.[1]);
+  if (res && res.code === 200) {
+    images.value = res.data.records;
+  }
 }
 
-getImages();
+onMounted(() => {
+  queryRecyclingBin();
+});
 
 </script>
 <style scoped lang="scss">

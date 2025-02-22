@@ -31,7 +31,7 @@
           排序
         </AButton>
         <template #overlay>
-          <AMenu selectable :selectedKeys="[selecetedKey]" @select="handleSelect">
+          <AMenu selectable :selectedKeys="[selectedKey]" @select="handleSelect">
             <AMenuItem :key="true">按时间排序</AMenuItem>
             <AMenuItem :key="false">按名称排序</AMenuItem>
           </AMenu>
@@ -49,18 +49,20 @@
     </div>
     <div class="phoalbum-content">
       <ATabs size="small" :tabBarGutter="50" type="line" tabPosition="top" :tabBarStyle="{position:'unset'}"
-             style="width: 100%;" @change="handleTabChange">
+             style="width: 100%;"
+             v-model:activeKey="imageStore.tabActiveKey"
+             @change="handleTabChange">
         <template #rightExtra>
           <span
               style="color: #999; font-size: 12px;">已全部加载，共 {{ albumList ? albumList.length : 0 }} 个相册</span>
         </template>
-        <ATabPane key="-1" tab="全部相册">
+        <ATabPane key="-1" :tab="imageStore.tabMap[-1]">
           <ASpin tip="Loading..." :spinning="loading" size="large">
             <div class="phoalbum-item-container">
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
-                   @click.prevent="handleClick(album.id)"
+                   @click.prevent="handleClick(album.id,album.name)"
                    @mouseover="isHovered = index"
                    @mouseleave="isHovered = null">
                 <PhotoStack :src="album.cover_image ?`data:image/png;base64,`+album.cover_image: ``"
@@ -104,13 +106,13 @@
             </div>
           </ASpin>
         </ATabPane>
-        <ATabPane key="0" tab="我的相册">
+        <ATabPane key="0" :tab="imageStore.tabMap[0]">
           <ASpin tip="Loading..." :spinning="loading" size="large">
             <div class="phoalbum-item-container">
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
-                   @click.prevent="handleClick(album.id)"
+                   @click.prevent="handleClick(album.id,album.name)"
                    @mouseover="isHovered = index"
                    @mouseleave="isHovered = null">
                 <PhotoStack :src="album.cover_image ?`data:image/png;base64,`+album.cover_image: ``"
@@ -154,13 +156,13 @@
             </div>
           </ASpin>
         </ATabPane>
-        <ATabPane key="1" tab="我的分享">
+        <ATabPane key="1" :tab="imageStore.tabMap[1]">
           <ASpin tip="Loading..." :spinning="loading" size="large">
             <div class="phoalbum-item-container">
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
-                   @click.prevent="handleClick(album.id)"
+                   @click.prevent="handleClick(album.id,album.name)"
                    @mouseover="isHovered = index"
                    @mouseleave="isHovered = null">
                 <PhotoStack :src="album.cover_image ?`data:image/png;base64,`+album.cover_image: ``"
@@ -204,13 +206,13 @@
             </div>
           </ASpin>
         </ATabPane>
-        <ATabPane key="2" tab="收藏相册">
+        <ATabPane key="2" :tab="imageStore.tabMap[2]">
           <ASpin tip="Loading..." :spinning="loading" size="large">
             <div class="phoalbum-item-container">
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
-                   @click.prevent="handleClick(album.id)"
+                   @click.prevent="handleClick(album.id,album.name)"
                    @mouseover="isHovered = index"
                    @mouseleave="isHovered = null">
                 <PhotoStack :src="album.cover_image ?`data:image/png;base64,`+album.cover_image: ``"
@@ -263,17 +265,20 @@ import more from "@/assets/svgs/more.svg";
 import {albumListApi, createAlbumApi, deleteAlbumApi, renameAlbumApi} from "@/api/storage";
 import {message} from "ant-design-vue";
 import default_cover from "@/assets/images/default-cover.png";
+import useStore from "@/store";
 
 const isHovered = ref<number | null>(null);
 
 const albumNameValue = ref<string>("未命名相册");
 const albumRenameValue = ref<string>("");
 
-const selecetedKey = ref<boolean>(true);
+const selectedKey = ref<boolean>(true);
 
 const albumList = ref<any[]>([]);
 
 const loading = ref<boolean>(false);
+
+const imageStore = useStore().image;
 
 /**
  * 创建相册
@@ -286,7 +291,7 @@ async function createAlbumSubmit() {
   const res: any = await createAlbumApi(albumNameValue.value);
   if (res && res.code === 200) {
     albumNameValue.value = "未命名相册";
-    await getAlbumList(0, selecetedKey.value);
+    await getAlbumList(parseInt(imageStore.tabActiveKey), selectedKey.value);
   } else {
     message.error("创建相册失败");
   }
@@ -297,8 +302,8 @@ async function createAlbumSubmit() {
  * @param key
  */
 async function handleSelect({key}) {
-  selecetedKey.value = key;
-  await getAlbumList(0, key);
+  selectedKey.value = key;
+  await getAlbumList(parseInt(imageStore.tabActiveKey), key);
 }
 
 /**
@@ -306,7 +311,8 @@ async function handleSelect({key}) {
  * @param activeKey
  */
 async function handleTabChange(activeKey: string) {
-  await getAlbumList(parseInt(activeKey), selecetedKey.value);
+  imageStore.tabActiveKey = activeKey;
+  await getAlbumList(parseInt(activeKey), selectedKey.value);
 }
 
 /**
@@ -337,7 +343,7 @@ async function renameAlbum(id: number, name: string) {
   const res: any = await renameAlbumApi(id, name);
   if (res && res.code === 200) {
     albumRenameValue.value = "";
-    await getAlbumList(0, selecetedKey.value);
+    await getAlbumList(parseInt(imageStore.tabActiveKey), selectedKey.value);
   }
 }
 
@@ -348,7 +354,7 @@ async function renameAlbum(id: number, name: string) {
 async function deleteAlbum(id: number) {
   const res: any = await deleteAlbumApi(id);
   if (res && res.code === 200) {
-    await getAlbumList(0, selecetedKey.value);
+    await getAlbumList(parseInt(imageStore.tabActiveKey), selectedKey.value);
   } else {
     message.error("删除相册失败");
   }
@@ -360,13 +366,16 @@ const router = useRouter();
 /**
  *  点击相册跳转到详情页
  * @param id
+ * @param albumName
  */
-function handleClick(id: number) {
-  router.push({path: route.path + `/${id}`});
+function handleClick(id: number, albumName: string) {
+  router.push({
+    path: route.path + `/${id}`, query: {name: albumName}
+  });
 }
 
 onMounted(() => {
-  getAlbumList(0, selecetedKey.value);
+  getAlbumList(parseInt(imageStore.tabActiveKey), selectedKey.value);
 });
 
 </script>

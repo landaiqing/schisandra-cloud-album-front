@@ -10,7 +10,7 @@
         <span class="thing-album-title">{{ getZhCategoryNameByEnName(item.category) }}</span>
         <div class="thing-album-wrapper">
           <div class="thing-album-container" v-for="(tags, indexList) in item.list" :key="indexList"
-               @click="handleClick(tags.tag_name)">
+               @click="handleClick(tags.tag_name,item.category,tags.tag_name)">
             <img class="background-image" :src="tags.cover_image" :alt="tags.tag_name"/>
             <div class="overlay">
               <span>{{ getZhLabelNameByEnName(tags.tag_name) }}</span>
@@ -46,9 +46,11 @@ const upload = useStore().upload;
 /**
  * 点击事件
  * @param id
+ * @param tag
+ * @param category
  */
-function handleClick(id: string) {
-  router.push({path: route.path + `/${id}`});
+function handleClick(id: string, category: string, tag: string) {
+  router.push({path: route.path + `/${id}`, query: {category: category, tag: tag}});
 }
 
 onMounted(() => {

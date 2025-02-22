@@ -23,18 +23,30 @@
                 </ABadge>
               </p>
               <p class="ant-upload-text" style="font-size: 2.6vh;font-weight: bolder">单击或拖动文件到此区域以上传</p>
-              <AButton type="primary" size="large" shape="round" style="width: 70%">上 传 照 片</AButton>
+              <AButton type="primary" size="large" shape="round" style="width: 70%">
+                <template #icon>
+                  <CloudUploadOutlined/>
+                </template>
+                上 传 照 片
+              </AButton>
+              <APopover placement="top" trigger="click">
+                <template #content>
+                  <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)"
+                           :size="qrcodeSize"
+                           :value="`git.landaiqing.cneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjI1MTEyMjE3MzQyMDIxIiwidHlwZSI6ImFjY2VzcyIsImV4cCI6MTczOTg3ODIyOCwibmJmIjoxNzM5ODcxMDI4LCJpYXQiOjE3Mzk4NzEwMjh9.EUiZsVjhGqHx1V5o90S3W5li6nIqucxy9eEY9LWgqXY`"
+                           :icon="phone"
+                           :iconSize="iconSize"
+                           :status="`active`"
+                  />
+                </template>
+                <AButton @click.stop type="default" size="large" shape="round" style="width: 70%">
+                  <template #icon>
+                    <QrcodeOutlined/>
+                  </template>
+                  手 机 上 传
+                </AButton>
+              </APopover>
 
-              <div class="qr">
-                <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)"
-                         :size="qrcodeSize"
-                         :value="`git.landaiqing.cneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjI1MTEyMjE3MzQyMDIxIiwidHlwZSI6ImFjY2VzcyIsImV4cCI6MTczOTg3ODIyOCwibmJmIjoxNzM5ODcxMDI4LCJpYXQiOjE3Mzk4NzEwMjh9.EUiZsVjhGqHx1V5o90S3W5li6nIqucxy9eEY9LWgqXY`"
-                         :icon="phone"
-                         :iconSize="iconSize"
-                         :status="`active`"
-                />
-                <span style="font-size: 2vh;color: #999999">手机扫码上传</span>
-              </div>
             </div>
           </AUploadDragger>
         </div>
@@ -143,7 +155,7 @@
         </div>
         <div v-if="loading && !uploadSuccess" class="image-share-right-bottom-loading">
           <div class="image-share-right-bottom-loading-content">
-            <a-progress
+            <AProgress
                 type="circle"
                 :stroke-color="{
                   '0%': '#108ee9',
@@ -428,6 +440,9 @@ onMounted(() => {
     }
   });
 });
+onBeforeUnmount(() => {
+  websocket.close(false);
+});
 </script>
 <style scoped lang="scss">
 .image-share-right {
@@ -674,6 +689,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2vh;
+  gap: 5vh;
 }
 </style>

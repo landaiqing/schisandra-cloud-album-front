@@ -14,7 +14,7 @@
         创建相册
       </AButton>
     </div>
-    <image-toolbar :selected="selected" />
+    <image-toolbar :selected="imageStore.selected" :image-list="images"/>
     <div class="photo-list">
       <div style="width:100%;height:100%;" v-if="images.length !== 0">
         <div v-for="(itemList, index) in images" :key="index">
@@ -26,7 +26,7 @@
                            class="photo-item"
                            margin="0"
                            border-radius="0"
-                           v-model="selected"
+                           v-model="imageStore.selected"
                            :showHoverCircle="true"
                            :iconSize="20"
                            :showSelectedEffect="true"
@@ -43,6 +43,15 @@
           </AImagePreviewGroup>
         </div>
       </div>
+      <div v-else>
+        <AEmpty :image="empty">
+          <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无照片，快去上传吧
+                </span>
+          </template>
+        </AEmpty>
+      </div>
     </div>
     <ImageUpload/>
   </div>
@@ -55,8 +64,9 @@ import useStore from "@/store";
 import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 import {queryRecentImagesApi} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
+import empty from "@/assets/svgs/empty.svg";
 
-const selected = ref<(string | number)[]>([]);
+const imageStore = useStore().image;
 const upload = useStore().upload;
 const images = ref<any[]>([]);
 const options = reactive({

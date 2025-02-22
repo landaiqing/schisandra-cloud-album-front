@@ -2,14 +2,16 @@
   <div class="thing-album-detail">
     <div class="thing-album-detail-header">
       <div class="thing-detail-content-nav">
-        <AButton size="large" type="text" class="thing-detail-content-nav-title" @click="goBack">人物</AButton>
+        <AButton size="large" type="text" class="thing-detail-content-nav-title" @click="goBack">
+          {{ getZhCategoryNameByEnName(route.query.category as string) }}
+        </AButton>
         <span class="thing-detail-content-nav-separator"> > </span>
-        <span class="thing-detail-content-nav-name">人物</span>
+        <span class="thing-detail-content-nav-name">{{ getZhLabelNameByEnName(route.query.tag as string) }}</span>
       </div>
     </div>
-    <ImageToolbar :selected="selected"/>
+    <ImageToolbar :selected="imageStore.selected" :image-list="albumList"/>
     <div class="thing-album-detail-info">
-      <span style="font-size: 14px;color: #999999">共12张照片</span>
+      <span style="font-size: 14px;color: #999999">共{{ imageStore.countTotalImages(albumList) }}张照片</span>
     </div>
     <div class="thing-album-detail-list">
       <div style="width:100%;height:100%;">
@@ -22,7 +24,7 @@
                            class="photo-item"
                            margin="0"
                            border-radius="0"
-                           v-model="selected"
+                           v-model="imageStore.selected"
                            :showHoverCircle="true"
                            :iconSize="20"
                            :showSelectedEffect="true"
@@ -53,9 +55,10 @@ import 'vue3-justified-layout/dist/style.css';
 import {queryThingDetailListApi} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
 import useStore from "@/store";
+import {getZhCategoryNameByEnName, getZhLabelNameByEnName} from "@/constant/coco_ssd_label_category.ts";
 
 
-const selected = ref<(string | number)[]>([]);
+const imageStore = useStore().image;
 const albumList = ref<any[]>([]);
 const upload = useStore().upload;
 const route = useRoute();
@@ -113,7 +116,7 @@ function goBack(): void {
       justify-content: flex-start;
       width: 1000%;
       height: 100%;
-      gap: 10px;
+      gap: 5px;
 
       .thing-detail-content-nav-title {
         font-size: 20px;
@@ -121,6 +124,7 @@ function goBack(): void {
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 7px;
       }
 
       .thing-detail-content-nav-separator {
@@ -141,13 +145,13 @@ function goBack(): void {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 30px;
+    margin-left: 15px;
     width: 100%;
     height: 22px;
   }
 
   .thing-album-detail-list {
-    width: 99%;
+    width: 100%;
     height: 100%;
     //margin-left: 5px;
   }

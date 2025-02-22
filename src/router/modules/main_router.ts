@@ -1,12 +1,14 @@
 import photo from "@/router/modules/photos.ts";
 import albums from "@/router/modules/albums.ts";
 import recycling_bin from "@/router/modules/recycling_bin.ts";
+import share from "@/router/modules/share.ts";
+import upscale from "@/router/modules/upscale.ts";
 
 export default [
     {
         path: '/main',
         name: 'main',
-        redirect: '/main/photos',
+        redirect: '/main/photo/all',
         component: () => import('@/views/Main/MainPage.vue'),
         meta: {
             requiresAuth: true,
@@ -16,25 +18,18 @@ export default [
             ...photo,
             ...albums,
             ...recycling_bin,
-            {
-                path: '/main/photo/upscale',
-                name: 'upscale',
-                component: () => import('@/views/Upscale/index.vue'),
-                meta: {
-                    requiresAuth: true,
-                    title: '图像修复'
-                },
-            },
-            {
-                path: '/main/photo/share',
-                name: 'share',
-                component: () => import('@/views/ImageShare/ImageShare.vue'),
-                meta: {
-                    requiresAuth: true,
-                    title: '快传'
-                }
-            }
+            ...share,
+            ...upscale,
 
         ]
+    }, {
+        path: '/main/share/list/:id',
+        name: 'share-list',
+        component: () => import('@/views/Share/ShareViewList/index.vue'),
+        meta: {
+            requiresAuth: true,
+            title: '分享列表'
+        },
     }
+
 ];
