@@ -10,7 +10,9 @@
       <div class="share-sidebar-body-top">
         <AAvatar :size="coverImageSize" shape="square">
           <template #icon>
-            <AImage width="100%" height="100%" :src="`data:image/png;base64,`+shareInfo.cover_image" :preview="false">
+            <AImage width="100%" height="100%"
+                    :src="shareInfo.cover_image?`data:image/png;base64,`+shareInfo.cover_image:default_cover"
+                    :preview="false">
             </AImage>
           </template>
         </AAvatar>
@@ -41,6 +43,7 @@
 <script setup lang="ts">
 
 import {queryShareInfoApi} from "@/api/share";
+import default_cover from "@/assets/images/default-cover.png";
 
 const coverImageSize = ref<number>(130);
 const shareInfo = ref<any>();

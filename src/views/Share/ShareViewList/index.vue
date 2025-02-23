@@ -10,12 +10,12 @@
         <div class="share-content-header">
           <AButton type="link" size="large" class="share-content-header-button">图片列表</AButton>
         </div>
-        <div class="share-content-verify" v-if="images.length <= 0">
+        <div class="share-content-verify" v-if="images && images.length <= 0">
           <AInputPassword size="large" placeholder="请输入访问密码" style="width: 20%" @pressEnter="getShareImages"/>
           <p style="font-size: 12px;color: #999;">回车后可查看图片列表</p>
         </div>
         <ASpin :spinning="loading" size="large">
-          <div v-if="images.length !== 0">
+          <div v-if="images && images.length !== 0">
             <AImagePreviewGroup>
               <Vue3JustifiedLayout v-model:list="images" :options="options">
                 <template #default="{ item }">

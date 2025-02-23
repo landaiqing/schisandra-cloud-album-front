@@ -1,7 +1,7 @@
 <template>
   <div class="phoalbum">
     <div class="phoalbum-header">
-      <APopover placement="bottom" trigger="click">
+      <APopover placement="right" trigger="click">
         <AButton type="primary" shape="round" size="middle">
           <template #icon>
             <PlusSquareOutlined/>
@@ -10,16 +10,15 @@
         </AButton>
         <template #content>
           <span style="color: #999; font-size: 15px;">创建相册</span>
-          <AInputGroup compact style="display: flex;flex-direction: row;margin-top: 15px">
-            <AInput placeholder="请填写相册名称" class="phoalbum-create-input"
-                    v-model:value="albumNameValue" size="large">
-              <template #suffix>
-                <AButton type="text" @click.prevent size="middle" style="color: #0e87cc" @click="createAlbumSubmit">
-                  确认
-                </AButton>
-              </template>
-            </AInput>
-          </AInputGroup>
+          <AInput placeholder="请填写相册名称" class="phoalbum-create-input"
+                  style="margin-top: 15px"
+                  v-model:value="albumNameValue" size="large">
+            <template #suffix>
+              <AButton type="text" @click.prevent size="middle" style="color: #0e87cc" @click="createAlbumSubmit">
+                确认
+              </AButton>
+            </template>
+          </AInput>
         </template>
 
       </APopover>
@@ -57,8 +56,8 @@
               style="color: #999; font-size: 12px;">已全部加载，共 {{ albumList ? albumList.length : 0 }} 个相册</span>
         </template>
         <ATabPane key="-1" :tab="imageStore.tabMap[-1]">
-          <ASpin tip="Loading..." :spinning="loading" size="large">
-            <div class="phoalbum-item-container">
+          <ASpin tip="Loading..." :spinning="loading" size="large" wrapperClassName="spin-container">
+            <div class="phoalbum-item-container" v-if="albumList && albumList.length != 0">
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
@@ -95,7 +94,10 @@
                             </AInput>
                           </template>
                         </APopover>
-                        <AMenuItem key="2">分享相册</AMenuItem>
+                        <AMenuItem key="2"
+                                   @click.prevent="imageStore.openAlbumShareDialogHandler(true,album.cover_image ?`data:image/png;base64,`+album.cover_image: ``,album.id)">
+                          分享相册
+                        </AMenuItem>
                         <AMenuItem key="3" @click.prevent="deleteAlbum(album.id)">删除相册</AMenuItem>
                         <AMenuItem key="4">下载相册</AMenuItem>
                       </AMenu>
@@ -103,12 +105,21 @@
                   </ADropdown>
                 </div>
               </div>
+            </div>
+            <div v-else class="empty-content">
+              <AEmpty :image="empty" :image-style="{ width: '100%', height: '100%' }">
+                <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无相册，快去创建一个吧！
+                </span>
+                </template>
+              </AEmpty>
             </div>
           </ASpin>
         </ATabPane>
         <ATabPane key="0" :tab="imageStore.tabMap[0]">
-          <ASpin tip="Loading..." :spinning="loading" size="large">
-            <div class="phoalbum-item-container">
+          <ASpin tip="Loading..." :spinning="loading" size="large" wrapperClassName="spin-container">
+            <div class="phoalbum-item-container" v-if="albumList && albumList.length != 0">
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
@@ -145,7 +156,10 @@
                             </AInput>
                           </template>
                         </APopover>
-                        <AMenuItem key="2">分享相册</AMenuItem>
+                        <AMenuItem key="2"
+                                   @click.prevent="imageStore.openAlbumShareDialogHandler(true,album.cover_image ?`data:image/png;base64,`+album.cover_image: ``,album.id)">
+                          分享相册
+                        </AMenuItem>
                         <AMenuItem key="3" @click.prevent="deleteAlbum(album.id)">删除相册</AMenuItem>
                         <AMenuItem key="4">下载相册</AMenuItem>
                       </AMenu>
@@ -153,12 +167,21 @@
                   </ADropdown>
                 </div>
               </div>
+            </div>
+            <div v-else class="empty-content">
+              <AEmpty :image="empty" :image-style="{ width: '100%', height: '100%' }">
+                <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无相册，快去创建一个吧！
+                </span>
+                </template>
+              </AEmpty>
             </div>
           </ASpin>
         </ATabPane>
         <ATabPane key="1" :tab="imageStore.tabMap[1]">
-          <ASpin tip="Loading..." :spinning="loading" size="large">
-            <div class="phoalbum-item-container">
+          <ASpin tip="Loading..." :spinning="loading" size="large" wrapperClassName="spin-container">
+            <div class="phoalbum-item-container" v-if="albumList && albumList.length != 0">
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
@@ -195,7 +218,10 @@
                             </AInput>
                           </template>
                         </APopover>
-                        <AMenuItem key="2">分享相册</AMenuItem>
+                        <AMenuItem key="2"
+                                   @click.prevent="imageStore.openAlbumShareDialogHandler(true,album.cover_image ?`data:image/png;base64,`+album.cover_image: ``,album.id)">
+                          分享相册
+                        </AMenuItem>
                         <AMenuItem key="3" @click.prevent="deleteAlbum(album.id)">删除相册</AMenuItem>
                         <AMenuItem key="4">下载相册</AMenuItem>
                       </AMenu>
@@ -204,11 +230,20 @@
                 </div>
               </div>
             </div>
+            <div v-else class="empty-content">
+              <AEmpty :image="empty" :image-style="{ width: '100%', height: '100%' }">
+                <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无相册，快去创建一个吧！
+                </span>
+                </template>
+              </AEmpty>
+            </div>
           </ASpin>
         </ATabPane>
         <ATabPane key="2" :tab="imageStore.tabMap[2]">
-          <ASpin tip="Loading..." :spinning="loading" size="large">
-            <div class="phoalbum-item-container">
+          <ASpin tip="Loading..." :spinning="loading" size="large" wrapperClassName="spin-container">
+            <div class="phoalbum-item-container" v-if="albumList && albumList.length != 0">
               <div class="phoalbum-item"
                    v-for="(album, index) in albumList"
                    :key="album.id"
@@ -245,7 +280,10 @@
                             </AInput>
                           </template>
                         </APopover>
-                        <AMenuItem key="2">分享相册</AMenuItem>
+                        <AMenuItem key="2"
+                                   @click.prevent="imageStore.openAlbumShareDialogHandler(true,album.cover_image ?`data:image/png;base64,`+album.cover_image: ``,album.id)">
+                          分享相册
+                        </AMenuItem>
                         <AMenuItem key="3" @click.prevent="deleteAlbum(album.id)">删除相册</AMenuItem>
                         <AMenuItem key="4">下载相册</AMenuItem>
                       </AMenu>
@@ -253,11 +291,21 @@
                   </ADropdown>
                 </div>
               </div>
+            </div>
+            <div v-else class="empty-content">
+              <AEmpty :image="empty" :image-style="{ width: '100%', height: '100%' }">
+                <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无相册，快去创建一个吧！
+                </span>
+                </template>
+              </AEmpty>
             </div>
           </ASpin>
         </ATabPane>
       </ATabs>
     </div>
+    <AlbumShareModal/>
   </div>
 </template>
 <script setup lang="ts">
@@ -266,6 +314,8 @@ import {albumListApi, createAlbumApi, deleteAlbumApi, renameAlbumApi} from "@/ap
 import {message} from "ant-design-vue";
 import default_cover from "@/assets/images/default-cover.png";
 import useStore from "@/store";
+import empty from "@/assets/svgs/empty.svg";
+import AlbumShareModal from "@/views/Album/Phoalbum/AlbumShareModal.vue";
 
 const isHovered = ref<number | null>(null);
 
@@ -412,6 +462,15 @@ onMounted(() => {
     justify-content: flex-start;
     width: 100%;
     height: calc(100% - 65px);
+
+    .spin-container {
+      position: relative;
+      transition: opacity 0.3s;
+      width: 100%;
+      height: 70vh;
+      display: flex;
+      flex-direction: column;
+    }
 
     .phoalbum-item-container {
       display: flex;

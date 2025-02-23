@@ -10,7 +10,8 @@
         <span style="font-size: 16px;font-weight: bold">
           已选择 {{ props.selected.length }} 张照片
         </span>
-        <AButton type="text" shape="default" class="photo-toolbar-btn" size="middle" @click="selectAll">
+        <AButton type="text" shape="default" class="photo-toolbar-btn" size="middle" @click="selectAll"
+                 :disabled="isAllSelected">
           全选
         </AButton>
       </div>
@@ -76,7 +77,14 @@ const deleteImages = async () => {
   }
 };
 
-
+const isAllSelected = computed(() => {
+  // 确保 props.imageList 是一个数组
+  const imageList = props.imageList || [];
+  return props.selected.length === imageList.flatMap((record: ImageRecord) => record.list).length;
+});
+onBeforeUnmount(() => {
+  imageStore.selected = [];
+});
 </script>
 <style scoped lang="scss">
 .photo-toolbar-header {

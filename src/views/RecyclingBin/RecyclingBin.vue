@@ -38,8 +38,8 @@
           </AImagePreviewGroup>
         </div>
       </div>
-      <div v-else>
-        <AEmpty :image="empty">
+      <div v-else class="empty-content">
+        <AEmpty :image="empty" :image-style="{ width: '100%', height: '100%' }">
           <template #description>
                 <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
                   暂无照片，快去上传吧

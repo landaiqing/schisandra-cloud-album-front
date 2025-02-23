@@ -1,31 +1,45 @@
 <template>
   <div class="phoalbum-detail">
     <div class="phoalbum-detail-header">
-      <AButton type="primary" shape="round" size="middle">
+      <AButton type="primary" shape="round" size="middle" @click="openUploadModal()">
         <template #icon>
-          <PlusSquareOutlined/>
+          <CloudUploadOutlined/>
         </template>
         上传
       </AButton>
-      <AButton type="default" shape="round" size="middle">
-        <template #icon>
-          <PlusSquareOutlined/>
+      <APopover placement="right" trigger="click">
+        <AButton type="default" shape="round" size="middle">
+          <template #icon>
+            <EditOutlined/>
+          </template>
+          重命名
+        </AButton>
+        <template #content>
+          <AInput :placeholder="route.query.name"
+                  v-model:value="albumRenameValue">
+            <template #suffix>
+              <AButton type="text" @click.prevent size="small" style="color: #0e87cc"
+                       @click="renameAlbum(albumRenameValue)">
+                确认
+              </AButton>
+            </template>
+          </AInput>
         </template>
-        重命名
-      </AButton>
-      <AButton type="default" shape="round" size="middle">
+      </APopover>
+      <AButton type="default" shape="round" size="middle" @click="deleteAlbum">
         <template #icon>
-          <PlusSquareOutlined/>
+          <DeleteOutlined/>
         </template>
         删除相册
       </AButton>
       <AButton type="default" shape="round" size="middle">
         <template #icon>
-          <PlusSquareOutlined/>
+          <DownloadOutlined/>
         </template>
         下载相册
       </AButton>
     </div>
+    <ImageUpload/>
     <ImageToolbar :selected="imageStore.selected" :image-list="albumList"/>
     <div class="phoalbum-detail-content">
       <div class="phoalbum-detail-content-nav">
@@ -45,7 +59,7 @@
         <span>相册描述</span>
       </div>
       <div class="phoalbum-detail-content-list">
-        <div style="width:100%;height:100%;" v-if="albumList.length !== 0">
+        <div style="width:100%;height:100%;" v-if="albumList && albumList.length !== 0">
           <div v-for="(itemList, index) in albumList" :key="index">
             <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
             <AImagePreviewGroup>
@@ -75,7 +89,7 @@
             </AImagePreviewGroup>
           </div>
         </div>
-        <div v-else>
+        <div v-else class="empty-content">
           <AEmpty :image="empty">
             <template #description>
                 <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
@@ -91,10 +105,12 @@
 <script setup lang="ts">
 import Vue3JustifiedLayout from "vue3-justified-layout";
 import 'vue3-justified-layout/dist/style.css';
-import {queryAlbumDetailListApi} from "@/api/storage";
+import {deleteAlbumApi, queryAlbumDetailListApi, renameAlbumApi} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
 import useStore from "@/store";
 import empty from "@/assets/svgs/empty.svg";
+import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
+import {message} from "ant-design-vue";
 
 
 const imageStore = useStore().image;
@@ -120,6 +136,47 @@ onMounted(() => {
   const albumId = Array.isArray(idParam) ? idParam[0] : idParam;
   getAlbumList(parseInt(albumId, 10));
 });
+
+function openUploadModal(): void {
+  upload.openUploadDrawerFn();
+  const idParam = route.params.id;
+  const albumId = Array.isArray(idParam) ? idParam[0] : idParam;
+  upload.albumSelected = parseInt(albumId);
+}
+
+const albumRenameValue = ref<string>("");
+
+/**
+ * 重命名相册
+ * @param name
+ */
+async function renameAlbum(name: string) {
+  if (name.trim() === "") {
+    message.warning("相册名称不能为空");
+    return;
+  }
+  const idParam = route.params.id;
+  const albumId = Array.isArray(idParam) ? idParam[0] : idParam;
+  const res: any = await renameAlbumApi(parseInt(albumId), name);
+  if (res && res.code === 200) {
+    albumRenameValue.value = "";
+    goBack();
+  }
+}
+
+/**
+ * 删除相册
+ */
+async function deleteAlbum() {
+  const idParam = route.params.id;
+  const id = Array.isArray(idParam) ? idParam[0] : idParam;
+  const res: any = await deleteAlbumApi(parseInt(id));
+  if (res && res.code === 200) {
+    goBack();
+  } else {
+    message.error("删除相册失败");
+  }
+}
 
 /**
  * 返回上一页

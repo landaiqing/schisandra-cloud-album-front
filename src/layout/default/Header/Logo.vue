@@ -58,10 +58,10 @@
             </AFlex>
 
           </div>
-          <div class="header-logo-popover-card" @click="router.push('/main/photo/upscale')">
+          <div class="header-logo-popover-card" @click="router.push('/main/photo/phone')">
             <AFlex :vertical="false" align="center" justify="space-between">
               <AAvatar size="small" shape="square" :src="ai"/>
-              <span class="header-logo-popover-text">{{ t('album.upscale') }}</span>
+              <span class="header-logo-popover-text">{{ t('album.phone') }}</span>
             </AFlex>
 
           </div>

@@ -10,7 +10,7 @@
         </AButton>
       </div>
       <div class="people-album-detail-toolbar">
-        <AAvatar shape="circle" size="default"></AAvatar>
+        <AAvatar shape="circle" size="default" :src="route.query.thumb"></AAvatar>
         <span style="font-size: 14px;color: #333333">{{ route.query.name }}</span>
       </div>
     </div>
@@ -19,7 +19,7 @@
       <span style="font-size: 14px;color: #999999">共{{ imageStore.countTotalImages(images) }}张照片</span>
     </div>
     <div class="people-album-detail-list">
-      <div style="width:100%;height:100%;" v-if="images.length !== 0">
+      <div style="width:100%;height:100%;" v-if="images &&images.length !== 0">
         <div v-for="(itemList, index) in images" :key="index">
           <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
           <AImagePreviewGroup>
@@ -49,8 +49,8 @@
           </AImagePreviewGroup>
         </div>
       </div>
-      <div v-else>
-        <AEmpty :image="empty">
+      <div v-else class="empty-content">
+        <AEmpty :image="empty" :image-style="{width: '100%', height: '100%'}">
           <template #description>
                 <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
                   暂无照片，快去上传吧

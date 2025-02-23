@@ -53,7 +53,7 @@ export const getFaceSamplesDetailList = (face_id: number, provider: string, buck
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["modify-face-sample-name", "modify-face-sample-type"],
+        hitSource: ["modify-face-sample-name", "modify-face-sample-type", "delete-images"],
     });
 };
 /**
@@ -123,7 +123,7 @@ export const albumListApi = (type: number, sort: boolean) => {
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["create-album", "rename-album", "delete-album"],
+        hitSource: ["create-album", "rename-album", "delete-album", "album-share"],
     });
 };
 /**
@@ -147,7 +147,7 @@ export const queryAlbumDetailListApi = (id: number, provider: string, bucket: st
             signature: false,
         },
         name: "album-detail-list",
-        hitSource: ["upload-file", "delete-images"],
+        hitSource: ["upload-file", "delete-images", "album-share"],
     });
 };
 
@@ -205,7 +205,7 @@ export const queryAllImagesApi = (type: string, sort: boolean, provider: string,
             ignoreToken: false,
             signature: false,
         },
-        hitSource: ["upload-file", "delete-images"],
+        hitSource: ["upload-file", "delete-images", "album-share"],
     });
 };
 
@@ -213,8 +213,11 @@ export const queryAllImagesApi = (type: string, sort: boolean, provider: string,
 /**
  * 获取最近照片列表
  */
-export const queryRecentImagesApi = () => {
-    return service.Post('/api/auth/storage/image/recent/list', {}, {
+export const queryRecentImagesApi = (provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/image/recent/list', {
+        provider: provider,
+        bucket: bucket,
+    }, {
         cacheFor: {
             expire: 60 * 60 * 24 * 7,
             mode: "restore",
@@ -407,6 +410,31 @@ export const getBucketCapacityApi = (provider: string, bucket: string) => {
             ignoreToken: false,
             signature: false,
         },
-        name: "delete-images",
+        name: "get-bucket-capacity",
+    });
+};
+/**
+ * 分享相册
+ * @param id
+ * @param expire_date
+ * @param access_limit
+ * @param access_password
+ * @param provider
+ * @param bucket
+ */
+export const albumShareApi = (id: number, expire_date: string, access_limit: number, access_password: string, provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/album/share', {
+        id: id,
+        expire_date: expire_date,
+        access_limit: access_limit,
+        access_password: access_password,
+        provider: provider,
+        bucket: bucket,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "album-share",
     });
 };

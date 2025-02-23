@@ -2,13 +2,23 @@
   <AFlex :vertical="false" align="center" justify="flex-end" class="header-menu-container">
     <AFlex :vertical="false" align="center" justify="flex-start" class="header-menu-item" gap="large">
       <!--   存储选择    -->
-      <div class="header-select-container">
-        <ACascader v-model:value="uploadStore.storageSelected"
-                   :options="configList"
-                   :show-search="{ filter }"
-                   :field-names="{ label: 'name', value: 'value', children: 'children' }"
-                   placeholder="选择存储桶">
-        </ACascader>
+      <div class="button-wrapper">
+        <APopover :arrow="false" trigger="click" placement="right">
+          <template #content>
+            <ACascader v-model:value="uploadStore.storageSelected"
+                       :options="configList"
+                       :bordered="false"
+                       style="width: 100%"
+                       :field-names="{ label: 'name', value: 'value', children: 'children' }"
+                       placeholder="选择存储桶">
+            </ACascader>
+          </template>
+          <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
+            <template #icon>
+              <AAvatar size="default" shape="circle" :src="ProviderIcon[uploadStore.storageSelected?.[0]]? ProviderIcon[uploadStore.storageSelected?.[0]] : wenhao"/>
+            </template>
+          </AButton>
+        </APopover>
       </div>
 
       <!--  社区按钮 -->
@@ -141,14 +151,16 @@ import systemMessage from "@/assets/svgs/sys-msg.svg";
 import personalCenter from "@/assets/svgs/personal-center.svg";
 import accountSetting from "@/assets/svgs/setting.svg";
 import logout from "@/assets/svgs/logout.svg";
+import wenhao from "@/assets/svgs/wenhao.svg";
+
 import useStore from "@/store";
 import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 import {getStorageConfigListApi} from "@/api/storage";
-import type {ShowSearchType} from 'ant-design-vue/es/cascader';
+import {ProviderIcon} from "@/constant/provider_icon.ts";
+
 
 const uploadStore = useStore().upload;
 const user = useStore().user;
-
 
 const configList = ref<any[]>([]);
 
@@ -158,10 +170,6 @@ async function getUserConfigList() {
     configList.value = res.data.records;
   }
 }
-
-const filter: ShowSearchType['filter'] = (inputValue, path) => {
-  return path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
-};
 
 
 onMounted(() => {

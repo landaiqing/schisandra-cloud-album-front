@@ -39,7 +39,8 @@
                            :status="`active`"
                   />
                 </template>
-                <AButton @click.stop type="default" size="large" shape="round" style="width: 70%">
+                <AButton type="default" size="large" shape="round" style="width: 70%"
+                         @click.stop="initWebSocket">
                   <template #icon>
                     <QrcodeOutlined/>
                   </template>
@@ -429,9 +430,10 @@ const wsOptions = {
   protocols: [user.token.accessToken],
 };
 
-
-onMounted(() => {
-  window.addEventListener("resize", updateQrcodeSize);
+/**
+ *  初始化 WebSocket
+ */
+function initWebSocket() {
   websocket.initialize(wsOptions);
   websocket.on("message", async (res: any) => {
     if (res && res.code === 200) {
@@ -439,6 +441,10 @@ onMounted(() => {
       console.log(data);
     }
   });
+}
+
+onMounted(() => {
+  window.addEventListener("resize", updateQrcodeSize);
 });
 onBeforeUnmount(() => {
   websocket.close(false);

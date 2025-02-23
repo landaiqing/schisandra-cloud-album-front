@@ -4,7 +4,7 @@
       <AButton type="link" size="large" class="location-album-button">地点</AButton>
       <span class="location-album-count">你一共在{{ locationAlbums ? locationAlbums.length : 0 }}个地点留下足迹</span>
     </div>
-    <div class="location-album-content">
+    <div class="location-album-content" v-if="locationAlbums && locationAlbums.length>0 ">
       <div class="location-album-content-item" v-for="(item, index) in locationAlbums" :key="index">
         <span class="location-album-description">{{ item.location }}</span>
         <div class="location-album-location-list">
@@ -20,17 +20,27 @@
         </div>
       </div>
     </div>
+    <div v-else class="empty-content">
+      <AEmpty :image="empty" :image-style="{width: '100%', height: '100%'}">
+        <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无照片，快去上传吧
+                </span>
+        </template>
+      </AEmpty>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
 import {queryLocationAlbumApi} from "@/api/storage";
 import useStore from "@/store";
+import empty from "@/assets/svgs/empty.svg";
 
 const route = useRoute();
 const router = useRouter();
 const upload = useStore().upload;
 
-function handleClick(id: number,name: string) {
+function handleClick(id: number, name: string) {
   router.push({path: route.path + `/${id}`, query: {name: name}});
 }
 

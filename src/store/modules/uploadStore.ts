@@ -15,7 +15,6 @@ interface UploadPredictResult {
     thumb_size: number | null;
 }
 
-
 export const useUploadStore = defineStore(
     'upload',
     () => {
@@ -37,6 +36,8 @@ export const useUploadStore = defineStore(
         });
 
         const storageSelected = ref<any[]>([]);
+
+        const albumSelected = ref<number>();
 
         /**
          * 打开上传抽屉
@@ -70,6 +71,7 @@ export const useUploadStore = defineStore(
             storageSelected,
             openUploadDrawerFn,
             clearPredictResult,
+            albumSelected,
         };
     },
     {
@@ -78,7 +80,7 @@ export const useUploadStore = defineStore(
             persist: true,
             storage: localStorage,
             key: 'upload',
-            includePaths: ["storageSelected"]
+            includePaths: ["storageSelected", "albumSelected"]
         }
     }
 );

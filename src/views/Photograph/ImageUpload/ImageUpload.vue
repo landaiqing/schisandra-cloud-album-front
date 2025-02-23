@@ -2,8 +2,12 @@
   <ADrawer v-model:open="upload.openUploadDrawer" placement="right" title="上传照片" width="40%" @close="cancelUpload">
     <template #extra>
       <AFlex :vertical="false" align="center" gap="large" justify="center">
-        <ASelect size="middle" style="width: 150px" placeholder="选择上传的相册">
-
+        <ASelect size="middle" style="width: 150px" placeholder="选择上传的相册"
+                 :options="albumList"
+                 v-model:value="upload.albumSelected"
+                 :allow-clear="true"
+                 :field-names="{label: 'name', value: 'id'}"
+        >
         </ASelect>
       </AFlex>
     </template>
@@ -61,7 +65,7 @@ import {animePredictImagePro} from "@/utils/tfjs/anime_classifier_pro.ts";
 import {cocoSsdPredict} from "@/utils/tfjs/mobilenet.ts";
 import {predictLandscape} from "@/utils/tfjs/landscape_recognition.ts";
 import {useRequest} from 'alova/client';
-import {uploadFile} from "@/api/storage";
+import {albumListApi, uploadFile} from "@/api/storage";
 import imageCompression from "browser-image-compression";
 import exifr from 'exifr';
 import isScreenshot from "@/utils/imageUtils/isScreenshot.ts";
@@ -232,6 +236,7 @@ async function customUploadRequest(file: any) {
     provider: upload.storageSelected?.[0],
     bucket: upload.storageSelected?.[1],
     fileType: file.file.type,
+    albumId: upload.albumSelected ? upload.albumSelected : 0,
     ...upload.predictResult,
   }));
   watch(
@@ -311,6 +316,18 @@ async function extractGPSExifData(file) {
   return null;
 }
 
+const albumList = ref<any[]>([]);
+
+async function getAlbumList(type: number = 0, sort: boolean = true) {
+  const res: any = await albumListApi(type, sort);
+  if (res && res.code === 200) {
+    albumList.value = res.data.albums;
+  }
+}
+
+onMounted(() => {
+  getAlbumList();
+});
 </script>
 <style lang="less" scoped>
 

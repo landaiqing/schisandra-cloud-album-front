@@ -5,7 +5,7 @@
       <AButton type="link" size="large" class="thing-album-button">事物</AButton>
 
     </div>
-    <div class="thing-album-content">
+    <div class="thing-album-content" v-if="thingAlbumList && thingAlbumList.length>0">
       <div class="thing-album-content-item" v-for="(item, index) in thingAlbumList" :key="index">
         <span class="thing-album-title">{{ getZhCategoryNameByEnName(item.category) }}</span>
         <div class="thing-album-wrapper">
@@ -21,6 +21,15 @@
         </div>
       </div>
     </div>
+    <div v-else class="empty-content">
+      <AEmpty :image="empty" :image-style="{width: '100%', height: '100%'}">
+        <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无照片，快去上传吧
+                </span>
+        </template>
+      </AEmpty>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -29,6 +38,7 @@
 import {queryThingAlbumApi} from "@/api/storage";
 import {getZhCategoryNameByEnName, getZhLabelNameByEnName} from "@/constant/coco_ssd_label_category.ts";
 import useStore from "@/store";
+import empty from "@/assets/svgs/empty.svg";
 
 const thingAlbumList = ref<any[]>([]);
 

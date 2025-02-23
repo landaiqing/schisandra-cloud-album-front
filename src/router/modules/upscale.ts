@@ -1,6 +1,6 @@
 export default [
     {
-        path: '/main/photo/upscale',
+        path: '/main/photo/phone',
         name: 'upscale',
         component: () => import('@/views/Upscale/index.vue'),
         meta: {

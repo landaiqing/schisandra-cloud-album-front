@@ -7,12 +7,27 @@
         </template>
         上传照片
       </AButton>
-      <AButton type="default" shape="round" size="middle">
-        <template #icon>
-          <PlusSquareOutlined/>
+      <APopover placement="right" trigger="click">
+        <AButton type="default" shape="round" size="middle">
+          <template #icon>
+            <PlusSquareOutlined/>
+          </template>
+          创建相册
+        </AButton>
+
+        <template #content>
+          <span style="color: #999; font-size: 15px;">创建相册</span>
+          <AInput placeholder="请填写相册名称" class="phoalbum-create-input"
+                  style="margin-top: 15px"
+                  v-model:value="albumNameValue" size="large">
+            <template #suffix>
+              <AButton type="text" @click.prevent size="middle" style="color: #0e87cc" @click="createAlbumSubmit">
+                确认
+              </AButton>
+            </template>
+          </AInput>
         </template>
-        创建相册
-      </AButton>
+      </APopover>
     </div>
     <image-toolbar :selected="imageStore.selected" :image-list="images"/>
     <div class="photo-list">
@@ -21,10 +36,16 @@
              v-model:activeKey="imageStore.homeTabActiveKey"
              style="width: 99%;">
         <template #rightExtra>
-          <ASwitch size="small" v-model:checked="switchValue"/>
+          <AFlex :vertical="false" align="center" gap="10">
+            <span style="color: #999999;">清爽模式</span>
+            <ATooltip title="开启后即可隐藏已添加到相册的照片" placement="bottom">
+              <QuestionCircleOutlined/>
+            </ATooltip>
+            <ASwitch size="default" v-model:checked="imageStore.switchValue"/>
+          </AFlex>
         </template>
         <ATabPane key="all" :tab="imageStore.homeTabMap['all']">
-          <ASpin size="large" :spinning="loading" :delay="500">
+          <ASpin size="large" :spinning="loading" :delay="500" wrapper-class-name="spin-wrapper">
             <div style="width:100%;height:100%;" v-if="images">
               <div v-for="(itemList, index) in images" :key="index">
                 <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
@@ -59,7 +80,11 @@
               </div>
             </div>
             <div v-else class="empty-content">
-              <AEmpty :image="empty">
+              <AEmpty :image="empty"
+                      :image-style="{
+                   height: '100%',
+                   width: '100%',
+                 }">
                 <template #description>
                 <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
                   还没检测到任何图片，快去上传吧！
@@ -237,13 +262,14 @@ import Vue3JustifiedLayout from "vue3-justified-layout";
 import 'vue3-justified-layout/dist/style.css';
 import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
 import useStore from "@/store";
-import {queryAllImagesApi} from "@/api/storage";
+import {createAlbumApi, queryAllImagesApi} from "@/api/storage";
 import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
 import empty from "@/assets/svgs/empty.svg";
+import {message} from "ant-design-vue";
 
 const imageStore = useStore().image;
 
-const switchValue = ref<boolean>(false);
+
 const upload = useStore().upload;
 
 const options = reactive({
@@ -252,6 +278,7 @@ const options = reactive({
 
 const images = ref<any[]>([]);
 const loading = ref<boolean>(false);
+const router = useRouter();
 
 /**
  * 获取所有图片
@@ -259,7 +286,7 @@ const loading = ref<boolean>(false);
 async function getAllImages(type: string) {
   images.value = [];
   loading.value = true;
-  const res: any = await queryAllImagesApi(type, false, upload.storageSelected?.[0], upload.storageSelected?.[1]);
+  const res: any = await queryAllImagesApi(type, imageStore.switchValue, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
     images.value = res.data.records;
   }
@@ -269,6 +296,27 @@ async function getAllImages(type: string) {
 async function handleTabChange(activeKey: string) {
   imageStore.homeTabActiveKey = activeKey;
   await getAllImages(activeKey);
+}
+
+const albumNameValue = ref<string>("未命名相册");
+
+/**
+ * 创建相册
+ */
+async function createAlbumSubmit() {
+  if (albumNameValue.value.trim() === "") {
+    message.error("相册名称不能为空");
+    return;
+  }
+  const res: any = await createAlbumApi(albumNameValue.value);
+  if (res && res.code === 200) {
+    router.push({
+      path: "/main/album/albums/" + `${res.data.id}`,
+      query: {name: albumNameValue.value}
+    });
+  } else {
+    message.error("创建相册失败");
+  }
 }
 
 
@@ -314,12 +362,7 @@ onMounted(() => {
   box-shadow: 0 0 10px 0 rgba(77, 167, 255, 0.89);
 }
 
-.empty-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
+.spin-wrapper {
 }
+
 </style>

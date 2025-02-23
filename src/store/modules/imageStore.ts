@@ -18,6 +18,13 @@ export const useImageStore = defineStore(
             "gif": "动图",
             "screenshot": "截图",
         });
+        // 清算模式切换
+        const switchValue = ref<boolean>(false);
+
+        // 相册分享弹窗相关
+        const openAlbumShareDialog = ref<boolean>(false);
+        const albumShareCoverImage = ref<string>("");
+        const albumShareId = ref<number>(0);
 
         /**
          * 统计图片总数
@@ -31,13 +38,24 @@ export const useImageStore = defineStore(
             return imageList.reduce((total, record) => total + record.list.length, 0);
         }
 
+        function openAlbumShareDialogHandler(value: boolean, coverImage: string, albumId: number) {
+            openAlbumShareDialog.value = value;
+            albumShareCoverImage.value = coverImage;
+            albumShareId.value = albumId;
+        }
+
         return {
             selected,
             tabActiveKey,
             tabMap,
             homeTabMap,
+            switchValue,
             homeTabActiveKey,
-            countTotalImages
+            albumShareCoverImage,
+            albumShareId,
+            countTotalImages,
+            openAlbumShareDialog,
+            openAlbumShareDialogHandler,
         };
     },
     {
@@ -46,7 +64,7 @@ export const useImageStore = defineStore(
             persist: true,
             storage: localStorage,
             key: 'image',
-            includePaths: ["tabActiveKey", "tabMap", "homeTabActiveKey", "homeTabMap"],
+            includePaths: ["tabActiveKey", "tabMap", "homeTabActiveKey", "homeTabMap", "switchValue"],
         }
     }
 );

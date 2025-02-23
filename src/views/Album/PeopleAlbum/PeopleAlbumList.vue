@@ -50,12 +50,12 @@
       </div>
     </transition>
     <div class="people-album-container">
-      <ASpin :spinning="loading" size="large" wrapperClassName="people-album-container">
-        <div class="people-album-content">
+      <ASpin :spinning="loading" size="large" wrapperClassName="spin-container">
+        <div class="people-album-content" v-if="faceList.length !== 0">
           <CheckCard
               v-for="(item, index) in faceList"
               :key="index"
-              @click="handleClick(item.id, item.face_name)"
+              @click="handleClick(item.id, item.face_name, item.face_image)"
               class="photo-item"
               margin="0"
               border-radius="0"
@@ -115,12 +115,22 @@
           </CheckCard>
 
         </div>
+        <div v-else class="empty-content">
+          <AEmpty :image="empty" :image-style="{width: '100%', height: '100%'}">
+            <template #description>
+                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
+                  暂无照片，快去上传吧
+                </span>
+            </template>
+          </AEmpty>
+        </div>
       </ASpin>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import {getFaceSamplesList, modifyFaceSampleName, modifyFaceTypeBatch} from "@/api/storage";
+import empty from "@/assets/svgs/empty.svg";
 
 
 const faceList = ref<any[]>([]);
@@ -217,9 +227,10 @@ const router = useRouter();
  *     点击人物跳转到详情页
  * @param id
  * @param name
+ * @param thumb
  */
-function handleClick(id: number, name: string | null) {
-  router.push({path: route.path + `/${id}`, query: {name: name}});
+function handleClick(id: number, name: string | null,thumb: string | null) {
+  router.push({path: route.path + `/${id}`, query: {name: name, thumb: thumb}});
 }
 
 onMounted(() => {
@@ -331,6 +342,13 @@ onMounted(() => {
     justify-content: flex-start;
     align-content: flex-start;
     flex-wrap: wrap;
+
+    .spin-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
 
     .people-album-content {
       width: 100%;
