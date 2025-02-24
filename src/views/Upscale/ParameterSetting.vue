@@ -82,7 +82,7 @@ async function startTask() {
   if (upscale.input === null) return;
   upscale.isProcessing = true;
   const start = Date.now();
-  const worker = new Worker(new URL("@/workers/phone/phone.worker.ts", import.meta.url), {
+  const worker = new Worker(new URL("@/workers/upscale/upscale.worker.ts", import.meta.url), {
     type: "module",
   });
   worker.onmessage = (e: MessageEvent<any>) => {

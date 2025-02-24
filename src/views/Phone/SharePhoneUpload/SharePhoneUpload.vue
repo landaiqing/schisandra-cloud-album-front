@@ -1,5 +1,5 @@
 <template>
-  <div class="upscale-upload-content">
+  <div class="share-upload-content">
     <AUploadDragger
         name="file"
         accept="image/*"
@@ -7,29 +7,30 @@
         :directory="false"
         :maxCount="1"
         :beforeUpload="beforeUpload"
-        :fileList="fileList"
+        :custom-request="customRequest"
+        v-model:fileList="fileList"
         :loading="uploading"
-        :showUploadList="true">
-      <div class="upscale-upload-content-main">
+        :showUploadList="false">
+      <div class="share-upload-content-main">
         <ABadge :offset="[-10, 10]">
           <template #count>
-            <AAvatar :size="25" :src="sueccess" v-if="fileList.length > 0"/>
+            <AAvatar :size="25" :src="succeed" v-if="fileList.length > 0"/>
             <AAvatar :size="25" :src="warn" v-if="fileList.length === 0"/>
           </template>
           <AAvatar shape="square" :size="70" :src="file"/>
         </ABadge>
-        <span class="upscale-upload-text">
+        <span class="share-upload-text">
             点击上传图片
             </span>
       </div>
     </AUploadDragger>
     <ADivider orientation="center" :plain="true">
-      <span class="upscale-divider-title">图片预览</span>
+      <span class="share-divider-title">图片预览</span>
     </ADivider>
-    <div class="upscale-upload-image" v-if="fileList.length > 0">
-      <ABadge v-for="(item, index) in fileList" :key="index">
+    <div class="share-upload-image" v-if="fileList.length > 0">
+      <ABadge>
         <template #count>
-          <AButton type="text" size="small" class="upscale-file-btn">
+          <AButton type="text" size="small" class="share-file-btn" @click="fileList = []">
             <template #icon>
               <AAvatar shape="square" :size="25" :src="remove"/>
             </template>
@@ -37,7 +38,7 @@
         </template>
         <AAvatar shape="square" :size="100">
           <template #icon>
-            <AImage :src="convertFileToUrl(item.file)" width="100%" height="100%"/>
+            <AImage :src="convertFileToUrl(fileList?.[0].originFileObj)" width="100%" height="100%"/>
           </template>
         </AAvatar>
       </ABadge>
@@ -46,7 +47,7 @@
     <ADivider/>
     <div>
       <AButton type="primary" size="large" :disabled="fileList.length === 0" :loading="uploading"
-               class="upscale-upload-btn">
+               class="share-upload-btn" @click="sendImage()">
         发送图片
       </AButton>
     </div>
@@ -55,44 +56,49 @@
 </template>
 <script setup lang="ts">
 import file from "@/assets/svgs/file.svg";
-import useStore from "@/store";
-import sueccess from '@/assets/svgs/success.svg';
+import succeed from '@/assets/svgs/success.svg';
 import warn from '@/assets/svgs/warn.svg';
 import remove from '@/assets/svgs/remove.svg';
 import empty from '@/assets/svgs/empty.svg';
 import {message} from "ant-design-vue";
-import {useI18n} from "vue-i18n";
 import i18n from "@/locales";
 import {initNSFWJs, predictNSFW} from "@/utils/tfjs/nsfw.ts";
 import {NSFWJS} from "nsfwjs";
+import {sharePhoneUploadApi} from "@/api/phone";
+import {useI18n} from "vue-i18n";
+import {fileToBase64} from "@/utils/imageUtils/fileToBase64.ts";
 
-const upscale = useStore().upscale;
 
 const route = useRoute();
 
-const {t} = useI18n();
 
 const fileList = ref<any[]>([]);
 
+const {t} = useI18n();
+
 const uploading = ref(false);
 
-// async function sendImage() {
-//   if (!upscale.imageData) {
-//     return;
-//   }
-//   const base64 = await blobToBase64(upscale.imageData);
-//   const data: uploadImageRequest = {
-//     image: base64,
-//     access_token: route.query.token as string,
-//     user_id: route.query.user_id as string,
-//   };
-//   const res: any = await uploadImage(data);
-//   if (res && res && res.code === 200) {
-//     message.success(t('upload.uploadSuccess'));
-//   } else {
-//     message.error(res.message);
-//   }
-// }
+async function sendImage() {
+  if (fileList.value.length === 0) {
+    return;
+  }
+  const base64 = await fileToBase64(fileList.value?.[0].originFileObj);
+  const data: any = {
+    origin_file_obj: base64,
+    name: fileList.value?.[0].name,
+    size: fileList.value?.[0].size,
+    access_token: route.query.token as string,
+    user_id: route.query.user_id as string,
+    type: fileList.value?.[0].type,
+  };
+  const res: any = await sharePhoneUploadApi(data);
+  if (res && res && res.code === 200) {
+    message.success(t('upload.uploadSuccess'));
+    fileList.value = [];
+  } else {
+    message.error(res.message);
+  }
+}
 
 /**
  * 上传文件前置
@@ -117,6 +123,12 @@ async function beforeUpload(file: any) {
   };
   return true;
 }
+
+function customRequest() {
+  return;
+}
+
+
 /**
  *  转换文件为 URL
  * @param file
@@ -127,13 +139,13 @@ function convertFileToUrl(file: any) {
 
 </script>
 <style scoped lang="scss">
-.upscale-upload-content {
+.share-upload-content {
   width: 90%;
-  height: 30vh;
+  height: 40vh;
   padding: 15px;
   margin: 0 auto;
 
-  .upscale-upload-content-main {
+  .share-upload-content-main {
     width: 100%;
     height: 100%;
     display: flex;
@@ -143,33 +155,33 @@ function convertFileToUrl(file: any) {
     overflow: scroll;
 
 
-    .upscale-upload-text {
+    .share-upload-text {
       font-size: 20px;
       font-weight: bold;
     }
 
-    .upscale-upload-btn {
+    .share-upload-btn {
       width: 60%;
     }
 
-    .upscale-upload-tip {
+    .share-upload-tip {
       font-size: 12px;
       color: rgba(126, 126, 135, 0.99);
     }
   }
 
-  .upscale-divider-title {
+  .share-divider-title {
     font-size: 13px;
     color: rgba(126, 126, 135, 0.99);
   }
 
-  .upscale-upload-image {
+  .share-upload-image {
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  .upscale-upload-btn {
+  .share-upload-btn {
     width: 100%;
     display: flex;
     justify-content: center;

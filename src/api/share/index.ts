@@ -74,3 +74,21 @@ export const queryShareOverviewApi = () => {
         },
     });
 };
+/**
+ * 删除分享记录
+ * @param id
+ * @param invite_code
+ * @param album_id
+ */
+export const deleteShareRecordApi = (id: number, invite_code: string, album_id: number) => {
+    return service.Post('/api/auth/share/record/delete', {
+        id: id,
+        invite_code: invite_code,
+        album_id: album_id,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+    });
+};

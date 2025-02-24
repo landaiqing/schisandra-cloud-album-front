@@ -12,7 +12,7 @@
                  style="background: linear-gradient(102.74deg, rgb(66, 230, 171) -7.03%, rgb(103, 235, 187) 97.7%);">
             <div class="image-share-left-item-content">
               <span style="font-weight: bolder;font-size: 2.3vh">浏览次数（次）</span>
-              <span style="font-weight: bolder;font-size: 5vh">{{ overviewData?overviewData.visit_count:0 }}</span>
+              <span style="font-weight: bolder;font-size: 5vh">{{ overviewData ? overviewData.visit_count : 0 }}</span>
               <p style="font-size: 2vh;color: hsla(0,0%,100%,.6);">今日浏览
                 <span
                     style="font-weight: bolder;font-size: 2.8vh;color: #fff;">+{{
@@ -26,11 +26,11 @@
                  style="background: linear-gradient(101.63deg, rgb(82, 138, 250) -12.83%, rgb(122, 167, 255) 100%);">
             <div class="image-share-left-item-content">
               <span style="font-weight: bolder;font-size: 2.3vh">浏览人数（人）</span>
-              <span style="font-weight: bolder;font-size: 5vh">{{ overviewData?overviewData.viewer_count:0 }}</span>
+              <span style="font-weight: bolder;font-size: 5vh">{{ overviewData ? overviewData.viewer_count : 0 }}</span>
               <p style="font-size: 2vh;color: hsla(0,0%,100%,.6);">今日浏览人数
                 <span
                     style="font-weight: bolder;font-size: 2.8vh;color: #fff;">+{{
-                    overviewData?overviewData.viewer_count_today:0
+                    overviewData ? overviewData.viewer_count_today : 0
                   }}</span>
               </p>
             </div>
@@ -40,7 +40,9 @@
                  style="background: linear-gradient(102.99deg, rgb(126, 92, 255) 3.18%, rgb(162, 139, 255) 102.52%);">
             <div class="image-share-left-item-content">
               <span style="font-weight: bolder;font-size: 2.3vh">发布次数（次）</span>
-              <span style="font-weight: bolder;font-size: 5vh">{{ overviewData?overviewData.publish_count:0 }}</span>
+              <span style="font-weight: bolder;font-size: 5vh">{{
+                  overviewData ? overviewData.publish_count : 0
+                }}</span>
               <p style="font-size: 2vh;color: hsla(0,0%,100%,.6);">今日发布
                 <span
                     style="font-weight: bolder;font-size: 2.8vh;color: #fff;">+{{
@@ -109,6 +111,8 @@
                         title="确定删除该快传记录?"
                         ok-text="确定"
                         cancel-text="取消"
+                        @confirm="async () => await deleteShareRecord(record.id, record.invite_code, record.album_id)"
+                        @cancel="() => {}"
                     >
                       <AButton type="text" size="small" danger>
                         <DeleteOutlined/>
@@ -131,7 +135,7 @@
 import {Dayjs} from 'dayjs';
 import dayjs from 'dayjs';
 import ShareUpload from "@/views/Share/ImageShare/ShareUpload.vue";
-import {queryShareOverviewApi, queryShareRecordListApi} from "@/api/share";
+import {deleteShareRecordApi, queryShareOverviewApi, queryShareRecordListApi} from "@/api/share";
 import {message} from "ant-design-vue";
 import 'dayjs/locale/zh-cn';
 
@@ -276,6 +280,24 @@ async function getShareOverview() {
     overviewData.value = res.data;
   }
   overviewDataLoading.value = false;
+}
+
+/**
+ * 删除分享记录
+ * @param id
+ * @param invite_code
+ * @param album_id
+ */
+async function deleteShareRecord(id: number, invite_code: string, album_id: number) {
+  const res: any = await deleteShareRecordApi(id, invite_code, album_id);
+  if (res && res.code === 200) {
+    message.success('删除成功');
+    const endDate = dayjs().format('YYYY-MM-DD'); // 当前日期
+    const startDate = dayjs().subtract(30, 'day').format('YYYY-MM-DD'); // 30 天前的日期
+    await getShareRecords([startDate, endDate]);
+  } else {
+    message.error('删除失败');
+  }
 }
 
 onMounted(async () => {

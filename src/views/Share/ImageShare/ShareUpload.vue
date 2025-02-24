@@ -33,10 +33,10 @@
                 <template #content>
                   <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)"
                            :size="qrcodeSize"
-                           :value="`git.landaiqing.cneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjI1MTEyMjE3MzQyMDIxIiwidHlwZSI6ImFjY2VzcyIsImV4cCI6MTczOTg3ODIyOCwibmJmIjoxNzM5ODcxMDI4LCJpYXQiOjE3Mzk4NzEwMjh9.EUiZsVjhGqHx1V5o90S3W5li6nIqucxy9eEY9LWgqXY`"
+                           :value="generateQrCodeUrl()"
                            :icon="phone"
                            :iconSize="iconSize"
-                           :status="`active`"
+                           :status="qrStatus"
                   />
                 </template>
                 <AButton type="default" size="large" shape="round" style="width: 70%"
@@ -430,6 +430,11 @@ const wsOptions = {
   protocols: [user.token.accessToken],
 };
 
+function generateQrCodeUrl(): string {
+  console.log(import.meta.env.VITE_APP_WEB_URL + "/main/share/phone/app?user_id=" + user.user.uid + "&token=" + user.token.accessToken);
+  return import.meta.env.VITE_APP_WEB_URL + "/main/share/phone/app?user_id=" + user.user.uid + "&token=" + user.token.accessToken;
+}
+
 /**
  *  初始化 WebSocket
  */
@@ -438,10 +443,55 @@ function initWebSocket() {
   websocket.on("message", async (res: any) => {
     if (res && res.code === 200) {
       const {data} = res;
-      console.log(data);
+      const file: File = base64ToFile(data.origin_file_obj, data.name, data.type);
+      fileList.value.push({
+        originFileObj: file,
+        name: data.name,
+        type: data.type,
+        size: data.size,
+      });
     }
   });
 }
+
+/**
+ *  将 Base64 字符串转换为 File 对象
+ * @param base64
+ * @param filename
+ * @param mimeType
+ */
+function base64ToFile(base64, filename, mimeType): File {
+  // 检查并移除Base64前缀（如果有）
+  const base64Data = base64.split(',')[1] || base64;
+
+  // 将Base64字符串解码为二进制字符串
+  const binaryString = atob(base64Data);
+
+  // 将二进制字符串转换为ArrayBuffer
+  const arrayBuffer = new ArrayBuffer(binaryString.length);
+  const uint8Array = new Uint8Array(arrayBuffer);
+  for (let i = 0; i < binaryString.length; i++) {
+    uint8Array[i] = binaryString.charCodeAt(i);
+  }
+
+  // 创建Blob对象
+  const blob = new Blob([arrayBuffer], {type: mimeType});
+
+  // 创建File对象
+  return new File([blob], filename, {type: mimeType});
+}
+
+const qrStatus = ref<string>('loading');
+watch(
+    () => websocket.readyState,
+    (newStatus) => {
+      if (newStatus === WebSocket.OPEN) {
+        qrStatus.value = 'active';
+      } else {
+        qrStatus.value = 'expired';
+      }
+    }
+);
 
 onMounted(() => {
   window.addEventListener("resize", updateQrcodeSize);
