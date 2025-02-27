@@ -1,2 +1,7 @@
 node_modules
 *.log
+# 忽略大模型目录
+dist/tfjs/
+dist/caffemodel/
+
+default.conf

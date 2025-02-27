@@ -10,42 +10,11 @@
         <div class="share-content-header">
           <AButton type="link" size="large" class="share-content-header-button">图片列表</AButton>
         </div>
-        <div class="share-content-verify" v-if="images && images.length <= 0">
+        <div class="share-content-verify" v-if="imageList && imageList.length <= 0">
           <AInputPassword size="large" placeholder="请输入访问密码" style="width: 20%" @pressEnter="getShareImages"/>
           <p style="font-size: 12px;color: #999;">回车后可查看图片列表</p>
         </div>
-        <ASpin :spinning="loading" size="large">
-          <div v-if="images && images.length !== 0">
-            <AImagePreviewGroup>
-              <Vue3JustifiedLayout v-model:list="images" :options="options">
-                <template #default="{ item }">
-                  <CheckCard
-                      class="photo-item"
-                      margin="0"
-                      border-radius="0"
-                      v-model="selected"
-                      :showHoverCircle="true"
-                      :iconSize="20"
-                      :showSelectedEffect="true"
-                      :value="item.id">
-                    <AImage :src="item.thumbnail"
-                            :alt="item.file_name"
-                            style="height: 200px"
-                            :preview="{
-                        src: item.url,
-                      }"
-                            loading="lazy">
-                      <template #previewMask>
-
-                      </template>
-                    </AImage>
-                  </CheckCard>
-                </template>
-              </Vue3JustifiedLayout>
-            </AImagePreviewGroup>
-          </div>
-        </ASpin>
-
+        <ImageWaterfallList :image-list="imageList"/>
       </div>
     </div>
   </div>
@@ -54,31 +23,30 @@
 
 import Header from "@/layout/default/Header/Header.vue";
 import ShareSidebar from "@/views/Share/ShareViewList/ShareSidebar.vue";
-import Vue3JustifiedLayout from "vue3-justified-layout";
-import 'vue3-justified-layout/dist/style.css';
-import {queryShareImageApi} from "@/api/share";
 
-const selected = ref<(string | number)[]>([]);
-const images = ref<any[]>([]);
-const options = reactive({
-  targetRowHeight: 200 // 高度
-});
+import {queryShareImageApi} from "@/api/share";
+import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
+import useStore from "@/store";
+
+const imageList = ref<any[]>([]);
+
 const route = useRoute();
-const loading = ref<boolean>(false);
+
+const imageStore = useStore().image;
 
 /**
  * 获取分享图片列表
  * @param e
  */
 async function getShareImages(e) {
-  loading.value = true;
+  imageStore.imageListLoading = true;
   const invite_code = route.params.id;
   const code = Array.isArray(invite_code) ? invite_code[0] : invite_code;
   const res: any = await queryShareImageApi(code, e.target.value);
   if (res && res.code === 200) {
-    images.value = res.data.records;
+    imageList.value = res.data.records;
   }
-  loading.value = false;
+  imageStore.imageListLoading = false;
 }
 
 

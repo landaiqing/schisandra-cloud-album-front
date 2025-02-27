@@ -29,52 +29,10 @@
         </template>
       </APopover>
     </div>
-    <image-toolbar :selected="imageStore.selected" :image-list="images"/>
+    <image-toolbar :selected="imageStore.selected" :image-list="imageList"/>
     <div class="photo-list">
-      <div style="width:100%;height:100%;" v-if="images.length !== 0">
-        <div v-for="(itemList, index) in images" :key="index">
-          <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
-          <AImagePreviewGroup>
-            <Vue3JustifiedLayout v-model:list="itemList.list" :options="options">
-              <template #default="{ item }">
-                <CheckCard :key="index"
-                           class="photo-item"
-                           margin="0"
-                           border-radius="0"
-                           v-model="imageStore.selected"
-                           :showHoverCircle="true"
-                           :iconSize="20"
-                           :showSelectedEffect="true"
-                           :value="item.id">
-                  <AImage :src="item.thumbnail"
-                          :alt="item.file_name"
-                          :key="index"
-                          style="height: 200px"
-                          :preview="{
-                            src: item.url,
-                          }"
-                          loading="lazy">
-                    <template #previewMask>
-
-                    </template>
-                  </AImage>
-                </CheckCard>
-              </template>
-            </Vue3JustifiedLayout>
-          </AImagePreviewGroup>
-        </div>
-      </div>
-      <div v-else class="empty-content">
-        <AEmpty :image="empty" :image-style="{
-                   height: '100%',
-                   width: '100%',
-                 }">
-          <template #description>
-                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
-                  暂无照片，快去上传吧
-                </span>
-          </template>
-        </AEmpty>
+      <div class="photo-list-container">
+        <ImageWaterfallList :image-list="imageList"/>
       </div>
     </div>
     <ImageUpload/>
@@ -82,28 +40,27 @@
 </template>
 <script setup lang="ts">
 
-import Vue3JustifiedLayout from "vue3-justified-layout";
-import 'vue3-justified-layout/dist/style.css';
 import useStore from "@/store";
-import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
+import ImageUpload from "@/components/ImageUpload/ImageUpload.vue";
 import {createAlbumApi, queryRecentImagesApi} from "@/api/storage";
-import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
-import empty from "@/assets/svgs/empty.svg";
+import ImageToolbar from "@/components/ImageToolbar/ImageToolbar.vue";
+
 import {message} from "ant-design-vue";
 import router from "@/router/router.ts";
+import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
 
 const imageStore = useStore().image;
 const upload = useStore().upload;
-const images = ref<any[]>([]);
-const options = reactive({
-  targetRowHeight: 200 // 高度
-});
+const imageList = ref<any[]>([]);
+
 
 const getRecentImages = async () => {
+  imageStore.imageListLoading = true;
   const res: any = await queryRecentImagesApi(upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
-    images.value = res.data.records;
+    imageList.value = res.data.records;
   }
+  imageStore.imageListLoading = false;
 };
 
 const albumNameValue = ref<string>("未命名相册");
@@ -154,12 +111,21 @@ onMounted(() => {
 
   .photo-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
     height: calc(100% - 65px);
     margin-top: 10px;
+    .photo-list-container {
+       width: 100%;
+       height: 100%;
+       display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: flex-start;
+
+    }
   }
 }
 </style>

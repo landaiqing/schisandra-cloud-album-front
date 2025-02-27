@@ -40,7 +40,7 @@
       </AButton>
     </div>
     <ImageUpload/>
-    <ImageToolbar :selected="imageStore.selected" :image-list="albumList"/>
+    <ImageToolbar :selected="imageStore.selected" :image-list="imageList"/>
     <div class="phoalbum-detail-content">
       <div class="phoalbum-detail-content-nav">
         <div class="phoalbum-detail-content-nav-left">
@@ -51,7 +51,7 @@
           <span class="phoalbum-detail-content-nav-name">{{ route.query.name }}</span>
         </div>
         <div class="phoalbum-detail-content-nav-right">
-          <span class="phoalbum-detail-content-nav-date">共 {{ imageStore.countTotalImages(albumList) }} 张照片</span>
+          <span class="phoalbum-detail-content-nav-date">共 {{ imageStore.countTotalImages(imageList) }} 张照片</span>
         </div>
       </div>
       <div class="phoalbum-detail-content-desc">
@@ -59,82 +59,44 @@
         <span>相册描述</span>
       </div>
       <div class="phoalbum-detail-content-list">
-        <div style="width:100%;height:100%;" v-if="albumList && albumList.length !== 0">
-          <div v-for="(itemList, index) in albumList" :key="index">
-            <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
-            <AImagePreviewGroup>
-              <Vue3JustifiedLayout v-model:list="itemList.list" :options="options">
-                <template #default="{ item }">
-                  <CheckCard :key="index"
-                             class="photo-item"
-                             margin="0"
-                             border-radius="0"
-                             v-model="imageStore.selected"
-                             :showHoverCircle="true"
-                             :iconSize="20"
-                             :showSelectedEffect="true"
-                             :value="item.id">
-                    <AImage :src="item.thumbnail"
-                            :alt="item.file_name"
-                            :key="index"
-                            :height="200"
-                            :previewMask="false"
-                            :preview="{
-                                src: item.url,
-                               }"
-                            loading="lazy"/>
-                  </CheckCard>
-                </template>
-              </Vue3JustifiedLayout>
-            </AImagePreviewGroup>
-          </div>
-        </div>
-        <div v-else class="empty-content">
-          <AEmpty :image="empty">
-            <template #description>
-                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
-                  暂无照片，快去上传吧
-                </span>
-            </template>
-          </AEmpty>
-        </div>
+        <ImageWaterfallList :image-list="imageList"/>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import Vue3JustifiedLayout from "vue3-justified-layout";
-import 'vue3-justified-layout/dist/style.css';
+
 import {deleteAlbumApi, queryAlbumDetailListApi, renameAlbumApi} from "@/api/storage";
-import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
+import ImageToolbar from "@/components/ImageToolbar/ImageToolbar.vue";
 import useStore from "@/store";
-import empty from "@/assets/svgs/empty.svg";
-import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
+
+import ImageUpload from "@/components/ImageUpload/ImageUpload.vue";
 import {message} from "ant-design-vue";
+import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
 
 
 const imageStore = useStore().image;
-const albumList = ref<any[]>([]);
+const imageList = ref<any[]>([]);
 
 const route = useRoute();
 const router = useRouter();
-const options = reactive({
-  targetRowHeight: 200 // 高度
-});
+
 const upload = useStore().upload;
 
 
-async function getAlbumList(id: number) {
+async function getImageList(id: number) {
+  imageStore.imageListLoading = true;
   const res: any = await queryAlbumDetailListApi(id, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
-    albumList.value = res.data.records;
+    imageList.value = res.data.records;
   }
+  imageStore.imageListLoading = false;
 }
 
 onMounted(() => {
   const idParam = route.params.id;
   const albumId = Array.isArray(idParam) ? idParam[0] : idParam;
-  getAlbumList(parseInt(albumId, 10));
+  getImageList(parseInt(albumId, 10));
 });
 
 function openUploadModal(): void {
@@ -184,6 +146,7 @@ async function deleteAlbum() {
 function goBack(): void {
   router.go(-1);
 }
+
 
 </script>
 <style scoped lang="scss">

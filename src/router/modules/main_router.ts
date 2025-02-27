@@ -20,7 +20,6 @@ export default [
             ...recycling_bin,
             ...share,
             ...upscale,
-
         ]
     }, {
         path: '/main/share/list/:id',

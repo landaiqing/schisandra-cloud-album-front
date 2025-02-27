@@ -58,10 +58,10 @@
             </AFlex>
 
           </div>
-          <div class="header-logo-popover-card" @click="router.push('/main/photo/phone')">
+          <div class="header-logo-popover-card" @click="router.push('/main/photo/upscale')">
             <AFlex :vertical="false" align="center" justify="space-between">
               <AAvatar size="small" shape="square" :src="ai"/>
-              <span class="header-logo-popover-text">{{ t('album.phone') }}</span>
+              <span class="header-logo-popover-text">{{ t('album.upscale') }}</span>
             </AFlex>
 
           </div>
@@ -126,6 +126,7 @@ const cardStyle = computed(() => ({
     font-family: "Comic Sans MS", cursive;
     font-weight: bold;
     cursor: pointer;
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, .4);
   }
 }
 

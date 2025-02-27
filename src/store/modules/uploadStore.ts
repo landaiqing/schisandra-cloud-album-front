@@ -37,7 +37,7 @@ export const useUploadStore = defineStore(
 
         const storageSelected = ref<any[]>([]);
 
-        const albumSelected = ref<number>();
+        const albumSelected = ref<number>(0);
 
         /**
          * 打开上传抽屉

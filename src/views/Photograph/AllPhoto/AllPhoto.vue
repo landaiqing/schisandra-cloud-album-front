@@ -29,7 +29,7 @@
         </template>
       </APopover>
     </div>
-    <image-toolbar :selected="imageStore.selected" :image-list="images"/>
+    <image-toolbar :selected="imageStore.selected" :image-list="imageList"/>
     <div class="photo-list">
       <ATabs size="small" :tabBarGutter="50" type="line" tabPosition="top" :tabBarStyle="{position:'unset'}"
              @change="handleTabChange"
@@ -41,214 +41,20 @@
             <ATooltip title="开启后即可隐藏已添加到相册的照片" placement="bottom">
               <QuestionCircleOutlined/>
             </ATooltip>
-            <ASwitch size="default" v-model:checked="imageStore.switchValue"/>
+            <ASwitch size="default" v-model:checked="imageStore.switchValue" @change="handleSwitchChange"/>
           </AFlex>
         </template>
         <ATabPane key="all" :tab="imageStore.homeTabMap['all']">
-          <ASpin size="large" :spinning="loading" :delay="500" wrapper-class-name="spin-wrapper">
-            <div style="width:100%;height:100%;" v-if="images">
-              <div v-for="(itemList, index) in images" :key="index">
-                <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
-                <AImagePreviewGroup>
-                  <Vue3JustifiedLayout v-model:list="itemList.list" :options="options"
-                                       style="line-height: 0 !important;">
-                    <template #default="{ item }">
-                      <CheckCard :key="index"
-                                 class="photo-item"
-                                 margin="0"
-                                 border-radius="0"
-                                 v-model="imageStore.selected"
-                                 :showHoverCircle="true"
-                                 :iconSize="20"
-                                 :showSelectedEffect="true"
-                                 :value="item.id">
-                        <AImage :src="item.thumbnail"
-                                :alt="item.file_name"
-                                :key="index"
-                                :height="200"
-                                :preview="{
-                                src: item.url,
-                               }"
-                                loading="lazy">
-                          <template #previewMask>
-                          </template>
-                        </AImage>
-                      </CheckCard>
-                    </template>
-                  </Vue3JustifiedLayout>
-                </AImagePreviewGroup>
-              </div>
-            </div>
-            <div v-else class="empty-content">
-              <AEmpty :image="empty"
-                      :image-style="{
-                   height: '100%',
-                   width: '100%',
-                 }">
-                <template #description>
-                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
-                  还没检测到任何图片，快去上传吧！
-                </span>
-                </template>
-              </AEmpty>
-            </div>
-          </ASpin>
+          <ImageWaterfallList :image-list="imageList"/>
         </ATabPane>
         <ATabPane key="video" :tab="imageStore.homeTabMap['video']">
-          <ASpin size="large" :spinning="loading" :delay="500">
-            <div style="width:100%;height:100%;" v-if="images">
-              <div v-for="(itemList, index) in images" :key="index">
-                <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
-                <AImagePreviewGroup>
-                  <Vue3JustifiedLayout v-model:list="itemList.list" :options="options"
-                                       style="line-height: 0 !important;">
-                    <template #default="{ item }">
-                      <CheckCard :key="index"
-                                 class="photo-item"
-                                 margin="0"
-                                 border-radius="0"
-                                 v-model="imageStore.selected"
-                                 :showHoverCircle="true"
-                                 :iconSize="20"
-                                 :showSelectedEffect="true"
-                                 :value="item.id">
-                        <AImage :src="item.thumbnail"
-                                :alt="item.file_name"
-                                :key="index"
-                                :height="200"
-                                :preview="{
-                                src: item.url,
-                               }"
-                                loading="lazy">
-                          <template #previewMask>
-                          </template>
-                        </AImage>
-                      </CheckCard>
-                    </template>
-                  </Vue3JustifiedLayout>
-                </AImagePreviewGroup>
-              </div>
-            </div>
-            <div v-else class="empty-content">
-              <AEmpty
-                  :image="empty"
-                  :image-style="{
-                   height: '100%',
-                   width: '100%',
-                 }"
-              >
-                <template #description>
-                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
-                  还没检测到任何视频，快去上传吧！
-                </span>
-                </template>
-              </AEmpty>
-            </div>
-          </ASpin>
+          <ImageWaterfallList :image-list="imageList"/>
         </ATabPane>
         <ATabPane key="gif" :tab="imageStore.homeTabMap['gif']">
-          <ASpin size="large" :spinning="loading" :delay="500">
-            <div style="width:100%;height:100%;" v-if="images">
-              <div v-for="(itemList, index) in images" :key="index">
-                <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
-                <AImagePreviewGroup>
-                  <Vue3JustifiedLayout v-model:list="itemList.list" :options="options"
-                                       style="line-height: 0 !important;">
-                    <template #default="{ item }">
-                      <CheckCard :key="index"
-                                 class="photo-item"
-                                 margin="0"
-                                 border-radius="0"
-                                 v-model="imageStore.selected"
-                                 :showHoverCircle="true"
-                                 :iconSize="20"
-                                 :showSelectedEffect="true"
-                                 :value="item.id">
-                        <AImage :src="item.thumbnail"
-                                :alt="item.file_name"
-                                :key="index"
-                                :height="200"
-                                :preview="{
-                                src: item.url,
-                               }"
-                                loading="lazy">
-                          <template #previewMask>
-                          </template>
-                        </AImage>
-                      </CheckCard>
-                    </template>
-                  </Vue3JustifiedLayout>
-                </AImagePreviewGroup>
-              </div>
-            </div>
-            <div v-else class="empty-content">
-              <AEmpty
-                  :image="empty"
-                  :image-style="{
-                   height: '100%',
-                   width: '100%',
-                 }"
-              >
-                <template #description>
-                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
-                  还没检测到任何动图，快去上传吧！
-                </span>
-                </template>
-              </AEmpty>
-            </div>
-          </ASpin>
+          <ImageWaterfallList :image-list="imageList"/>
         </ATabPane>
         <ATabPane key="screenshot" :tab="imageStore.homeTabMap['screenshot']">
-          <ASpin size="large" :spinning="loading" :delay="500">
-            <div style="width:100%;height:100%;" v-if="images">
-              <div v-for="(itemList, index) in images" :key="index">
-                <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
-                <AImagePreviewGroup>
-                  <Vue3JustifiedLayout v-model:list="itemList.list" :options="options"
-                                       style="line-height: 0 !important;">
-                    <template #default="{ item }">
-                      <CheckCard :key="index"
-                                 class="photo-item"
-                                 margin="0"
-                                 border-radius="0"
-                                 v-model="imageStore.selected"
-                                 :showHoverCircle="true"
-                                 :iconSize="20"
-                                 :showSelectedEffect="true"
-                                 :value="item.id">
-                        <AImage :src="item.thumbnail"
-                                :alt="item.file_name"
-                                :key="index"
-                                :height="200"
-                                :preview="{
-                                src: item.url,
-                               }"
-                                loading="lazy">
-                          <template #previewMask>
-                          </template>
-                        </AImage>
-                      </CheckCard>
-                    </template>
-                  </Vue3JustifiedLayout>
-                </AImagePreviewGroup>
-              </div>
-            </div>
-            <div v-else class="empty-content">
-              <AEmpty
-                  :image="empty"
-                  :image-style="{
-                   height: '100%',
-                   width: '100%',
-                 }"
-              >
-                <template #description>
-                <span style="color: #999999;font-size: 16px;font-weight: 500;line-height: 1.5;">
-                  还没检测到任何屏幕截图，快去上传吧！
-                </span>
-                </template>
-              </AEmpty>
-            </div>
-          </ASpin>
+          <ImageWaterfallList :image-list="imageList"/>
         </ATabPane>
       </ATabs>
     </div>
@@ -257,40 +63,34 @@
 </template>
 
 <script setup lang="ts">
-
-import Vue3JustifiedLayout from "vue3-justified-layout";
-import 'vue3-justified-layout/dist/style.css';
-import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
+import ImageUpload from "@/components/ImageUpload/ImageUpload.vue";
 import useStore from "@/store";
 import {createAlbumApi, queryAllImagesApi} from "@/api/storage";
-import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
-import empty from "@/assets/svgs/empty.svg";
+
 import {message} from "ant-design-vue";
+import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
 
 const imageStore = useStore().image;
 
 
 const upload = useStore().upload;
 
-const options = reactive({
-  targetRowHeight: 200 // 高度
-});
 
-const images = ref<any[]>([]);
-const loading = ref<boolean>(false);
+const imageList = ref<any[]>([]);
+
 const router = useRouter();
 
 /**
  * 获取所有图片
  */
 async function getAllImages(type: string) {
-  images.value = [];
-  loading.value = true;
+  imageList.value = [];
+  imageStore.imageListLoading = true;
   const res: any = await queryAllImagesApi(type, imageStore.switchValue, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
-    images.value = res.data.records;
+    imageList.value = res.data.records;
   }
-  loading.value = false;
+  imageStore.imageListLoading = false;
 }
 
 async function handleTabChange(activeKey: string) {
@@ -317,6 +117,10 @@ async function createAlbumSubmit() {
   } else {
     message.error("创建相册失败");
   }
+}
+
+function handleSwitchChange(_checked: boolean) {
+  getAllImages(imageStore.homeTabActiveKey);
 }
 
 
@@ -360,9 +164,6 @@ onMounted(() => {
   transition: all 0.3s ease-in-out, transform 0.3s ease-in-out;
   //transform: scale(0.99);
   box-shadow: 0 0 10px 0 rgba(77, 167, 255, 0.89);
-}
-
-.spin-wrapper {
 }
 
 </style>

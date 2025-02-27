@@ -62,9 +62,9 @@ import warn from '@/assets/svgs/warn.svg';
 import remove from '@/assets/svgs/remove.svg';
 import empty from '@/assets/svgs/empty.svg';
 import {blobToBase64} from "@/utils/imageUtils/blobToBase64.ts";
-import {uploadImage} from "src/api/phone";
 import {message} from "ant-design-vue";
 import {useI18n} from "vue-i18n";
+import {uploadImage} from "@/api/phone";
 
 const upscale = useStore().upscale;
 

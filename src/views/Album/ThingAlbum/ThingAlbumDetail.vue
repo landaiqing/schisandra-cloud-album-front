@@ -9,69 +9,37 @@
         <span class="thing-detail-content-nav-name">{{ getZhLabelNameByEnName(route.query.tag as string) }}</span>
       </div>
     </div>
-    <ImageToolbar :selected="imageStore.selected" :image-list="albumList"/>
+    <ImageToolbar :selected="imageStore.selected" :image-list="imageList"/>
     <div class="thing-album-detail-info">
-      <span style="font-size: 14px;color: #999999">共{{ imageStore.countTotalImages(albumList) }}张照片</span>
+      <span style="font-size: 14px;color: #999999">共{{ imageStore.countTotalImages(imageList) }}张照片</span>
     </div>
     <div class="thing-album-detail-list">
-      <div style="width:100%;height:100%;">
-        <div v-for="(itemList, index) in albumList" :key="index">
-          <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
-          <AImagePreviewGroup>
-            <Vue3JustifiedLayout v-model:list="itemList.list" :options="options">
-              <template #default="{ item }">
-                <CheckCard :key="index"
-                           class="photo-item"
-                           margin="0"
-                           border-radius="0"
-                           v-model="imageStore.selected"
-                           :showHoverCircle="true"
-                           :iconSize="20"
-                           :showSelectedEffect="true"
-                           :value="item.id">
-                  <AImage :src="item.thumbnail"
-                          :alt="item.file_name"
-                          :key="index"
-                          :height="200"
-                          :previewMask="false"
-                          :preview="{
-                                src: item.url,
-                               }"
-                          loading="lazy"/>
-                </CheckCard>
-              </template>
-            </Vue3JustifiedLayout>
-          </AImagePreviewGroup>
-        </div>
-      </div>
+      <ImageWaterfallList :image-list="imageList"/>
     </div>
-
   </div>
 </template>
 <script setup lang="ts">
 
-import Vue3JustifiedLayout from "vue3-justified-layout";
-import 'vue3-justified-layout/dist/style.css';
 import {queryThingDetailListApi} from "@/api/storage";
-import ImageToolbar from "@/views/Photograph/ImageToolbar/ImageToolbar.vue";
+import ImageToolbar from "@/components/ImageToolbar/ImageToolbar.vue";
 import useStore from "@/store";
 import {getZhCategoryNameByEnName, getZhLabelNameByEnName} from "@/constant/coco_ssd_label_category.ts";
+import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
 
 
 const imageStore = useStore().image;
-const albumList = ref<any[]>([]);
+const imageList = ref<any[]>([]);
 const upload = useStore().upload;
 const route = useRoute();
 const router = useRouter();
-const options = reactive({
-  targetRowHeight: 200 // 高度
-});
 
 async function getImageList(tag_name: string) {
+  imageStore.imageListLoading = true;
   const res: any = await queryThingDetailListApi(tag_name, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
-    albumList.value = res.data.records;
+    imageList.value = res.data.records;
   }
+  imageStore.imageListLoading = false;
 }
 
 onMounted(() => {

@@ -5,8 +5,8 @@
       <AButton type="link" size="large" class="thing-album-button">事物</AButton>
 
     </div>
-    <div class="thing-album-content" v-if="thingAlbumList && thingAlbumList.length>0">
-      <div class="thing-album-content-item" v-for="(item, index) in thingAlbumList" :key="index">
+    <div class="thing-album-content" v-if="albumList && albumList.length>0">
+      <div class="thing-album-content-item" v-for="(item, index) in albumList" :key="index">
         <span class="thing-album-title">{{ getZhCategoryNameByEnName(item.category) }}</span>
         <div class="thing-album-wrapper">
           <div class="thing-album-container" v-for="(tags, indexList) in item.list" :key="indexList"
@@ -40,12 +40,13 @@ import {getZhCategoryNameByEnName, getZhLabelNameByEnName} from "@/constant/coco
 import useStore from "@/store";
 import empty from "@/assets/svgs/empty.svg";
 
-const thingAlbumList = ref<any[]>([]);
 
-async function getThingAlbumList(provider: string, bucket: string) {
+const albumList = ref<any[]>([]);
+
+async function getAlbumList(provider: string, bucket: string) {
   const res: any = await queryThingAlbumApi(provider, bucket);
   if (res && res.code === 200) {
-    thingAlbumList.value = res.data.records;
+    albumList.value = res.data.records;
   }
 }
 
@@ -64,7 +65,7 @@ function handleClick(id: string, category: string, tag: string) {
 }
 
 onMounted(() => {
-  getThingAlbumList(upload.storageSelected?.[0], upload.storageSelected?.[1]);
+  getAlbumList(upload.storageSelected?.[0], upload.storageSelected?.[1]);
 });
 
 </script>

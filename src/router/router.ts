@@ -8,6 +8,7 @@ import landing from "./modules/landing.ts";
 import mainRouter from "./modules/main_router.ts";
 import i18n from "@/locales";
 import phone_upload from "@/router/modules/phone_upload.ts";
+import user from "@/router/modules/user.ts";
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
@@ -15,6 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     ...landing,
     ...mainRouter,
     ...phone_upload,
+    ...user,
     {
         path: '/:pathMatch(.*)',
         redirect: '/404',

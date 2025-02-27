@@ -13,7 +13,7 @@ const initNSFWJs = async (): Promise<NSFWJS> => {
     } catch (_error) {
         console.warn("IndexedDB 中未找到模型，正在从网络加载...");
         // 如果 IndexedDB 加载失败，从 URL 加载模型并保存到 IndexedDB
-        nsfwModelCache = await nsfwjs.load("/nsfw/mobilenet_v2_mid/", {size: 224, type: "graph"});
+        nsfwModelCache = await nsfwjs.load("/tfjs/nsfw/mobilenet_v2_mid/", {size: 224, type: "graph"});
         await nsfwModelCache.model.save("indexeddb://nsfwjs-model");
         console.log("NSFWJS 模型已从网络加载并保存到 IndexedDB");
     }

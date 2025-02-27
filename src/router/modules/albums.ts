@@ -1,9 +1,9 @@
-import PhoalbumPhoalbum from "@/views/Album/Phoalbum/Phoalbum.vue";
-import PeopleAlbumPeopleAlbum from "@/views/Album/PeopleAlbum/PeopleAlbum.vue";
+import AlbumPhoalbumIndex from "@/views/Album/Phoalbum/PhoalbumIndex.vue";
+import PeoplePeopleAlbumIndex from "@/views/Album/PeopleAlbum/PeopleAlbumIndex.vue";
 import LocationAlbum from "@/views/Album/LocationAlbum/LocationAlbumList.vue";
-import LocationAlbumIndex from "@/views/Album/LocationAlbum/LocationAlbum.vue";
+import LocationLocationAlbumIndex from "@/views/Album/LocationAlbum/LocationAlbumIndex.vue";
 import ThingAlbum from "@/views/Album/ThingAlbum/ThingAlbumList.vue";
-import ThingAlbumThingAlbum from "@/views/Album/ThingAlbum/ThingAlbum.vue";
+import ThingThingAlbumIndex from "@/views/Album/ThingAlbum/ThingAlbumIndex.vue";
 import Phoalbum from "@/views/Album/Phoalbum/PhoalbumList.vue";
 import PeopleAlbum from "@/views/Album/PeopleAlbum/PeopleAlbumList.vue";
 import PhoalbumDetail from "@/views/Album/Phoalbum/PhoalbumDetail.vue";
@@ -14,7 +14,7 @@ import ThingAlbumDetail from "@/views/Album/ThingAlbum/ThingAlbumDetail.vue";
 export default [
     {
         path: '/main/album/albums',
-        component: PhoalbumPhoalbum,
+        component: AlbumPhoalbumIndex,
         redirect: '/main/album/albums',
         children: [
             {
@@ -39,7 +39,7 @@ export default [
     },
     {
         path: '/main/album/people',
-        component: PeopleAlbumPeopleAlbum,
+        component: PeoplePeopleAlbumIndex,
         redirect: '/main/album/people',
         children: [
             {
@@ -64,7 +64,7 @@ export default [
     },
     {
         path: '/main/album/location',
-        component: LocationAlbumIndex,
+        component: LocationLocationAlbumIndex,
         redirect: '/main/album/location',
         children: [
             {
@@ -89,7 +89,7 @@ export default [
     },
     {
         path: '/main/album/thing',
-        component: ThingAlbumThingAlbum,
+        component: ThingThingAlbumIndex,
         redirect: '/main/album/thing',
         children: [
             {

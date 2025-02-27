@@ -112,13 +112,13 @@
               <ADivider/>
               <div class="avatar-content-menu">
                 <AMenu>
-                  <AMenuItem key="1">
+                  <AMenuItem key="1" @click="router.push('/main/user/center/home')">
                     <template #icon>
                       <AAvatar size="small" shape="circle" :src="personalCenter"/>
                     </template>
                     <span class="avatar-content-menu-item">个人中心</span>
                   </AMenuItem>
-                  <AMenuItem key="2">
+                  <AMenuItem key="2" @click="router.push('/main/user/setting')">
                     <template #icon>
                       <AAvatar size="small" shape="circle" :src="accountSetting"/>
                     </template>
@@ -154,9 +154,11 @@ import logout from "@/assets/svgs/logout.svg";
 import wenhao from "@/assets/svgs/wenhao.svg";
 
 import useStore from "@/store";
-import ImageUpload from "@/views/Photograph/ImageUpload/ImageUpload.vue";
+import ImageUpload from "@/components/ImageUpload/ImageUpload.vue";
 import {getStorageConfigListApi} from "@/api/storage";
 import {ProviderIcon} from "@/constant/provider_icon.ts";
+
+const router = useRouter();
 
 
 const uploadStore = useStore().upload;

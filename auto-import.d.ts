@@ -6,7 +6,10 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const AppstoreOutlined: typeof import('@ant-design/icons-vue')['AppstoreOutlined']
   const EffectScope: typeof import('vue')['EffectScope']
+  const MailOutlined: typeof import('@ant-design/icons-vue')['MailOutlined']
+  const SettingOutlined: typeof import('@ant-design/icons-vue')['SettingOutlined']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
