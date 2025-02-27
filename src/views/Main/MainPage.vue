@@ -1,7 +1,7 @@
 <template>
   <div class="main-page">
     <div class="main-header">
-      <Header/>
+      <Header :logo-color="`black`"/>
     </div>
     <div class="main-content">
       <Sidebar/>

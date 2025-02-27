@@ -4,7 +4,7 @@
       <div class="phoalbum-item"
            v-for="(album, index) in imageStore.albumList"
            :key="album.id"
-           @click.prevent="handleClick(album.id,album.name)"
+           @click.prevent="handleClick(album.id,album.name,album.type)"
            @mouseover="isHovered = index"
            @mouseleave="isHovered = null">
         <PhotoStack :src="album.cover_image ?`data:image/png;base64,`+album.cover_image: ``"
@@ -80,10 +80,11 @@ const albumRenameValue = ref<string>("");
  *  点击相册跳转到详情页
  * @param id
  * @param albumName
+ * @param type
  */
-function handleClick(id: number, albumName: string) {
+function handleClick(id: number, albumName: string, type: number) {
   router.push({
-    path: route.path + `/${id}`, query: {name: albumName}
+    path: route.path + `/${id}`, query: {name: albumName, type: type}
   });
 }
 

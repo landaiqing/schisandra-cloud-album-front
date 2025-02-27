@@ -4,9 +4,12 @@ export const useMenuStore = defineStore(
         const currentMenu = ref<string>('photo/all');
 
         const userCenterMenu = ref<string>('home');
+
+        const accountSettingMenu = ref<string>('home');
         return {
             currentMenu,
             userCenterMenu,
+            accountSettingMenu
         };
     },
     {
@@ -15,7 +18,7 @@ export const useMenuStore = defineStore(
             persist: true,
             storage: localStorage,
             key: 'menu',
-            includePaths: ['currentMenu', 'userCenterMenu']
+            includePaths: ['currentMenu', 'userCenterMenu', 'accountSettingMenu']
         }
     }
 );

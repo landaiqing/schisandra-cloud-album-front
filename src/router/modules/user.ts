@@ -4,6 +4,10 @@ import UserCenterInfo from "@/views/User/PersonalCenter/components/UserCenterInf
 import UserCenterAnalysis from "@/views/User/PersonalCenter/components/UserCenterAnalysis/UserCenterAnalysis.vue";
 import UserCenterShare from "@/views/User/PersonalCenter/components/UserCenterShare/UserCenterShare.vue";
 import UserCenterSetting from "@/views/User/PersonalCenter/components/UserCenterSetting/UserCenterSetting.vue";
+
+import AccountSettingHome from "@/views/User/AccountSetting/components/AccountSettingHome/AccountSettingHome.vue";
+import AccountSettingInfo from "@/views/User/AccountSetting/components/AccountSettingInfo/AccountSettingInfo.vue";
+import AccountSettingStorage from "@/views/User/AccountSetting/components/AccountSettingStorage/AccountSettingStorage.vue";
 export default [
     {
 
@@ -18,7 +22,7 @@ export default [
         children: [
             {
                 path: '/main/user/center/home',
-                name: 'home',
+                name: 'userCenterHome',
                 component: UserCenterHome,
                 meta: {
                     requiresAuth: true,
@@ -27,7 +31,7 @@ export default [
             },
             {
                 path: '/main/user/center/dynamic',
-                name: 'dynamic',
+                name: 'UserCenterDynamic',
                 component: UserCenterDynamic,
                 meta: {
                     requiresAuth: true,
@@ -36,7 +40,7 @@ export default [
             },
             {
                 path: '/main/user/center/info',
-                name: 'info',
+                name: 'UserCenterInfo',
                 component: UserCenterInfo,
                 meta: {
                     requiresAuth: true,
@@ -45,7 +49,7 @@ export default [
             },
             {
                 path: '/main/user/center/analysis',
-                name: 'analysis',
+                name: 'UserCenterAnalysis',
                 component: UserCenterAnalysis,
                 meta: {
                     requiresAuth: true,
@@ -54,7 +58,7 @@ export default [
             },
             {
                 path: '/main/user/center/share',
-                name: 'share',
+                name: 'UserCenterShare',
                 component: UserCenterShare,
                 meta: {
                     requiresAuth: true,
@@ -63,7 +67,7 @@ export default [
             },
             {
                 path: '/main/user/center/setting',
-                name: 'setting',
+                name: 'UserCenterSetting',
                 component: UserCenterSetting,
                 meta: {
                     requiresAuth: true,
@@ -75,10 +79,40 @@ export default [
     {
         path: '/main/user/setting',
         name: 'userSetting',
+        redirect: '/main/user/setting/home',
         component: () => import('@/views/User/AccountSetting/AccountSetting.vue'),
         meta: {
             requiresAuth: true,
             title: '账户设置'
-        }
+        },
+        children: [
+            {
+                path: '/main/user/setting/home',
+                name: 'AccountSettingHome',
+                component: AccountSettingHome,
+                meta: {
+                    requiresAuth: true,
+                    title: '主页'
+                },
+            },
+            {
+                path: '/main/user/setting/info',
+                name: 'AccountSettingInfo',
+                component: AccountSettingInfo,
+                meta: {
+                    requiresAuth: true,
+                    title: '个人信息'
+                },
+            },
+            {
+                path: '/main/user/setting/storage',
+                name: 'AccountSettingStorage',
+                component: AccountSettingStorage,
+                meta: {
+                    requiresAuth: true,
+                    title: '存储管理'
+                },
+            }
+        ],
     }
 ];

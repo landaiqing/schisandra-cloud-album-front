@@ -132,11 +132,12 @@ export const albumListApi = (type: number, sort: boolean) => {
  * @param provider
  * @param bucket
  */
-export const queryAlbumDetailListApi = (id: number, provider: string, bucket: string) => {
+export const queryAlbumDetailListApi = (id: number, provider: string, bucket: string,type:number) => {
     return service.Post('/api/auth/storage/album/detail/list', {
         id: id,
         provider: provider,
         bucket: bucket,
+        type:type,
     }, {
         cacheFor: {
             expire: 60 * 60 * 24 * 7,

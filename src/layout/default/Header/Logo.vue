@@ -75,7 +75,7 @@
         <AAvatar :size="50" shape="square" :src="logo"/>
       </ACard>
     </APopover>
-    <span class="header-logo-text" @click="router.push('/')">S.Album</span>
+    <span class="header-logo-text" :style="{color:props.logoColor}" @click="router.push('/')">S.Album</span>
   </AFlex>
 </template>
 <script setup lang="ts">
@@ -96,6 +96,14 @@ const router = useRouter();
 
 const {t} = useI18n();
 const cardShadow = ref('none');
+
+const props = defineProps({
+  logoColor: {
+    type: String,
+    default: 'black'
+  }
+});
+
 /**
  * 监听卡片聚焦事件
  */

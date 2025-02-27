@@ -86,7 +86,7 @@ const upload = useStore().upload;
 
 async function getImageList(id: number) {
   imageStore.imageListLoading = true;
-  const res: any = await queryAlbumDetailListApi(id, upload.storageSelected?.[0], upload.storageSelected?.[1]);
+  const res: any = await queryAlbumDetailListApi(id, upload.storageSelected?.[0], upload.storageSelected?.[1], parseInt(route.query.type as string));
   if (res && res.code === 200) {
     imageList.value = res.data.records;
   }

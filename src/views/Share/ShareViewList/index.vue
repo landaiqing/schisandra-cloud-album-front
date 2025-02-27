@@ -10,8 +10,10 @@
         <div class="share-content-header">
           <AButton type="link" size="large" class="share-content-header-button">图片列表</AButton>
         </div>
-        <div class="share-content-verify" v-if="imageList && imageList.length <= 0">
-          <AInputPassword size="large" placeholder="请输入访问密码" style="width: 20%" @pressEnter="getShareImages"/>
+        <div class="share-content-verify"
+             v-if="imageList && imageList.length <= 0 && !shareStore.getPassword(route.params.id as string)">
+          <AInputPassword size="large" placeholder="请输入访问密码" style="width: 20%"
+                          @pressEnter="(e)=>getShareImages(e.target.value)"/>
           <p style="font-size: 12px;color: #999;">回车后可查看图片列表</p>
         </div>
         <ImageWaterfallList :image-list="imageList"/>
@@ -33,21 +35,33 @@ const imageList = ref<any[]>([]);
 const route = useRoute();
 
 const imageStore = useStore().image;
+const shareStore = useStore().share;
 
 /**
  * 获取分享图片列表
- * @param e
+ * @param password
  */
-async function getShareImages(e) {
+async function getShareImages(password: string) {
   imageStore.imageListLoading = true;
   const invite_code = route.params.id;
   const code = Array.isArray(invite_code) ? invite_code[0] : invite_code;
-  const res: any = await queryShareImageApi(code, e.target.value);
+  const res: any = await queryShareImageApi(code, password);
   if (res && res.code === 200) {
     imageList.value = res.data.records;
+    shareStore.addPassword(code, password);
   }
   imageStore.imageListLoading = false;
 }
+
+onMounted(() => {
+  const invite_code = route.params.id;
+  const code = Array.isArray(invite_code) ? invite_code[0] : invite_code;
+  const password = shareStore.getPassword(code);
+  if (password) {
+    getShareImages(password);
+  }
+
+});
 
 
 </script>

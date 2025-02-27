@@ -364,8 +364,6 @@ async function customUploader() {
     expire_date: expire_date.value,
     access_limit: access_limit.value,
     access_password: access_password.value,
-    provider: upload.storageSelected?.[0],
-    bucket: upload.storageSelected?.[1],
     images: images,
   };
   watch(

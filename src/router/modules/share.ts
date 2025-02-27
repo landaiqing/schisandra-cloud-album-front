@@ -1,7 +1,7 @@
 export default [
     {
         path: '/main/photo/share',
-        name: 'share',
+        name: 'quick-share',
         component: () => import('@/views/Share/ImageShare/ImageShare.vue'),
         meta: {
             requiresAuth: true,

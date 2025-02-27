@@ -1,7 +1,7 @@
 <template>
   <header class="header-main">
     <div class="header-container">
-      <Logo/>
+      <Logo :logo-color="props.logoColor"/>
       <Search/>
       <Menu/>
     </div>
@@ -11,6 +11,13 @@
 import Logo from "@/layout/default/Header/Logo.vue";
 import Search from "@/layout/default/Header/Search.vue";
 import Menu from "@/layout/default/Header/Menu.vue";
+
+const props = defineProps({
+  logoColor: {
+    type: String,
+    default: "black",
+  },
+});
 </script>
 <style scoped lang="scss">
 .header-main {

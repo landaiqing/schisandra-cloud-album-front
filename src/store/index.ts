@@ -7,6 +7,7 @@ import {useUpscaleStore} from "@/store/modules/upscaleStore.ts";
 import {useMenuStore} from "@/store/modules/menuStore.ts";
 import {useUploadStore} from "@/store/modules/uploadStore.ts";
 import {useImageStore} from "@/store/modules/imageStore.ts";
+import {useShareStore} from "@/store/modules/shareStore.ts";
 
 export default function useStore() {
     return {
@@ -19,5 +20,6 @@ export default function useStore() {
         menu: useMenuStore(),
         upload: useUploadStore(),
         image: useImageStore(),
+        share: useShareStore(),
     };
 }

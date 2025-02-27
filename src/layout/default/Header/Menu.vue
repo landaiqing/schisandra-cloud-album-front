@@ -22,13 +22,13 @@
       </div>
 
       <!--  社区按钮 -->
-      <div class="button-wrapper">
-        <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
-          <template #icon>
-            <AAvatar size="default" shape="circle" :src="community"/>
-          </template>
-        </AButton>
-      </div>
+<!--      <div class="button-wrapper">-->
+<!--        <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">-->
+<!--          <template #icon>-->
+<!--            <AAvatar size="default" shape="circle" :src="community"/>-->
+<!--          </template>-->
+<!--        </AButton>-->
+<!--      </div>-->
       <!--  上传按钮 -->
       <div class="button-wrapper">
         <AButton type="text" shape="circle" size="large" class="header-menu-item-btn"
@@ -54,19 +54,19 @@
             </AButton>
             <template #overlay>
               <AMenu>
-                <AMenuItem key="reply">
+                <AMenuItem key="reply" :style="menuCSSStyle">
                   <template #icon>
                     <AAvatar size="small" shape="circle" :src="atme"/>
                   </template>
                   <span style="font-weight: bold">回复我的</span>
                 </AMenuItem>
-                <AMenuItem key="like">
+                <AMenuItem key="like" :style="menuCSSStyle">
                   <template #icon>
                     <AAvatar size="small" shape="circle" :src="like"/>
                   </template>
                   <span style="font-weight: bold">收到的赞</span>
                 </AMenuItem>
-                <AMenuItem key="message">
+                <AMenuItem key="message" :style="menuCSSStyle">
                   <template #icon>
                     <AAvatar size="small" shape="circle" :src="systemMessage"/>
                   </template>
@@ -112,19 +112,19 @@
               <ADivider/>
               <div class="avatar-content-menu">
                 <AMenu>
-                  <AMenuItem key="1" @click="router.push('/main/user/center/home')">
+                  <AMenuItem key="1" @click="router.push('/main/user/center/home')" :style="menuCSSStyle">
                     <template #icon>
                       <AAvatar size="small" shape="circle" :src="personalCenter"/>
                     </template>
                     <span class="avatar-content-menu-item">个人中心</span>
                   </AMenuItem>
-                  <AMenuItem key="2" @click="router.push('/main/user/setting')">
+                  <AMenuItem key="2" @click="router.push('/main/user/setting')" :style="menuCSSStyle">
                     <template #icon>
                       <AAvatar size="small" shape="circle" :src="accountSetting"/>
                     </template>
                     <span class="avatar-content-menu-item">账号设置</span>
                   </AMenuItem>
-                  <AMenuItem key="3">
+                  <AMenuItem key="3" :style="menuCSSStyle">
                     <template #icon>
                       <AAvatar size="small" shape="circle" :src="logout"/>
                     </template>
@@ -142,7 +142,6 @@
 </template>
 <script setup lang="ts">
 
-import community from "@/assets/svgs/community.svg";
 import upload from "@/assets/svgs/upload.svg";
 import notice from "@/assets/svgs/notice.svg";
 import atme from "@/assets/svgs/atme.svg";
@@ -172,6 +171,11 @@ async function getUserConfigList() {
     configList.value = res.data.records;
   }
 }
+
+const menuCSSStyle: any = reactive({
+  display: 'flex',
+  alignItems: 'center',
+});
 
 
 onMounted(() => {
@@ -210,6 +214,7 @@ onMounted(() => {
       border-radius: 50%;
       overflow: hidden;
       transition: box-shadow 0.3s ease, transform 0.3s ease;
+      border: 1px solid rgb(255, 255, 255);
     }
 
     .button-wrapper:hover {
@@ -255,6 +260,7 @@ onMounted(() => {
       border-radius: 50%;
       overflow: hidden;
       transition: box-shadow 0.3s ease, transform 0.3s ease;
+      border: 1px solid rgb(255, 255, 255);
     }
 
     .avatar-wrapper:hover {
@@ -277,10 +283,10 @@ onMounted(() => {
       box-shadow: 0 0 10px rgba(112, 112, 114, 0.82);
     }
 
-    .card-avatar:hover {
-      box-shadow: 0 0 10px rgba(77, 167, 255, 0.89);
-      transform: scale(1.1);
-    }
+    //.card-avatar:hover {
+    //  box-shadow: 0 0 10px rgba(77, 167, 255, 0.89);
+    //  transform: scale(1.1);
+    //}
 
     .avatar-content-header-info {
       width: 68%;

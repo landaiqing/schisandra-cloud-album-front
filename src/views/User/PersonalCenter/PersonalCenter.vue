@@ -1,7 +1,7 @@
 <template>
   <div class="personal-center">
     <div class="personal-center-header">
-      <Header style="background: transparent;box-shadow: none;backdrop-filter: none;"/>
+      <Header :logo-color="'#fff'" style="background: transparent;box-shadow: none;backdrop-filter: none;"/>
       <div class="personal-center-header-info">
         <div class="personal-center-header-info-container">
           <div class="personal-center-header-info-container-avatar">
