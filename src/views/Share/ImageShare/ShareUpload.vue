@@ -37,6 +37,7 @@
                            :icon="phone"
                            :iconSize="iconSize"
                            :status="qrStatus"
+                           @refresh="initWebSocket"
                   />
                 </template>
                 <AButton type="default" size="large" shape="round" style="width: 70%"
@@ -68,15 +69,16 @@
                       上传文件
                     </AUpload>
                   </AMenuItem>
-                  <AMenuItem key="2">
-                    <APopover placement="bottomLeft" trigger="hover">
+                  <AMenuItem key="2" @click.stop="initWebSocket">
+                    <APopover placement="bottomLeft" trigger="click" :arrow="false">
                       <template #content>
                         <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)"
                                  :size="qrcodeSize"
-                                 :value="`git.landaiqing.cneyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjI1MTEyMjE3MzQyMDIxIiwidHlwZSI6ImFjY2VzcyIsImV4cCI6MTczOTg3ODIyOCwibmJmIjoxNzM5ODcxMDI4LCJpYXQiOjE3Mzk4NzEwMjh9.EUiZsVjhGqHx1V5o90S3W5li6nIqucxy9eEY9LWgqXY`"
+                                 :value="generateQrCodeUrl()"
                                  :icon="phone"
                                  :iconSize="iconSize"
-                                 :status="`active`"
+                                 :status="qrStatus"
+                                 @refresh="initWebSocket"
                         />
                       </template>
                       手机上传
@@ -208,7 +210,6 @@ import {generateThumbnail} from "@/utils/imageUtils/generateThumb.ts";
 
 const titleName = ref<string>("");
 
-const upload = useStore().upload;
 const percent = ref<number>(0);
 const uploadSuccess = ref<boolean>(false);
 const qrContainer = ref<HTMLDivElement | null>(null);
@@ -429,7 +430,6 @@ const wsOptions = {
 };
 
 function generateQrCodeUrl(): string {
-  console.log(import.meta.env.VITE_APP_WEB_URL + "/main/share/phone/app?user_id=" + user.user.uid + "&token=" + user.token.accessToken);
   return import.meta.env.VITE_APP_WEB_URL + "/main/share/phone/app?user_id=" + user.user.uid + "&token=" + user.token.accessToken;
 }
 

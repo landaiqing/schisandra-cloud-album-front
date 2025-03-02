@@ -1,12 +1,11 @@
 <template>
   <Spin size="middle" :spinning="imageStore.imageListLoading" indicator="spin-dot" tip="loading..." :rotate="true">
     <div style="width:100%;height:100%;" v-if="props.imageList">
-      <div v-for="(itemList, index) in props.imageList" :key="index">
+      <div v-for="(itemList, indexList) in props.imageList" :key="indexList">
         <span style="margin-left: 10px;font-size: 13px">{{ itemList.date }}</span>
         <AImagePreviewGroup>
-          <Vue3JustifiedLayout v-model:list="itemList.list" :options="imageStore.JustifiedLayoutOptions"
-                               style="line-height: 0 !important;">
-            <template #default="{ item }">
+          <div class="photo-list">
+            <div v-for="(item, index) in itemList.list" :key="index">
               <CheckCard :key="index"
                          class="photo-item"
                          margin="0"
@@ -20,6 +19,7 @@
                         :alt="item.file_name"
                         :key="index"
                         :height="200"
+                        style="height: 200px;max-width: 800px;object-fit: cover;"
                         :preview="{
                                 src: item.url,
                                }"
@@ -28,8 +28,8 @@
                   </template>
                 </AImage>
               </CheckCard>
-            </template>
-          </Vue3JustifiedLayout>
+            </div>
+          </div>
         </AImagePreviewGroup>
       </div>
     </div>
@@ -49,8 +49,6 @@
   </Spin>
 </template>
 <script setup lang="ts">
-import Vue3JustifiedLayout from "vue3-justified-layout";
-import 'vue3-justified-layout/dist/style.css';
 import empty from "@/assets/svgs/empty.svg";
 import useStore from "@/store";
 
@@ -66,4 +64,11 @@ const imageStore = useStore().image;
 
 
 <style scoped lang="scss">
+.photo-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 10px;
+  gap: 15px;
+}
 </style>

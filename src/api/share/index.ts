@@ -22,6 +22,10 @@ export const queryShareImageApi = (invite_code: string, access_password: string)
         invite_code: invite_code,
         access_password: access_password,
     }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
         meta: {
             ignoreToken: false,
             signature: false,
@@ -35,6 +39,10 @@ export const queryShareRecordListApi = (dataRequest: string[]) => {
     return service.Post('/api/auth/share/record/list', {
         date_range: dataRequest,
     }, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
         meta: {
             ignoreToken: false,
             signature: false,
@@ -45,12 +53,13 @@ export const queryShareRecordListApi = (dataRequest: string[]) => {
  * 查询分享信息
  * @param invite_code
  */
-export const queryShareInfoApi = (invite_code: string) => {
+export const queryShareInfoApi = (invite_code: string, access_password: string) => {
     return service.Post('/api/auth/share/info', {
         invite_code: invite_code,
+        access_password: access_password,
     }, {
         cacheFor: {
-            expire: 60, //60 * 60 * 24 * 7
+            expire: 60 * 60 * 24 * 7,
             mode: "restore",
         },
         meta: {
@@ -65,7 +74,7 @@ export const queryShareInfoApi = (invite_code: string) => {
 export const queryShareOverviewApi = () => {
     return service.Post('/api/auth/share/overview', {}, {
         cacheFor: {
-            expire: 60, //60 * 60 * 24 * 7
+            expire: 60 * 60 * 24 * 7,
             mode: "restore",
         },
         meta: {

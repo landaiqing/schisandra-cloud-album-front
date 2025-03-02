@@ -114,6 +114,7 @@
 
               <!-- 子评论回复输入框 -->
               <ReplyReply :child="child" :item="props.item"
+                          :topic-id="props.topicId"
                           v-if="comment.showReplyInput && comment.showReplyInput === child.id"/>
             </AFlex>
           </AFlex>
@@ -133,7 +134,7 @@
 </template>
 <script lang="ts" setup>
 
-import {h, ref} from "vue";
+import {h} from "vue";
 import {
   ChromeOutlined,
   CommentOutlined,
@@ -147,18 +148,21 @@ import useStore from "@/store";
 import ReplyReply from "@/components/CommentReply/src/ReplyReplyInput/ReplyReply.vue";
 import {useThrottleFn} from "@vueuse/core";
 import UserInfoCard from "@/components/CommentReply/src/UserInfoCard/UserInfoCard.vue";
+import Popover from "@/components/MyUI/Popover/Popover.vue";
 
 const {t} = useI18n();
 
 const comment = useStore().comment;
-const topicId = ref<string>("123");
 const props = defineProps({
   item: {
     type: Object,
     required: true
-  }
+  },
+  topicId: {
+    type: String,
+    required: true
+  },
 });
-
 /**
  * 格式化时间
  * @param dateString
@@ -198,7 +202,7 @@ const commentLikeThrottled = useThrottleFn(commentLike, 1000);
 async function commentLike(item: any) {
   const params: any = {
     comment_id: item.id,
-    topic_id: topicId.value,
+    topic_id: props.topicId,
   };
   const res: boolean = await comment.commentLike(params);
   if (res) {
@@ -216,7 +220,7 @@ const cancelCommentLikeThrottled = useThrottleFn(cancelCommentLike, 1000);
 async function cancelCommentLike(item: any) {
   const params: any = {
     comment_id: item.id,
-    topic_id: topicId.value,
+    topic_id: props.topicId,
   };
   const res: boolean = await comment.cancelCommentLike(params);
   if (res) {
@@ -237,7 +241,7 @@ const replyListThrottled = useThrottleFn(getReplyList, 1000);
  */
 async function getReplyList(page: number, pageSize: number) {
   const params: any = {
-    topic_id: topicId.value,
+    topic_id: props.topicId,
     page: page,
     size: pageSize,
     comment_id: props.item.id,

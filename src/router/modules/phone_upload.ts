@@ -16,5 +16,15 @@ export default [
             requiresAuth: false,
             title: '手机上传'
         }
+    },
+    {
+        path: '/main/image/phone/app',
+        name: 'imageApp',
+        component: () => import('@/views/Phone/CommonPhoneUpload/CommonPhoneUpload.vue'),
+        meta: {
+            requiresAuth: false,
+            title: '手机上传'
+        }
     }
+
 ];

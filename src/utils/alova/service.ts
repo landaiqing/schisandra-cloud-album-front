@@ -50,7 +50,7 @@ export const service = createAlova({
             const user = useStore().user;
             method.config.headers.Authorization = `${import.meta.env.VITE_APP_TOKEN_KEY} ${user.token.accessToken}`;
             method.config.headers['X-UID'] = user.user.uid;
-            method.config.headers['X-Expire-At'] = user.token.expireAt;
+            // method.config.headers['X-Expire-At'] = user.token.expireAt;
         }
         const lang = useStore().lang;
         method.config.headers['Accept-Language'] = lang.lang || 'zh';

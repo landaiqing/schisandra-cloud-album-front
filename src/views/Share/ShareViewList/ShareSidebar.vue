@@ -19,7 +19,10 @@
         <p>{{ shareInfo.album_name }}</p>
         <p style="color: #de3333; font-size: 12px">{{ formatTimeWithChinese(shareInfo.expire_time) }} 失效</p>
         <AButton type="primary" size="large" shape="round">已加入，去查看</AButton>
-        <AButton type="link" size="small" style="font-size: 13px">复制链接</AButton>
+        <AButton type="link" size="small" style="font-size: 13px"
+                 @click="()=>copyToClipboard(shareInfo.invite_code)">
+          复制链接
+        </AButton>
       </div>
       <div class="share-sidebar-body-bottom">
         <div class="share-sidebar-body-bottom-item">
@@ -39,22 +42,26 @@
     <div class="share-sidebar-footer">
     </div>
   </div>
+  <div v-else class="share-sidebar-verify">
+    <AAvatar :size="80" :src="lock" shape="square"/>
+    <p style="color: #999999">请先输入密码后查看</p>
+  </div>
 </template>
 <script setup lang="ts">
 
-import {queryShareInfoApi} from "@/api/share";
+import lock from "@/assets/svgs/lock.svg";
 import default_cover from "@/assets/images/default-cover.png";
+import {message} from "ant-design-vue";
 
 const coverImageSize = ref<number>(130);
-const shareInfo = ref<any>();
-const route = useRoute();
 
-async function getShareInfo(invite_code: string) {
-  const res: any = await queryShareInfoApi(invite_code);
-  if (res && res.code === 200) {
-    shareInfo.value = res.data;
+defineProps({
+  shareInfo: {
+    type: Object,
+    default: () => {
+    }
   }
-}
+});
 
 function formatTimeWithChinese(dateString) {
   const date = new Date(dateString);
@@ -65,11 +72,15 @@ function formatTimeWithChinese(dateString) {
   return `${year}年${month}月${day}日`;
 }
 
-onMounted(() => {
-  const invite_code = route.params.id;
-  const code = Array.isArray(invite_code) ? invite_code[0] : invite_code;
-  getShareInfo(code);
-});
+// 复制功能
+function copyToClipboard(text: string) {
+  const url: string = import.meta.env.VITE_APP_WEB_URL + '/main/share/list/' + text;
+  navigator.clipboard.writeText(url).then(() => {
+    message.success('复制成功');
+  }).catch(() => {
+    message.error('复制失败');
+  });
+}
 </script>
 <style scoped lang="scss">
 .share-sidebar {
@@ -153,5 +164,20 @@ onMounted(() => {
     width: 100%;
     height: 15%;
   }
+}
+
+.share-sidebar-verify {
+  width: 220px;
+  height: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 </style>

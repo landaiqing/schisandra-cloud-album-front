@@ -5,19 +5,30 @@
       <Header/>
     </div>
     <div class="share-view-content">
-      <ShareSidebar/>
+      <ShareSidebar :share-info="shareInfo"/>
       <div class="share-view-content-container">
         <div class="share-content-header">
           <AButton type="link" size="large" class="share-content-header-button">图片列表</AButton>
+          <AAvatar size="small" shape="square" :src="imageList && imageList.length === 0? lock2 : unlock"/>
         </div>
         <div class="share-content-verify"
-             v-if="imageList && imageList.length <= 0 && !shareStore.getPassword(route.params.id as string)">
+             v-if="imageList && imageList.length === 0 && !getPassword">
           <AInputPassword size="large" placeholder="请输入访问密码" style="width: 20%"
                           @pressEnter="(e)=>getShareImages(e.target.value)"/>
           <p style="font-size: 12px;color: #999;">回车后可查看图片列表</p>
         </div>
-        <ImageWaterfallList :image-list="imageList"/>
+        <div v-else class="share-content-list">
+          <ImageWaterfallList :image-list="imageList"/>
+        </div>
       </div>
+      <AFloatButton tooltip="评论" :badge="{ count: 5, color: 'green' }"
+                    @click="shareStore.setOpenCommentDrawer(true)"
+      >
+        <template #icon>
+          <CommentOutlined/>
+        </template>
+      </AFloatButton>
+      <CommentModal :topic-id="getInviteCode"/>
     </div>
   </div>
 </template>
@@ -25,10 +36,12 @@
 
 import Header from "@/layout/default/Header/Header.vue";
 import ShareSidebar from "@/views/Share/ShareViewList/ShareSidebar.vue";
-
-import {queryShareImageApi} from "@/api/share";
+import lock2 from "@/assets/svgs/lock-2.svg";
+import unlock from "@/assets/svgs/unlock.svg";
+import {queryShareImageApi, queryShareInfoApi} from "@/api/share";
 import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
 import useStore from "@/store";
+import CommentModal from "@/views/Share/ShareViewList/CommentModal.vue";
 
 const imageList = ref<any[]>([]);
 
@@ -36,6 +49,8 @@ const route = useRoute();
 
 const imageStore = useStore().image;
 const shareStore = useStore().share;
+const shareInfo = ref<any>();
+
 
 /**
  * 获取分享图片列表
@@ -49,16 +64,32 @@ async function getShareImages(password: string) {
   if (res && res.code === 200) {
     imageList.value = res.data.records;
     shareStore.addPassword(code, password);
+    await getShareInfo(code, password);
   }
   imageStore.imageListLoading = false;
 }
 
-onMounted(() => {
+async function getShareInfo(invite_code: string, password: string) {
+  const res: any = await queryShareInfoApi(invite_code, password);
+  if (res && res.code === 200) {
+    shareInfo.value = res.data;
+  }
+}
+
+const getPassword = computed(() => {
   const invite_code = route.params.id;
   const code = Array.isArray(invite_code) ? invite_code[0] : invite_code;
-  const password = shareStore.getPassword(code);
-  if (password) {
-    getShareImages(password);
+  return shareStore.getPassword(code);
+});
+
+const getInviteCode = computed(() => {
+  const invite_code = route.params.id;
+  return Array.isArray(invite_code) ? invite_code[0] : invite_code;
+});
+
+onMounted(() => {
+  if (getPassword.value) {
+    getShareImages(getPassword.value);
   }
 
 });
@@ -83,7 +114,6 @@ onMounted(() => {
     .share-view-content-container {
       width: calc(100vw - 230px);
       height: calc(100vh - 100px);
-      max-height: calc(100vh - 100px);
       padding: 15px;
       overflow: auto;
 
@@ -94,7 +124,7 @@ onMounted(() => {
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
-        gap: 10px;
+        //gap: 10px;
         border-bottom: 1px solid #e2e2e2;
 
         .share-content-header-button {
@@ -108,13 +138,18 @@ onMounted(() => {
       }
 
       .share-content-verify {
-        width: 100%;
+        width: calc(100vw - 230px);
         height: calc(100vh - 155px);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 10px;
+      }
+
+      .share-content-list {
+        width: calc(100vw - 230px);
+        height: calc(100vh - 155px);
       }
     }
 

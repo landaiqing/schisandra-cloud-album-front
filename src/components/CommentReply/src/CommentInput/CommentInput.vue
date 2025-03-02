@@ -105,9 +105,15 @@ const showCommentActions = ref<boolean>(false);
 const commentContent = ref<string>("");
 
 const user = useStore().user;
-const topicId = ref<string>("123");
 const showSubmitCaptcha = ref<boolean>(false);
 const comment = useStore().comment;
+
+const props = defineProps({
+  topicId: {
+    type: String,
+    required: true,
+  },
+});
 
 const commentSlideCaptchaEvent = {
   confirm: async (point: any) => {
@@ -156,7 +162,7 @@ async function commentSubmit(point: any) {
     return `<img width="30px" height="30px" loading="lazy" src="/emoji/qq/gif/${p1}" alt="emoji ${p1}" />`;
   });
   const commentParams: object = {
-    topic_id: topicId.value,
+    topic_id: props.topicId,
     content: contentWithEmoji,
     images: comment.imageList,
     author: user.user.uid,

@@ -116,11 +116,14 @@ const {t} = useI18n();
 const comment = useStore().comment;
 const user = useStore().user;
 const replyContent = ref<string>("");
-const topicId = ref<string>("123");
 const showSubmitCaptcha = ref<boolean>(false);
 const props = defineProps({
   item: {
     type: Object,
+    required: true
+  },
+  topicId: {
+    type: String,
     required: true
   },
 });
@@ -172,7 +175,7 @@ async function replySubmit(point: any) {
     point: [number, number];
     key: any;
   } = {
-    topic_id: topicId.value,
+    topic_id: props.topicId,
     content: contentWithEmoji,
     images: comment.imageList,
     author: user.user.uid,

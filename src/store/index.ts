@@ -8,6 +8,7 @@ import {useMenuStore} from "@/store/modules/menuStore.ts";
 import {useUploadStore} from "@/store/modules/uploadStore.ts";
 import {useImageStore} from "@/store/modules/imageStore.ts";
 import {useShareStore} from "@/store/modules/shareStore.ts";
+import {useSearchStore} from "@/store/modules/searchStore.ts";
 
 export default function useStore() {
     return {
@@ -21,5 +22,6 @@ export default function useStore() {
         upload: useUploadStore(),
         image: useImageStore(),
         share: useShareStore(),
+        search: useSearchStore(),
     };
 }

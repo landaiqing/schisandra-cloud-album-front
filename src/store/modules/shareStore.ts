@@ -3,6 +3,8 @@ export const useShareStore = defineStore(
     () => {
         const sharePassword = reactive<Record<string, string>>({});
 
+        const openCommentDrawer = ref<boolean>(false);
+
         // 获取密码（保持相同API）
         const getPassword = (key: string): string | undefined => {
             return sharePassword[key];
@@ -12,17 +14,23 @@ export const useShareStore = defineStore(
         const addPassword = (key: string, password: string) => {
             sharePassword[key] = password;
         };
+
+        function setOpenCommentDrawer(value: boolean): void {
+            openCommentDrawer.value = value;
+        };
         return {
             sharePassword,
             getPassword,
-            addPassword
+            addPassword,
+            openCommentDrawer,
+            setOpenCommentDrawer
         };
     },
     {
         // 开启数据持久化
         persistedState: {
             persist: true,
-            storage: localStorage,
+            storage: sessionStorage,
             key: 'share',
             includePaths: ['sharePassword']
         }

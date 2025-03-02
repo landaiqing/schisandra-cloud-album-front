@@ -132,12 +132,12 @@ export const albumListApi = (type: number, sort: boolean) => {
  * @param provider
  * @param bucket
  */
-export const queryAlbumDetailListApi = (id: number, provider: string, bucket: string,type:number) => {
+export const queryAlbumDetailListApi = (id: number, provider: string, bucket: string, type: number) => {
     return service.Post('/api/auth/storage/album/detail/list', {
         id: id,
         provider: provider,
         bucket: bucket,
-        type:type,
+        type: type,
     }, {
         cacheFor: {
             expire: 60 * 60 * 24 * 7,
@@ -437,5 +437,20 @@ export const albumShareApi = (id: number, expire_date: string, access_limit: num
             signature: false,
         },
         name: "album-share",
+    });
+};
+/**
+ * 搜索照片
+ * @param data
+ */
+export const imageSearchApi = (data: any) => {
+    return service.Post('/api/auth/storage/image/search', {
+        ...data,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "image-search",
     });
 };

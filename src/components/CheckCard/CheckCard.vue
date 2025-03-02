@@ -40,6 +40,7 @@ interface Props {
   showHoverCircle?: boolean; // 控制是否显示悬停圆环
   iconSize?: number; // 控制图标大小
   showSelectedEffect?: boolean; // 控制是否显示选中效果
+  selectionMode?: 'multiple' | 'single';
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -51,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
   showHoverCircle: true, // 默认显示悬停圆环
   iconSize: 24, // 默认图标大小
   showSelectedEffect: true, // 默认显示选中效果
+  selectionMode: 'multiple'
 });
 
 const emits = defineEmits(['update:modelValue']);
@@ -78,10 +80,20 @@ function handleClick() {
 }
 
 function toggleSelection() {
-  if (isSelected.value) {
-    emits('update:modelValue', props.modelValue?.filter((val) => val !== props.value));
+  if (props.selectionMode === 'multiple') {
+    // 多选逻辑
+    if (isSelected.value) {
+      emits('update:modelValue', props.modelValue?.filter((val) => val !== props.value) || []);
+    } else {
+      emits('update:modelValue', [...(props.modelValue || []), props.value]);
+    }
   } else {
-    emits('update:modelValue', [...(props.modelValue || []), props.value]);
+    // 单选逻辑
+    if (isSelected.value) {
+      emits('update:modelValue', []); // 取消选中
+    } else {
+      emits('update:modelValue', [props.value]); // 选中当前项
+    }
   }
 }
 </script>
@@ -98,8 +110,8 @@ function toggleSelection() {
 }
 
 .check-card.selected {
-  border: 1px solid rgba(125, 167, 255, 0.68);
-  box-shadow: 0 0 2px rgba(77, 167, 255, 0.89);
+  //border: 1px solid rgba(125, 167, 255, 0.68);
+  box-shadow: 0 0 10px rgba(77, 167, 255, 0.89);
   background-color: #e5eeff;
 }
 

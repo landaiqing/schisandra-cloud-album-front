@@ -134,10 +134,11 @@
 
               </AFlex>
               <!-- 回复输入框 -->
-              <ReplyInput :item="item" v-show="comment.showReplyInput && item.id === comment.showReplyInput"/>
+              <ReplyInput :item="item" :topic-id="topicId"
+                          v-show="comment.showReplyInput && item.id === comment.showReplyInput"/>
               <!-- 子回复列表 -->
               <transition name="fade">
-                <ReplyList :item="item" v-if="comment.replyVisibility[item.id]?.visible"/>
+                <ReplyList :item="item" :topic-id="topicId" v-if="comment.replyVisibility[item.id]?.visible"/>
               </transition>
             </AFlex>
           </AFlex>
@@ -157,7 +158,7 @@
 
 <script lang="ts" setup>
 import {useI18n} from "vue-i18n";
-import {h, onMounted, ref} from "vue";
+import {h, onMounted} from "vue";
 import {
   ChromeOutlined,
   ClockCircleOutlined,
@@ -175,15 +176,21 @@ import ReplyInput from "@/components/CommentReply/src/ReplyInput/ReplyInput.vue"
 import ReplyList from "@/components/CommentReply/src/ReplyList/ReplyList.vue";
 import MessageReport from "@/components/CommentReply/src/MessageReport/MessageReport.vue";
 import UserInfoCard from "@/components/CommentReply/src/UserInfoCard/UserInfoCard.vue";
+import Popover from "@/components/MyUI/Popover/Popover.vue";
 
 
 const {t} = useI18n();
 const router = useRouter();
-const route =useRoute();
+const route = useRoute();
 const comment = useStore().comment;
 
 
-const topicId = ref<string>("123");
+const props = defineProps({
+  topicId: {
+    type: String,
+    required: true,
+  },
+});
 
 
 /**
@@ -191,7 +198,7 @@ const topicId = ref<string>("123");
  */
 async function getCommentList(page: number = 1, size: number = 5, hot: boolean = true) {
   const params = {
-    topic_id: topicId.value,
+    topic_id: props.topicId,
     page: page,
     size: size,
     is_hot: hot,
@@ -239,7 +246,7 @@ const commentLikeThrottled = useThrottleFn(commentLike, 1000);
 async function commentLike(item: any) {
   const params: any = {
     comment_id: item.id,
-    topic_id: topicId.value,
+    topic_id: props.topicId,
   };
   const res: boolean = await comment.commentLike(params);
   if (res) {
@@ -257,7 +264,7 @@ const cancelCommentLikeThrottled = useThrottleFn(cancelCommentLike, 1000);
 async function cancelCommentLike(item: any) {
   const params: any = {
     comment_id: item.id,
-    topic_id: topicId.value,
+    topic_id: props.topicId,
   };
   const res: boolean = await comment.cancelCommentLike(params);
   if (res) {

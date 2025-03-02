@@ -28,6 +28,12 @@
           </template>
           下载原图
         </AButton>
+        <AButton type="text" shape="default" size="middle" class="photo-toolbar-btn" @click="editImages">
+          <template #icon>
+            <BgColorsOutlined class="photo-toolbar-icon"/>
+          </template>
+          编辑
+        </AButton>
         <AButton type="text" shape="default" size="middle" class="photo-toolbar-btn">
           <template #icon>
             <ShareAltOutlined class="photo-toolbar-icon"/>
@@ -43,12 +49,18 @@
       </div>
     </div>
   </transition>
+  <AModal v-model:open="imageStore.imageEditVisible" title="编辑图片" width="50%" :mask-closable="false"
+          :keyboard="false" :wrap-class-name="'image-edit-modal'">
+    <ImageEditor :image-url="getUrlById(props.selected[0])"/>
+  </AModal>
 </template>
 <script setup lang="ts">
 
 import useStore from "@/store";
 import {Image, ImageList, ImageRecord} from "@/types/image";
 import {deletedImagesApi} from "@/api/storage";
+import {message} from "ant-design-vue";
+import ImageEditor from "@/components/ImageEditor/ImageEditor.vue";
 
 const props = defineProps({
   selected: {
@@ -71,10 +83,12 @@ const selectAll = () => {
 };
 
 const deleteImages = async () => {
+  imageStore.imageListLoading = true;
   const res: any = await deletedImagesApi(props.selected, uploadStore.storageSelected?.[0], uploadStore.storageSelected?.[1]);
   if (res.code === 200) {
     imageStore.selected = [];
   }
+  imageStore.imageListLoading = false;
 };
 
 const isAllSelected = computed(() => {
@@ -82,6 +96,32 @@ const isAllSelected = computed(() => {
   const imageList = props.imageList || [];
   return props.selected.length === imageList.flatMap((record: ImageRecord) => record.list).length;
 });
+/**
+ * 编辑图片
+ */
+const editImages = () => {
+  // 只能编辑一张图片
+  if (props.selected.length !== 1) {
+    message.warning("只能编辑一张图片");
+    return;
+  }
+  imageStore.imageEditVisible = true;
+};
+
+const idToUrlMap = computed(() => {
+  const map: { [key: number]: string } = {};
+  props.imageList.forEach((record: ImageRecord) => {
+    record.list.forEach((image: Image) => {
+      map[image.id] = image.url;
+    });
+  });
+  return map;
+});
+
+const getUrlById = (id: number): string => {
+  console.log(idToUrlMap.value[id]);
+  return idToUrlMap.value[id];
+};
 onBeforeUnmount(() => {
   imageStore.selected = [];
 });

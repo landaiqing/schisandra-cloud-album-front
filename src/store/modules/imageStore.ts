@@ -37,6 +37,7 @@ export const useImageStore = defineStore(
             "1": "我的分享",
             "2": "我的收藏",
         });
+        const albumIdList = ref<number[]>([]);
 
         // 相册分享弹窗相关
         const openAlbumShareDialog = ref<boolean>(false);
@@ -48,6 +49,10 @@ export const useImageStore = defineStore(
         const faceSelected = ref<number[]>([]);
         const faceList = ref<any[]>([]);
         const faceListLoading = ref<boolean>(false);
+
+
+        // 图片编辑
+        const imageEditVisible = ref<boolean>(false);
 
         /**
          * 获取人脸列表
@@ -118,6 +123,8 @@ export const useImageStore = defineStore(
             faceListLoading,
             openAlbumShareDialog,
             JustifiedLayoutOptions,
+            albumIdList,
+            imageEditVisible,
             countTotalImages,
             openAlbumShareDialogHandler,
             getAlbumList,
@@ -137,7 +144,8 @@ export const useImageStore = defineStore(
                 "homeTabMap",
                 "switchValue",
                 "faceSelectedKey",
-                "albumList"
+                "albumList",
+                "albumIdList"
             ],
         }
     }
