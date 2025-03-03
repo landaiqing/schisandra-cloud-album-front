@@ -4,6 +4,7 @@
       <AButton type="link" size="large" class="recycling-bin-title">回收站</AButton>
       <span class="recycling-bin-desc">保存最近10天从云端删除的内容</span>
     </div>
+    <image-toolbar :selected="imageStore.selected" :image-list="imageList"/>
     <div class="photo-list">
       <ImageWaterfallList :image-list="imageList"/>
     </div>
@@ -13,10 +14,12 @@
 import {getDeletedRecordApi} from "@/api/storage";
 import useStore from "@/store";
 import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
+import ImageToolbar from "@/components/ImageToolbar/ImageToolbar.vue";
 
 const imageList = ref<any[]>([]);
 const upload = useStore().upload;
 const imageStore = useStore().image;
+
 /**
  * 查询回收站
  */
@@ -42,6 +45,7 @@ onMounted(() => {
   justify-content: flex-start;
   width: 100%;
   height: 100%;
+  gap: 10px;
 
   .recycling-bin-header {
     width: 100%;

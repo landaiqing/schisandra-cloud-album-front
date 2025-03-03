@@ -51,6 +51,7 @@
                         :maxlength="10"
                         @click.stop
                         :placeholder="item.face_name"
+                        autofocus
                         class="people-album-add-input">
                   <template #suffix>
                     <AButton type="link" style="font-size: 12px;" size="small" @mousedown.prevent

@@ -36,9 +36,10 @@
           </AMenu>
         </template>
       </ADropdown>
-      <AInput class="phoalbum-search" placeholder="搜索相册">
+      <AInput class="phoalbum-search" placeholder="搜索相册" v-model:value="searchValue"
+              @pressEnter="(e)=>searchAlbum(e.target.value)">
         <template #suffix>
-          <AButton size="small" type="text" shape="circle" @click.prevent>
+          <AButton size="small" type="text" shape="circle" @click.stop="searchAlbum(searchValue)">
             <template #icon>
               <SearchOutlined/>
             </template>
@@ -75,7 +76,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {createAlbumApi} from "@/api/storage";
+import {albumSearchApi, createAlbumApi} from "@/api/storage";
 import {message} from "ant-design-vue";
 
 import useStore from "@/store";
@@ -88,7 +89,6 @@ const albumNameValue = ref<string>("未命名相册");
 
 
 const imageStore = useStore().image;
-
 
 /**
  * 创建相册
@@ -124,6 +124,24 @@ async function handleTabChange(activeKey: string) {
   imageStore.tabActiveKey = activeKey;
   await imageStore.getAlbumList();
 }
+
+const searchValue = ref<string>("");
+
+/**
+ * 搜索相册
+ * @param keyword
+ */
+async function searchAlbum(keyword: string) {
+  if (keyword.trim() === "") {
+    return;
+  }
+  const res: any = await albumSearchApi(keyword);
+  if (res && res.code === 200) {
+    imageStore.albumList = res.data.albums;
+  }
+}
+
+
 
 
 onMounted(() => {

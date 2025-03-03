@@ -85,7 +85,7 @@ const borderRadius = ref('20px');
 const boxShadow = ref('none');
 const searchStore = useStore().search;
 const uploadStore = useStore().upload;
-
+const router = useRouter();
 /**
  * 监听输入框聚焦事件
  */
@@ -143,7 +143,9 @@ const onCalendarChange = (val: RangeValue) => {
   dates.value = val;
 };
 
-
+/**
+ * 搜索事件
+ */
 async function search() {
   const params: any = {
     type: searchStore.searchOption[0],
@@ -153,7 +155,15 @@ async function search() {
     input_image: "123"
   };
   const res: any = await imageSearchApi(params);
-  console.log(res);
+  if (res && res.code === 200) {
+    searchStore.searchResult = res.data.records;
+    router.push({
+      path: '/main/photo/search/list', query: {
+        type: searchStore.searchOption[0],
+        keyword: searchStore.searchValue,
+      }
+    });
+  }
 }
 
 </script>

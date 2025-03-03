@@ -42,7 +42,7 @@
                   分享相册
                 </AMenuItem>
                 <AMenuItem key="3" @click.prevent="deleteAlbum(album.id)">删除相册</AMenuItem>
-                <AMenuItem key="4">下载相册</AMenuItem>
+                <AMenuItem key="4" @click.prevent="downloadAlbumImage(album.id)">下载相册</AMenuItem>
               </AMenu>
             </template>
           </ADropdown>
@@ -67,9 +67,11 @@ import more from "@/assets/svgs/more.svg";
 import empty from "@/assets/svgs/empty.svg";
 import useStore from "@/store";
 import {message} from "ant-design-vue";
-import {deleteAlbumApi, renameAlbumApi} from "@/api/storage";
+import {deleteAlbumApi, downloadAlbumImagesApi, renameAlbumApi} from "@/api/storage";
+import {downloadImagesAsZip} from "@/utils/imageUtils/downloadImagesAsZip.ts";
 
 const imageStore = useStore().image;
+const uploadStore = useStore().upload;
 const isHovered = ref<number | null>(null);
 const router = useRouter();
 const route = useRoute();
@@ -116,6 +118,25 @@ async function deleteAlbum(id: number) {
   } else {
     message.error("删除相册失败");
   }
+}
+
+/**
+ * 下载相册图片
+ * @param id
+ */
+async function downloadAlbumImage(id: number) {
+  if (!id) {
+    return;
+  }
+  const res: any = await downloadAlbumImagesApi(id, uploadStore.storageSelected?.[0], uploadStore.storageSelected?.[1]);
+  if (res && res.code === 200) {
+    if (!res.data.records) {
+      message.warning("相册中没有图片");
+      return;
+    }
+    await downloadImagesAsZip(res.data.records);
+  }
+
 }
 
 </script>

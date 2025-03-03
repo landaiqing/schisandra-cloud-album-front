@@ -90,3 +90,7 @@ html {
     height: 100%;
     width: 100%;
 }
+
+//:not(button) > svg:not([color]) {
+//    color: var(--text-color) !important;
+//}

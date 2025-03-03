@@ -41,10 +41,14 @@ export const useSearchStore = defineStore(
             const option = options.find(option => option.value === value);
             return option ? option.icon : undefined;
         };
+
+        // 图片搜索结果
+        const searchResult = ref<any[]>([]);
         return {
             searchOption,
             options,
             searchValue,
+            searchResult,
             getIconByValue
         };
     },

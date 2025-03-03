@@ -454,3 +454,58 @@ export const imageSearchApi = (data: any) => {
         name: "image-search",
     });
 };
+/**
+ * 搜索相册
+ * @param keyword
+ */
+export const albumSearchApi = (keyword: string) => {
+    return service.Post('/api/auth/storage/album/search', {
+        keyword: keyword,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "album-search",
+    });
+};
+/**
+ * 批量添加照片到相册
+ * @param ids
+ * @param album_id
+ * @param provider
+ * @param bucket
+ */
+export const imageToAlbumApi = (ids: number[], album_id: number, provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/album/add/image', {
+        ids: ids,
+        album_id: album_id,
+        provider: provider,
+        bucket: bucket,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "add-image-to-album",
+    });
+};
+/**
+ * 下载相册图片
+ * @param id
+ * @param provider
+ * @param bucket
+ */
+export const downloadAlbumImagesApi = (id: number, provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/album/download', {
+        id: id,
+        provider: provider,
+        bucket: bucket,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "download-album-images",
+    });
+};

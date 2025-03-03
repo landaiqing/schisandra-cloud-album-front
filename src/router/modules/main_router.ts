@@ -20,6 +20,15 @@ export default [
             ...recycling_bin,
             ...share,
             ...upscale,
+            {
+                path: '/main/photo/search/list',
+                name: 'photo-search-list',
+                component: () => import('@/views/Photograph/SearchResult/SearchResult.vue'),
+                meta: {
+                    requiresAuth: true,
+                    title: '搜索结果'
+                }
+            }
         ]
     }, {
         path: '/main/share/list/:id',
