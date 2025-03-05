@@ -1,7 +1,7 @@
 <template>
   <div class="user-center-home">
     <div class="user-center-home-left">
-      <div class="user-center-home-left-top">
+      <div class="user-center-home-left-top" v-if="chartData">
         <div class="user-center-home-left-top-card"
              style="background: linear-gradient(102.74deg, rgb(66, 230, 171) -7.03%, rgb(103, 235, 187) 97.7%);">
           <div class="user-center-home-left-top-card-top">
@@ -10,12 +10,12 @@
             </div>
             <div class="user-center-home-left-top-card-top-name">
               <span style="font-size: 2.8vh;color: rgba(255, 255, 255, 0.6); font-weight: bold;">图片总数</span>
-              <span style="font-size: 3.8vh;font-weight: bold;color: #ffffff">50</span>
+              <span style="font-size: 3.8vh;font-weight: bold;color: #ffffff">{{ chartData.image_count }}</span>
             </div>
           </div>
           <div class="user-center-home-left-top-card-bottom">
             <span style="font-size: 2.3vh;color: rgba(255, 255, 255, 0.6); font-weight: bold;">今日上传</span>
-            <span style="font-size: 3vh;font-weight: bold;color: #ffffff">+10</span>
+            <span style="font-size: 3vh;font-weight: bold;color: #ffffff">+{{ chartData.today_upload_count }}</span>
           </div>
         </div>
         <div class="user-center-home-left-top-card"
@@ -26,12 +26,12 @@
             </div>
             <div class="user-center-home-left-top-card-top-name">
               <span style="font-size: 2.8vh;color: rgba(255, 255, 255, 0.6); font-weight: bold;">分享总数</span>
-              <span style="font-size: 3.8vh;font-weight: bold;color: white">50</span>
+              <span style="font-size: 3.8vh;font-weight: bold;color: white">{{ chartData.share_count }}</span>
             </div>
           </div>
           <div class="user-center-home-left-top-card-bottom">
             <span style="font-size: 2.3vh;color: rgba(255, 255, 255, 0.6); font-weight: bold;">今日上传</span>
-            <span style="font-size: 2.8vh;font-weight: bold;color: white">+10</span>
+            <span style="font-size: 2.8vh;font-weight: bold;color: white">+{{ chartData.today_share_count }}</span>
           </div>
         </div>
         <div class="user-center-home-left-top-card"
@@ -42,18 +42,24 @@
             </div>
             <div class="user-center-home-left-top-card-top-name">
               <span style="font-size: 2.8vh;color: rgba(255, 255, 255, 0.6); font-weight: bold;">文件总量</span>
-              <span style="font-size: 3.8vh;font-weight: bold;color: white">50</span>
+              <span
+                  style="font-size: 3.8vh;font-weight: bold;color: white">{{
+                  bytesToSize(chartData.file_size_count)
+                }}</span>
             </div>
           </div>
           <div class="user-center-home-left-top-card-bottom">
             <span style="font-size: 2.3vh;color: rgba(255, 255, 255, 0.6);font-weight: bold;">今日上传</span>
-            <span style="font-size: 2.8vh;font-weight: bold;color: white">+10</span>
+            <span
+                style="font-size: 2.8vh;font-weight: bold;color: white">+{{
+                bytesToSize(chartData.today_file_size_count)
+              }}</span>
           </div>
         </div>
       </div>
-      <div class="user-center-home-left-bottom">
+      <div class="user-center-home-left-bottom" v-if="chartData">
         <span style="font-size: 16px; font-weight: bold; margin-left: 20px;">文件上传热力图</span>
-        <HeatmapPro :contributions="timeValue" :width="'100%'" :height="'100%'"/>
+        <HeatmapPro :contributions="chartData.heatmap"/>
       </div>
     </div>
     <div class="user-center-home-right">
@@ -69,76 +75,21 @@ import HeatmapPro from "@/components/HeatmapPro/HeatmapPro.vue";
 import imageIcon from "@/assets/svgs/image-icon.svg";
 import shareIcon from "@/assets/svgs/share-icon.svg";
 import fileSize from "@/assets/svgs/file-size.svg";
+import {getUserUploadInfoApi} from "@/api/storage";
+import bytesToSize from "@/utils/imageUtils/bytesToSize";
 
-const timeValue = [
-  {date: "2024-08-02", count: 1},
-  {date: "2024-08-03", count: 2},
-  {date: "2024-08-04", count: 3},
-  {date: "2024-08-05", count: 4},
-  {date: "2024-08-06", count: 5},
-  {date: "2024-08-07", count: 6},
-  {date: "2024-08-08", count: 5},
-  {date: "2024-08-15", count: 8},
-  {date: "2024-08-22", count: 3},
-  {date: "2024-08-29", count: 4},
-  {date: "2024-09-05", count: 6},
-  {date: "2024-09-28", count: 6},
-  {date: "2024-09-22", count: 6},
-  {date: "2024-09-23", count: 6},
-  {date: "2024-09-24", count: 6},
-  {date: "2024-10-04", count: 6},
-  {date: "2024-10-02", count: 6},
-  {date: "2024-10-10", count: 6},
-  {date: "2024-10-11", count: 6},
-  {date: "2024-10-17", count: 6},
-  {date: "2024-10-19", count: 6},
-  {date: "2024-10-23", count: 6},
-  {date: "2024-10-27", count: 6},
-  {date: "2024-10-28", count: 6},
-  {date: "2024-10-29", count: 6},
-  {date: "2024-11-22", count: 6},
-  {date: "2024-11-30", count: 6},
-  {date: "2024-12-08", count: 6},
-  {date: "2024-12-16", count: 6},
-  {date: "2024-12-24", count: 6},
-  {date: "2025-01-01", count: 6},
-  {date: "2025-01-09", count: 6},
-  {date: "2025-01-16", count: 6},
-  {date: "2025-01-22", count: 6},
-  {date: "2025-01-28", count: 6},
-  {date: "2025-02-03", count: 6},
-  {date: "2025-02-09", count: 6},
-  {date: "2025-02-15", count: 6},
-  {date: "2025-02-21", count: 6},
-  {date: "2025-03-21", count: 6},
-  {date: "2025-03-22", count: 6},
-  {date: "2025-03-23", count: 6},
-  {date: "2025-03-24", count: 6},
-  {date: "2025-03-25", count: 6},
-  {date: "2025-03-26", count: 6},
-  {date: "2025-03-27", count: 6},
-  {date: "2025-03-28", count: 6},
-  {date: "2025-03-31", count: 6},
-  {date: "2025-04-03", count: 6},
-  {date: "2025-04-07", count: 6},
-  {date: "2025-04-04", count: 6},
-  {date: "2025-04-10", count: 6},
-  {date: "2025-04-11", count: 6},
-  {date: "2025-04-14", count: 6},
-  {date: "2025-04-17", count: 6},
-  {date: "2025-04-18", count: 6},
-  {date: "2025-04-21", count: 6},
-  {date: "2025-04-24", count: 6},
-  {date: "2025-04-25", count: 6},
-  {date: "2025-04-28", count: 6},
-  {date: "2025-05-01", count: 6},
-  {date: "2025-05-02", count: 6},
-  {date: "2025-05-05", count: 6},
-  {date: "2025-05-08", count: 6},
-  {date: "2025-05-09", count: 6},
-  {date: "2025-05-12", count: 6},
-  {date: "2025-05-15", count: 6},
-];
+const chartData = ref<any>();
+
+async function getData() {
+  const res: any = await getUserUploadInfoApi();
+  if (res && res.code === 200) {
+    chartData.value = res.data;
+  }
+}
+
+onMounted(() => {
+  getData();
+});
 </script>
 <style scoped lang="scss">
 .user-center-home {

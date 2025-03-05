@@ -561,3 +561,37 @@ export const addStorageConfigApi = (params: any) => {
         name: "add-storage-config",
     });
 };
+/**
+ * 获取用户上传信息
+ */
+export const getUserUploadInfoApi = () => {
+    return service.Post('/api/auth/storage/user/upload/info', {}, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "get-user-upload-info",
+        hitSource: ["upload-file", "delete-images"],
+    });
+};
+/**
+ * 获取分享统计信息
+ */
+export const getShareStatisticsInfoApi = () => {
+    return service.Post('/api/auth/storage/share/recent/info', {}, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "get-share-statistics-info",
+        hitSource: ["upload-file", "upload-share-image"],
+    });
+};

@@ -26,7 +26,7 @@
         <AAvatar size="default" :src="accountSecurity"/>
         <span style="font-size: 20px; font-weight: bold;color: #333">账号安全</span>
       </div>
-      <div class="account-setting-home-content-section">
+      <div class="account-setting-home-content-section" v-if="securityStatus">
         <AFlex :vertical="false" align="center" justify="space-between" :gap="50">
           <div class="account-setting-home-content-section-item">
             <div class="account-setting-home-content-section-item-avatar">
@@ -36,8 +36,10 @@
               <span style="font-size: 18px; font-weight: bold;color: #333;margin-top: 10px">我的邮箱</span>
               <span style="font-size: 14px; color: #666;">绑定邮箱后即可使用邮箱登录</span>
               <AFlex :vertical="false" align="center" justify="space-between" gap="large">
-                <AButton type="primary" size="small" :disabled="true">已绑定邮箱</AButton>
-                <AButton type="link" size="small">更改邮箱</AButton>
+                <AButton type="primary" size="small" :disabled="securityStatus.bind_email">
+                  {{ securityStatus.bind_email ? "已绑定邮箱" : "绑定邮箱" }}
+                </AButton>
+                <AButton type="link" size="small">{{ securityStatus.bind_email ? "修改邮箱" : "绑定邮箱" }}</AButton>
               </AFlex>
             </div>
           </div>
@@ -64,8 +66,10 @@
               <span style="font-size: 18px; font-weight: bold;color: #333;margin-top: 10px">我的密保</span>
               <span style="font-size: 14px; color: #666;">设置密保，账号更安全</span>
               <AFlex :vertical="false" align="center" justify="space-between" gap="large">
-                <AButton type="primary" size="small" :disabled="true">已绑定密保</AButton>
-                <AButton type="link" size="small">查看并设置</AButton>
+                <AButton type="primary" size="small" :disabled="securityStatus.set_password">
+                  {{ securityStatus.set_password ? "已设置密保" : "设置密保" }}
+                </AButton>
+                <AButton type="link" size="small">{{ securityStatus.set_password ? "修改密保" : "设置密保" }}</AButton>
               </AFlex>
             </div>
           </div>
@@ -77,8 +81,10 @@
               <span style="font-size: 18px; font-weight: bold;color: #333;margin-top: 10px">三方登录</span>
               <span style="font-size: 14px; color: #666;">绑定三方账号，安全登录</span>
               <AFlex :vertical="false" align="center" justify="space-between" gap="large">
-                <AButton type="primary" size="small" :disabled="true">已绑定三方账号</AButton>
-                <AButton type="link" size="small">取消绑定</AButton>
+                <AButton type="primary" size="small" :disabled="securityStatus.bind_wechet">
+                  {{ securityStatus.bind_wechet ? "已绑定" : "绑定" }}
+                </AButton>
+                <AButton type="link" size="small">{{ securityStatus.bind_wechet ? "管理" : "" }}</AButton>
               </AFlex>
             </div>
           </div>
@@ -95,8 +101,23 @@ import emailSecurity from "@/assets/svgs/email_security.svg";
 import phoneSecurity from "@/assets/svgs/phone_security.svg";
 import passwordSecurity from "@/assets/svgs/password_security.svg";
 import loginSecurity from "@/assets/svgs/login_security.svg";
+import {checkSecuritySettingApi} from "@/api/auth";
 
 const userStore = useStore().user;
+
+const securityStatus = ref<any>();
+
+async function checkStatus() {
+  const res: any = await checkSecuritySettingApi();
+  console.log(res);
+  if (res && res.code === 200) {
+    securityStatus.value = res.data;
+  }
+}
+
+onMounted(() => {
+  checkStatus();
+});
 
 </script>
 

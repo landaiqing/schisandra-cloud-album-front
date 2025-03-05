@@ -10,6 +10,7 @@ export const shareImageUploadApi = (formData) => {
             ignoreToken: false,
             signature: false,
         },
+        name: 'upload-share-image',
     });
 };
 /**

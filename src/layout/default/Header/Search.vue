@@ -116,7 +116,7 @@ import {NSFWJS} from "nsfwjs";
 import {initNSFWJs, predictNSFW} from "@/utils/tfjs/nsfw.ts";
 import {message} from "ant-design-vue";
 import i18n from "@/locales";
-import {bytesToSize} from "@/utils/imageUtils/bytesToSize.ts";
+import bytesToSize from "@/utils/imageUtils/bytesToSize.ts";
 import {cocoSsdPredict} from "@/utils/tfjs/mobilenet.ts";
 
 dayjs.locale('zh-cn');

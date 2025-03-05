@@ -5,8 +5,32 @@
 </template>
 <script setup lang="ts">
 import * as echarts from 'echarts';
+import {getShareStatisticsInfoApi} from "@/api/storage";
+
+interface DataItem {
+  date: string;
+  visit_count: number;
+  visitor_count: number;
+  publish_count: number;
+}
 
 const chartRef = ref<any>(null);
+const dates = ref<string[]>([]);
+const visitCounts = ref<number[]>([]);
+const visitorCounts = ref<number[]>([]);
+const publishCounts = ref<number[]>([]);
+
+async function getData() {
+  const res: any = await getShareStatisticsInfoApi();
+  if (res && res.code === 200) {
+    const data: DataItem[] = res.data.records;
+    dates.value = data.map((item: DataItem) => item.date);
+    visitCounts.value = data.map((item: DataItem) => item.visit_count);
+    visitorCounts.value = data.map((item: DataItem) => item.visitor_count);
+    publishCounts.value = data.map((item: DataItem) => item.publish_count);
+  }
+}
+
 onMounted(async () => {
   await nextTick();
   const chartInstance = echarts.init(chartRef.value);
@@ -16,10 +40,8 @@ onMounted(async () => {
     backgroundColor: "#fff",
     title: {
       text: "最近七天分享统计",
-      textStyle: {
-        fontSize: 12,
-        fontWeight: 400,
-      },
+      fontSize: 12,
+      fontWeight: 400,
       left: "center",
       top: "5%",
     },
@@ -29,9 +51,8 @@ onMounted(async () => {
       right: "5%",
       itemWidth: 6,
       itemGap: 20,
-      textStyle: {
-        color: "#556677",
-      },
+      color: "#556677",
+
     },
     tooltip: {
       trigger: "axis",
@@ -49,9 +70,7 @@ onMounted(async () => {
         },
       },
       backgroundColor: "#fff",
-      textStyle: {
-        color: "#5c6c7c",
-      },
+      color: "#5c6c7c",
       padding: [10, 10],
       extraCssText: "box-shadow: 1px 0 2px 0 rgba(163,163,163,0.5)",
     },
@@ -61,7 +80,7 @@ onMounted(async () => {
     xAxis: [
       {
         type: "category",
-        data: ["2025-3-5", "2025-3-6", "2025-3-7", "2025-3-8", "2025-3-9", "2025-3-10", "2025-3-11"],
+        data: dates.value,
         axisLine: {
           lineStyle: {
             color: "#DCE2E8",
@@ -72,9 +91,7 @@ onMounted(async () => {
         },
         axisLabel: {
           interval: 0,
-          textStyle: {
-            color: "#556677",
-          },
+          color: "#556677",
           // 默认x轴字体大小
           fontSize: 12,
           // margin:文字到x轴的距离
@@ -153,9 +170,7 @@ onMounted(async () => {
           },
         },
         axisLabel: {
-          textStyle: {
-            color: "#556677",
-          },
+          color: "#556677",
         },
         splitLine: {
           show: false,
@@ -168,9 +183,7 @@ onMounted(async () => {
           show: false,
         },
         axisLabel: {
-          textStyle: {
-            color: "#556677",
-          },
+          color: "#556677",
           formatter: "{value}",
         },
         axisLine: {
@@ -188,7 +201,7 @@ onMounted(async () => {
       {
         name: "浏览次数",
         type: "line",
-        data: [10, 10, 30, 12, 15, 3, 7],
+        data: visitCounts.value,
         symbolSize: 1,
         symbol: "circle",
         smooth: true,
@@ -211,16 +224,14 @@ onMounted(async () => {
           shadowOffsetY: 20,
         },
         itemStyle: {
-          normal: {
-            color: colorList[0],
-            borderColor: colorList[0],
-          },
+          color: colorList[0],
+          borderColor: colorList[0],
         },
       },
       {
         name: "浏览人数",
         type: "line",
-        data: [5, 12, 11, 14, 25, 16, 10],
+        data: visitorCounts.value,
         symbolSize: 1,
         symbol: "circle",
         smooth: true,
@@ -243,16 +254,14 @@ onMounted(async () => {
           shadowOffsetY: 20,
         },
         itemStyle: {
-          normal: {
-            color: colorList[1],
-            borderColor: colorList[1],
-          },
+          color: colorList[1],
+          borderColor: colorList[1],
         },
       },
       {
         name: "发布次数",
         type: "line",
-        data: [150, 120, 170, 140, 500, 160, 110],
+        data: publishCounts.value,
         symbolSize: 1,
         yAxisIndex: 1,
         symbol: "circle",
@@ -275,10 +284,8 @@ onMounted(async () => {
           shadowOffsetY: 20,
         },
         itemStyle: {
-          normal: {
-            color: colorList[2],
-            borderColor: colorList[2],
-          },
+          color: colorList[2],
+          borderColor: colorList[2],
         },
       },
     ],
@@ -286,6 +293,11 @@ onMounted(async () => {
   chartInstance.setOption(option);
 
 });
+
+onBeforeMount(() => {
+  getData();
+});
+
 onBeforeUnmount(() => {
   if (chartRef.value) {
     const chartInstance = echarts.getInstanceByDom(chartRef.value);

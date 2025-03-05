@@ -1,4 +1,4 @@
-export function bytesToSize(bytes: number, decimals = 2): string {
+export default function bytesToSize(bytes: number, decimals = 2): string {
     if (bytes === 0) return '0 Bytes';
 
     const k = 1024;
@@ -9,7 +9,3 @@ export function bytesToSize(bytes: number, decimals = 2): string {
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
-
-// 使用示例
-// console.log(bytesToSize(1024));        // 输出: 1 KB
-// console.log(bytesToSize(123456789));   // 输出: 117.74 MB
