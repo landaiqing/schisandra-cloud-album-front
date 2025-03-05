@@ -3,7 +3,7 @@
     <div class="upload-controller">
       <AButton type="text" shape="circle" size="middle">
         <template #icon>
-          <APopover placement="bottom" trigger="click">
+          <APopover placement="bottomRight" trigger="click">
             <template #content>
               <UploadSetting/>
             </template>
@@ -66,7 +66,7 @@
 </template>
 <script setup lang="ts">
 import setting from "@/assets/svgs/setting.svg";
-import {albumListApi, uploadFile} from "@/api/storage";
+import {albumListApi, uploadFile} from "@/api/phone";
 import useStore from "@/store";
 import empty from "@/assets/svgs/empty.svg";
 import {useRequest} from "alova/client";
@@ -74,21 +74,21 @@ import imageCompression from "browser-image-compression";
 import {generateThumbnail} from "@/utils/imageUtils/generateThumb.ts";
 import UploadSetting from "@/components/ImageUpload/UploadSetting.vue";
 
-// const route = useRoute();
+const route = useRoute();
 
 const fileList = ref([]);
 const predicting = ref<boolean>(false);
 const progressPercent = ref<number>(0);
 const progressStatus = ref<string>('active');
 
-// const accessToken = computed(() => {
-//   const token = route.query.token;
-//   return Array.isArray(token) ? token[0] : token;
-// });
-// const userId = computed(() => {
-//   const uid = route.query.user_id;
-//   return Array.isArray(uid) ? uid[0] : uid;
-// });
+const accessToken = computed(() => {
+  const token = route.query.token;
+  return Array.isArray(token) ? token[0] : token;
+});
+const userId = computed(() => {
+  const uid = route.query.user_id;
+  return Array.isArray(uid) ? uid[0] : uid;
+});
 
 
 const upload = useStore().upload;
@@ -100,8 +100,8 @@ const {send: getAlbumList} = useRequest(albumListApi, {
   immediate: false,
   debounce: 500,
 }).onSuccess((res: any) => {
-  if (res && res.code === 200) {
-    albumList.value = res.data.albums;
+  if (res.data && res.data.code === 200) {
+    albumList.value = res.data.data.albums;
   }
 });
 
@@ -142,7 +142,10 @@ async function customUploadRequest(file: any) {
         }
       },
   );
-  submitFile(formData).then((response: any) => {
+  submitFile(formData, {
+    'Authorization': `Bearer ${accessToken.value}`,
+    'X-UID': userId.value,
+  }).then((response: any) => {
     if (response && response.code === 200) {
       file.onSuccess(response.data, file);
     } else {
@@ -153,7 +156,10 @@ async function customUploadRequest(file: any) {
 
 
 onMounted(() => {
-  getAlbumList(0, true);
+  getAlbumList(0, true, {
+    'Authorization': `Bearer ${accessToken.value}`,
+    'X-UID': userId.value,
+  });
 });
 
 

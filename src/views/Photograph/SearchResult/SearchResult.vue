@@ -24,10 +24,29 @@ import useStore from "@/store";
 import ImageToolbar from "@/components/ImageToolbar/ImageToolbar.vue";
 
 import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
+import {imageSearchApi} from "@/api/storage";
 
 const searchStore = useStore().search;
 const imageStore = useStore().image;
 const router = useRouter();
+const route = useRoute();
+
+async function search() {
+  const params: any = {
+    type: route.query.type as string,
+    keyword: route.query.keyword as string,
+    provider: route.query.provider as string,
+    bucket: route.query.bucket as string,
+  };
+  const res: any = await imageSearchApi(params);
+  if (res && res.code === 200) {
+    searchStore.searchResult = res.data.records;
+  }
+}
+
+onMounted(() => {
+  search();
+});
 onBeforeUnmount(() => {
   searchStore.searchResult = [];
 });

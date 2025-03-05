@@ -9,7 +9,6 @@ import {AntDesignVueResolver} from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite';
 import {chunkSplitPlugin} from 'vite-plugin-chunk-split';
 import vitePluginBundleObfuscator from 'vite-plugin-bundle-obfuscator';
-
 const defaultObfuscatorConfig: any = {
     excludes: [],
     enable: true,

@@ -9,6 +9,7 @@
               :style="{borderRadius: borderRadius, boxShadow: boxShadow}"
               :placeholder="searchStore.searchOption[0]? '#'+searchStore.searchOption[0] : '搜索...'"
               @pressEnter="search"
+              :allowClear="true "
       >
         <template #suffix>
           <AButton size="small" type="text" shape="circle" @click.prevent>
@@ -55,6 +56,38 @@
               style="border-radius: 20px"
           />
         </div>
+        <div class="header-search-picture" v-if="searchStore.searchOption[0] === 'picture'">
+          <AUpload
+              v-model:file-list="fileList"
+              name="avatar"
+              list-type="picture-card"
+              class="avatar-uploader"
+              :show-upload-list="false"
+              :before-upload="beforeUpload"
+              :custom-request="customRequest"
+          >
+            <img v-if="iconUrl" :src="iconUrl" alt="avatar" style="width: 100%; height: 100%;border-radius: 8px"/>
+            <div v-else>
+              <loading-outlined v-if="loading"></loading-outlined>
+              <plus-outlined v-else></plus-outlined>
+              <div class="ant-upload-text">Upload</div>
+            </div>
+          </AUpload>
+          <div class="header-search-picture-info" v-if="fileInfo">
+            <AFlex :vertical="false" align="center" gap="small">
+              <span style="font-size: 13px; color: #999999">文件名:</span>
+              <span style="font-size: 16px; font-weight: bolder">{{ fileInfo.name }}</span>
+            </AFlex>
+            <AFlex :vertical="false" align="center" gap="small">
+              <span style="font-size: 13px; color: #999999">类型:</span>
+              <ATag>{{ fileInfo.type }}</ATag>
+            </AFlex>
+            <AFlex :vertical="false" align="center" gap="small">
+              <span style="font-size: 13px; color: #999999">大小:</span>
+              <ATag>{{ bytesToSize(fileInfo.size) }}</ATag>
+            </AFlex>
+          </div>
+        </div>
         <!--          <AFlex :vertical="false" align="center" justify="space-between" class="header-search-content-header">-->
         <!--            <span>搜索历史</span>-->
         <!--            <AButton type="text" size="small" style="color: #707072">清空搜索历史</AButton>-->
@@ -79,6 +112,12 @@ import useStore from "@/store";
 import 'dayjs/locale/zh-cn';
 import dayjs, {Dayjs} from 'dayjs';
 import {imageSearchApi} from "@/api/storage";
+import {NSFWJS} from "nsfwjs";
+import {initNSFWJs, predictNSFW} from "@/utils/tfjs/nsfw.ts";
+import {message} from "ant-design-vue";
+import i18n from "@/locales";
+import {bytesToSize} from "@/utils/imageUtils/bytesToSize.ts";
+import {cocoSsdPredict} from "@/utils/tfjs/mobilenet.ts";
 
 dayjs.locale('zh-cn');
 const borderRadius = ref('20px');
@@ -152,7 +191,6 @@ async function search() {
     keyword: searchStore.searchValue,
     provider: uploadStore.storageSelected?.[0],
     bucket: uploadStore.storageSelected?.[1],
-    input_image: "123"
   };
   const res: any = await imageSearchApi(params);
   if (res && res.code === 200) {
@@ -161,11 +199,44 @@ async function search() {
       path: '/main/photo/search/list', query: {
         type: searchStore.searchOption[0],
         keyword: searchStore.searchValue,
+        provider: uploadStore.storageSelected?.[0],
+        bucket: uploadStore.storageSelected?.[1],
       }
     });
   }
 }
 
+const fileList = ref([]);
+const loading = ref<boolean>(false);
+const iconUrl = ref<string>('');
+const image = new Image();
+
+const beforeUpload = async (file: any) => {
+  loading.value = true;
+  image.src = URL.createObjectURL(file);
+  // 图片 NSFW 检测
+  const nsfw: NSFWJS = await initNSFWJs();
+  const isNSFW: boolean = await predictNSFW(nsfw, image);
+  if (isNSFW) {
+    message.error(i18n.global.t('comment.illegalImage'));
+    return false;
+  }
+  image.onload = async () => {
+
+  };
+  const cocoResults: any = await cocoSsdPredict(image);
+  searchStore.searchValue = cocoResults.map(item => item.class).join(',');
+
+  iconUrl.value = URL.createObjectURL(file);
+  loading.value = false;
+  return true;
+};
+const fileInfo = ref<any>();
+
+function customRequest(file: any) {
+
+  fileInfo.value = file.file;
+}
 </script>
 
 

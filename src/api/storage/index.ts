@@ -350,6 +350,7 @@ export const getStorageConfigListApi = () => {
             signature: false,
         },
         name: "storage-config-list",
+        hitSource: ["delete-storage-config", "add-storage-config"]
     });
 };
 /**
@@ -507,5 +508,56 @@ export const downloadAlbumImagesApi = (id: number, provider: string, bucket: str
             signature: false,
         },
         name: "download-album-images",
+    });
+};
+/**
+ * 获取用户存储配置
+ */
+export const listUserStorageConfigApi = () => {
+    return service.Post('/api/auth/storage/user/storage/list', {}, {
+        cacheFor: {
+            expire: 60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "list-user-storage-config",
+        hitSource: ["delete-storage-config", "add-storage-config"],
+    });
+};
+/**
+ * 创建存储配置
+ * @param id
+ * @param provider
+ * @param bucket
+ */
+export const deleteStorageConfigApi = (id: number, provider: string, bucket: string) => {
+    return service.Post('/api/auth/storage/config/delete', {
+        id: id,
+        provider: provider,
+        bucket: bucket,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "delete-storage-config",
+    });
+};
+/**
+ * 创建存储配置
+ * @param params
+ */
+export const addStorageConfigApi = (params: any) => {
+    return service.Post('/api/auth/storage/config/add', {
+        ...params,
+    }, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "add-storage-config",
     });
 };

@@ -216,6 +216,11 @@ const editImages = async () => {
   image.onload = () => {
     imageStore.imageEditVisible = true;
   };
+  image.onerror = () => {
+    message.warning("图片已过期，请刷新后重试");
+    imageStore.selected = [];
+    imageStore.imageEditVisible = false;
+  };
 };
 
 
@@ -285,7 +290,6 @@ async function addImagesToAlbum(albumId: number) {
  */
 function handleImageEditClose() {
   imageStore.selected = [];
-  image.src = '';
   imageStore.imageEditVisible = false;
 }
 

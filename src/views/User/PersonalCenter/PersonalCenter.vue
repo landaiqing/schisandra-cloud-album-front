@@ -34,24 +34,6 @@
           </template>
           <span class="ant-menu-item-title">动态</span>
         </AMenuItem>
-        <AMenuItem key="info" :style="menuCSSStyle" title="个人信息">
-          <template #icon>
-            <AAvatar shape="square" size="small" :src="personal_info"/>
-          </template>
-          <span class="ant-menu-item-title">个人信息</span>
-        </AMenuItem>
-        <AMenuItem key="analysis" :style="menuCSSStyle" title="数据分析">
-          <template #icon>
-            <AAvatar shape="square" size="small" :src="data_analysis"/>
-          </template>
-          <span class="ant-menu-item-title">数据分析</span>
-        </AMenuItem>
-        <AMenuItem key="share" :style="menuCSSStyle" title="我的分享">
-          <template #icon>
-            <AAvatar shape="square" size="small" :src="share"/>
-          </template>
-          <span class="ant-menu-item-title">我的分享</span>
-        </AMenuItem>
         <AMenuItem key="setting" :style="menuCSSStyle" title="设置">
           <template #icon>
             <AAvatar shape="square" size="small" :src="setting"/>
@@ -60,7 +42,8 @@
         </AMenuItem>
       </AMenu>
       <div class="personal-center-content-container">
-        <router-view/>
+        <router-view>
+        </router-view>
       </div>
     </div>
   </div>
@@ -69,11 +52,8 @@
 import Header from "@/layout/default/Header/Header.vue";
 import useStore from "@/store";
 import home from "@/assets/svgs/home.svg";
-import data_analysis from "@/assets/svgs/data_analysis.svg";
 import dynamic from "@/assets/svgs/dynamic.svg";
-import share from "@/assets/svgs/share.svg";
 import setting from "@/assets/svgs/setting.svg";
-import personal_info from "@/assets/svgs/personal-center.svg";
 
 
 const userStore = useStore().user;
@@ -92,7 +72,7 @@ function handleClick({key}) {
 </script>
 <style scoped lang="scss">
 .personal-center {
-  background-color: #eaeef6;
+  //background-color: #eaeef6;
 
   .personal-center-header {
     width: 100%;
@@ -169,9 +149,10 @@ function handleClick({key}) {
     }
 
     .personal-center-content-container {
-      width: 100%;
-      height: calc(100vh - 250px);
-      display: flex;
+      width: calc(100% - 40px);
+      height: calc(100vh - 290px);
+      padding: 20px;
+      overflow: auto;
     }
   }
 }

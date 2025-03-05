@@ -155,7 +155,7 @@ import wenhao from "@/assets/svgs/wenhao.svg";
 import useStore from "@/store";
 import ImageUpload from "@/components/ImageUpload/ImageUpload.vue";
 import {getStorageConfigListApi} from "@/api/storage";
-import {ProviderIcon} from "@/constant/provider_icon.ts";
+import {ProviderIcon} from "@/constant/provider_map.ts";
 
 const router = useRouter();
 

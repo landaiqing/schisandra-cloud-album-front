@@ -47,6 +47,9 @@ const menuCSSStyle: any = reactive({
 });
 const router = useRouter();
 
+// const route = useRoute();
+
+
 function handleClick({key}) {
   menuStore.accountSettingMenu = key;
   router.push(`/main/user/setting/${key}`);
