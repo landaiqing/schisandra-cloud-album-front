@@ -4,7 +4,7 @@ import {service} from "@/utils/alova/service.ts";
  * 上传分享图片
  * @param formData
  */
-export const shareImageUploadApi = (formData) => {
+export const shareImageUploadApi = (formData: any) => {
     return service.Post('/api/auth/share/upload', {...formData}, {
         meta: {
             ignoreToken: false,
@@ -48,11 +48,13 @@ export const queryShareRecordListApi = (dataRequest: string[]) => {
             ignoreToken: false,
             signature: false,
         },
+        hitSource: ["upload-share-image", "delete-share-record"]
     });
 };
 /**
  * 查询分享信息
  * @param invite_code
+ * @param access_password
  */
 export const queryShareInfoApi = (invite_code: string, access_password: string) => {
     return service.Post('/api/auth/share/info', {
@@ -82,6 +84,7 @@ export const queryShareOverviewApi = () => {
             ignoreToken: false,
             signature: false,
         },
+        hitSource: ["upload-share-image", "delete-share-record"]
     });
 };
 /**
@@ -100,5 +103,6 @@ export const deleteShareRecordApi = (id: number, invite_code: string, album_id: 
             ignoreToken: false,
             signature: false,
         },
+        name: 'delete-share-record',
     });
 };

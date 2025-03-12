@@ -77,10 +77,7 @@ export async function loadCocoSsdModel() {
 }
 
 // 加载 COCO SSD 模型的工具函数
-// 使用提取的加载模型工具函数
-export async function cocoSsdPredict(image) {
-    // 初始化 TensorFlow.js
-    tf.setBackend('webgl');
+export async function cocoSsdPredict(image: any) {
     if (!(await initializeTensorFlow())) {
         return [];
     }

@@ -170,7 +170,7 @@ export const useAuthStore = defineStore(
         persistedState: {
             persist: true,
             storage: localStorage,
-            key: 'user',
+            key: 'STORE-USER',
             includePaths: ['user', 'token', "clientId"]
         }
     }

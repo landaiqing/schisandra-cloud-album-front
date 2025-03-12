@@ -45,7 +45,7 @@
     <div class="upload-container">
       <AUploadDragger
           v-model:fileList="upload.fileList"
-          :beforeUpload="upload.beforeUpload"
+          :beforeUpload="upload.beforeUploadWithWebWorker"
           :customRequest="customUploadRequest"
           :directory="false"
           :maxCount="10"

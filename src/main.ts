@@ -10,8 +10,6 @@ import {createPersistedStatePlugin} from 'pinia-plugin-persistedstate-2';
 import VueDOMPurifyHTML from 'vue-dompurify-html';
 import {registerDirectives} from "@/directives";
 
-import VueCalendarMap from '@fcli/vue-calendar-map';
-
 const pinia: Pinia = createPinia();
 const installPersistedStatePlugin = createPersistedStatePlugin();
 pinia.use((context) => installPersistedStatePlugin(context));
@@ -22,5 +20,4 @@ app.use(router);
 app.use(i18n);
 app.use(GoCaptcha);
 app.use(VueDOMPurifyHTML);
-app.use(VueCalendarMap);
 app.mount('#app');

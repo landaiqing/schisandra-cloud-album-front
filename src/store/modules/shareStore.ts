@@ -31,7 +31,7 @@ export const useShareStore = defineStore(
         persistedState: {
             persist: true,
             storage: sessionStorage,
-            key: 'share',
+            key: 'STORE-SHARE',
             includePaths: ['sharePassword']
         }
     }

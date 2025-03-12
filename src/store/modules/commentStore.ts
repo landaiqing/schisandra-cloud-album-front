@@ -342,7 +342,7 @@ export const useCommentStore = defineStore(
         persistedState: {
             persist: true,
             storage: localForage,
-            key: 'comment',
+            key: 'STORE-COMMENT',
             includePaths: ["emojiList", "commentList", "replyVisibility", "commentMap"]
         }
     }

@@ -57,7 +57,7 @@ export const useSearchStore = defineStore(
         persistedState: {
             persist: true,
             storage: localStorage,
-            key: 'search',
+            key: 'STORE-SEARCH',
             includePaths: ['searchOption', 'options']
         }
     }

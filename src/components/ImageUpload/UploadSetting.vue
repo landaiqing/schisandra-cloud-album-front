@@ -113,6 +113,34 @@
         </template>
       </ASwitch>
     </div>
+    <div class="upload-setting-item">
+      <AFlex :vertical="false" align="center" justify="flex-start" gap="middle">
+        <AAvatar size="default" shape="square" :src="lock"/>
+        <span class="upload-setting-item-name">图像加密</span>
+      </AFlex>
+      <ASwitch v-model:checked="uploadStore.uploadSetting.encrypt">
+        <template #checkedChildren>
+          <check-outlined/>
+        </template>
+        <template #unCheckedChildren>
+          <close-outlined/>
+        </template>
+      </ASwitch>
+    </div>
+    <div class="upload-setting-item">
+      <AFlex :vertical="false" align="center" justify="flex-start" gap="middle">
+        <AAvatar size="default" shape="square" :src="blur"/>
+        <span class="upload-setting-item-name">模糊检测</span>
+      </AFlex>
+      <ASwitch v-model:checked="uploadStore.uploadSetting.blur_detection">
+        <template #checkedChildren>
+          <check-outlined/>
+        </template>
+        <template #unCheckedChildren>
+          <close-outlined/>
+        </template>
+      </ASwitch>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -125,7 +153,8 @@ import gps from "@/assets/svgs/gps.svg";
 import target from "@/assets/svgs/target.svg";
 import qr from "@/assets/svgs/qr.svg";
 import face_detection from "@/assets/svgs/face_detection.svg";
-
+import lock from "@/assets/svgs/lock.svg";
+import blur from "@/assets/svgs/blur.svg";
 const uploadStore = useStore().upload;
 
 

@@ -187,7 +187,6 @@ export const useUpscaleStore = defineStore(
                     wasmModule.value._free(sourcePtr);
                     wasmModule.value._free(targetPtr);
                 }
-
             }
 
 
@@ -232,7 +231,7 @@ export const useUpscaleStore = defineStore(
             persistedState: {
                 persist: false,
                 storage: localForage,
-                key: 'upscale',
+                key: 'STORE-UPSCALE',
                 includePaths: [],
             }
         }

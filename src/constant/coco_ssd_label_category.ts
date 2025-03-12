@@ -220,30 +220,30 @@ export const LABEL_TO_CATEGORY = new Map<string, { en: string, zh: string }>([
 ]);
 
 // 获取标签所属大类的函数，支持英文和中文返回
-export function getCategoryByLabel(label: string, lang: 'en' | 'zh' = 'en'): string | undefined {
+export function getCategoryByLabel(label: string, lang: 'en' | 'zh' = 'en'): string | null {
     const category = LABEL_TO_CATEGORY.get(label);
-    return category ? category[lang] : undefined;
+    return category ? category[lang] : null;
 }
 
 // 获取标签所属大类的函数，支持英文和中文返回
-export function getCategoryName(label: string, lang: 'en' | 'zh' = 'en'): string | undefined {
+export function getCategoryName(label: string, lang: 'en' | 'zh' = 'en'): string | null {
     const category = CATEGORIES[label];
-    return category ? category[lang] : undefined;
+    return category ? category[lang] : null;
 }
 
 // 获取标签的小分类名称
-export function getLabelName(label: string, lang: 'en' | 'zh' = 'en'): string | undefined {
+export function getLabelName(label: string, lang: 'en' | 'zh' = 'en'): string | null {
     const labelInfo = LABELS[label];
-    return labelInfo ? labelInfo[lang] : undefined;
+    return labelInfo ? labelInfo[lang] : null;
 }
 
 // 获取标签的中文名称
-export const getZhCategoryNameByEnName = (enName: string): string | undefined => {
+export const getZhCategoryNameByEnName = (enName: string): string | null => {
     const category = Object.values(CATEGORIES).find(cat => cat.en.toLowerCase() === enName.toLowerCase());
-    return category?.zh;
+    return category?.zh || null;
 };
 // 获取标签的中文名称
-export const getZhLabelNameByEnName = (enName: string): string | undefined => {
+export const getZhLabelNameByEnName = (enName: string): string | null => {
     const labelInfo = LABELS[enName.toLowerCase()];
     return labelInfo?.zh;
 };

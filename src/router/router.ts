@@ -9,6 +9,8 @@ import mainRouter from "./modules/main_router.ts";
 import i18n from "@/locales";
 import phone_upload from "@/router/modules/phone_upload.ts";
 import user from "@/router/modules/user.ts";
+import system from "@/router/modules/system.ts";
+import preview from "@/router/modules/preview.ts";
 
 const routes: Array<RouteRecordRaw> = [
     ...login,
@@ -17,10 +19,12 @@ const routes: Array<RouteRecordRaw> = [
     ...mainRouter,
     ...phone_upload,
     ...user,
+    ...system,
+    ...preview,
     {
         path: '/:pathMatch(.*)',
         redirect: '/404',
-    }
+    },
 ];
 
 const router: Router = createRouter({

@@ -37,29 +37,45 @@ export async function animePredictImagePro(imageElement) {
 
     // 进行推理
     const prediction: any = model.predict(imageNormalized);
-
-
     const predictedClass = tf.argMax(prediction, 1).dataSync()[0];
-    // const predictedClassConfidence = await prediction.dataSync()[predictedClass].toFixed(2);
-    // console.log(`预测结果: ${predictedClassName}(${predictedClassConfidence})`);
     return ['Anime', 'Furry', 'Neutral'][predictedClass];
 }
 
-// export async function animePredictImagePro(width: number, height: number, uint8Array: Uint8Array) {
-//
-//     const model: any = await loadModel();
-//     // 将图片转换为张量
-//     const tensor = tf.tensor3d(uint8Array, [height, width, 3], 'int32').toFloat();
-//     const imageResized = tf.image.resizeBilinear(tensor, [224, 224]);
-//     const imageReshaped = imageResized.reshape([1, 224, 224, 3]);
-//     const imageNormalized = imageReshaped.div(255);
-//
-//     // 进行推理
-//     const prediction: any = model.predict(imageNormalized);
-//
-//
-//     const predictedClass = tf.argMax(prediction, 1).dataSync()[0];
-//     // const predictedClassConfidence = await prediction.dataSync()[predictedClass].toFixed(2);
-//     // console.log(`预测结果: ${predictedClassName}(${predictedClassConfidence})`);
-//     return ['Anime', 'Furry', 'Neutral'][predictedClass];
-// }
+// 接收张量进行推理的函数
+export async function animePredictTensor(tensor: tf.Tensor3D | tf.Tensor4D) {
+    const model: any = await loadAnimeClassifierProModel();
+
+    // 确保张量是4D的 [batch, height, width, channels]
+    let processedTensor: tf.Tensor4D;
+    if (tensor.rank === 3) {
+        // 如果是3D张量 [height, width, channels]，转换为4D
+        processedTensor = tf.expandDims(tensor, 0) as tf.Tensor4D;
+    } else {
+        processedTensor = tensor as tf.Tensor4D;
+    }
+
+    // 调整大小、归一化
+    const imageResized = tf.image.resizeBilinear(processedTensor, [224, 224]);
+    const imageNormalized = imageResized.div(255);
+
+    // 进行推理
+    const prediction: any = model.predict(imageNormalized);
+
+    const predictedClass = tf.argMax(prediction, 1).dataSync()[0];
+    return ['Anime', 'Furry', 'Neutral'][predictedClass];
+}
+
+// 接收ImageData进行推理的函数
+export async function animePredictImageData(imageData: ImageData) {
+    const model: any = await loadAnimeClassifierProModel();
+    // 将ImageData转换为张量
+    const tensor = tf.browser.fromPixels(imageData).toFloat();
+    const imageResized = tf.image.resizeBilinear(tensor, [224, 224]);
+    const imageReshaped = imageResized.reshape([1, 224, 224, 3]);
+    const imageNormalized = imageReshaped.div(255);
+
+    // 进行推理
+    const prediction: any = model.predict(imageNormalized);
+    const predictedClass = tf.argMax(prediction, 1).dataSync()[0];
+    return ['Anime', 'Furry', 'Neutral'][predictedClass];
+}

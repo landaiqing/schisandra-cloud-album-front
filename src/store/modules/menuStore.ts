@@ -17,7 +17,7 @@ export const useMenuStore = defineStore(
         persistedState: {
             persist: true,
             storage: localStorage,
-            key: 'menu',
+            key: 'STORE-MENU',
             includePaths: ['currentMenu', 'userCenterMenu', 'accountSettingMenu']
         }
     }

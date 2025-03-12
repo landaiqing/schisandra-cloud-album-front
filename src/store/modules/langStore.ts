@@ -15,7 +15,7 @@ export const langStore = defineStore(
         persistedState: {
             persist: true,
             storage: localStorage,
-            key: 'lang',
+            key: 'STORE-LANGUAGE',
             includePaths: ['lang']
         }
     }

@@ -55,7 +55,6 @@ export const useImageStore = defineStore(
         const imageEditVisible = ref<boolean>(false);
 
 
-
         /**
          * 获取人脸列表
          */
@@ -138,7 +137,7 @@ export const useImageStore = defineStore(
         persistedState: {
             persist: true,
             storage: localForage,
-            key: 'image',
+            key: 'STORE-IMAGE',
             includePaths: [
                 "tabActiveKey",
                 "tabMap",

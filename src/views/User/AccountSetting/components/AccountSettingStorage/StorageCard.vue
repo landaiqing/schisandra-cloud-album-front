@@ -51,7 +51,6 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps} from 'vue';
 import bucket from "@/assets/svgs/bucket.svg";
 import time from "@/assets/svgs/time.svg";
 import location from "@/assets/svgs/location-album.svg";
