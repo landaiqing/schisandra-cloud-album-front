@@ -13,30 +13,46 @@
                        placeholder="选择存储桶">
             </ACascader>
           </template>
-          <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
-            <template #icon>
-              <AAvatar size="default" shape="circle" :src="ProviderIcon[uploadStore.storageSelected?.[0]]? ProviderIcon[uploadStore.storageSelected?.[0]] : wenhao"/>
-            </template>
-          </AButton>
+          <ATooltip title="选择存储桶" color="orange">
+            <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
+              <template #icon>
+                <AAvatar size="default" shape="circle"
+                         :src="ProviderIcon[uploadStore.storageSelected?.[0]]? ProviderIcon[uploadStore.storageSelected?.[0]] : wenhao"/>
+              </template>
+            </AButton>
+          </ATooltip>
         </APopover>
       </div>
 
       <!--  社区按钮 -->
-<!--      <div class="button-wrapper">-->
-<!--        <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">-->
-<!--          <template #icon>-->
-<!--            <AAvatar size="default" shape="circle" :src="community"/>-->
-<!--          </template>-->
-<!--        </AButton>-->
-<!--      </div>-->
+      <!--      <div class="button-wrapper">-->
+      <!--        <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">-->
+      <!--          <template #icon>-->
+      <!--            <AAvatar size="default" shape="circle" :src="community"/>-->
+      <!--          </template>-->
+      <!--        </AButton>-->
+      <!--      </div>-->
       <!--  上传按钮 -->
+
       <div class="button-wrapper">
-        <AButton type="text" shape="circle" size="large" class="header-menu-item-btn"
-                 @click="uploadStore.openUploadDrawerFn">
-          <template #icon>
-            <AAvatar size="default" shape="circle" :src="upload"/>
-          </template>
-        </AButton>
+        <ATooltip title="隐私空间" color="geekblue">
+          <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
+            <template #icon>
+              <AAvatar size="default" shape="circle" :src="privacy"/>
+            </template>
+          </AButton>
+        </ATooltip>
+      </div>
+
+      <div class="button-wrapper">
+        <ATooltip title="上传" color="cyan">
+          <AButton type="text" shape="circle" size="large" class="header-menu-item-btn"
+                   @click="uploadStore.openUploadDrawerFn">
+            <template #icon>
+              <AAvatar size="default" shape="circle" :src="upload"/>
+            </template>
+          </AButton>
+        </ATooltip>
       </div>
 
       <!--  通知按钮 -->
@@ -47,11 +63,13 @@
           }">
         <div class="button-wrapper">
           <ADropdown :trigger="['click']">
-            <AButton type="text" shape="circle" size="large" class="header-menu-item-btn bouncing-button">
-              <template #icon>
-                <AAvatar size="small" shape="circle" :src="notice"/>
-              </template>
-            </AButton>
+            <ATooltip title="通知" color="lime">
+              <AButton type="text" shape="circle" size="large" class="header-menu-item-btn bouncing-button">
+                <template #icon>
+                  <AAvatar size="small" shape="circle" :src="notice"/>
+                </template>
+              </AButton>
+            </ATooltip>
             <template #overlay>
               <AMenu>
                 <AMenuItem key="reply" :style="menuCSSStyle">
@@ -82,7 +100,9 @@
     <AFlex :vertical="false" align="center" justify="flex-start" class="header-user-container">
       <APopover :arrow="false" trigger="click" placement="bottomRight">
         <div class="avatar-wrapper">
-          <AAvatar :size="40" class="header-user-avatar" :src="user.user.avatar"/>
+          <ATooltip :title="user.user.nickname" color="#108ee9">
+            <AAvatar :size="40" class="header-user-avatar" :src="user.user.avatar"/>
+          </ATooltip>
         </div>
         <template #content>
           <div class="avatar-content">
@@ -151,7 +171,7 @@ import personalCenter from "@/assets/svgs/personal-center.svg";
 import accountSetting from "@/assets/svgs/setting.svg";
 import logout from "@/assets/svgs/logout.svg";
 import wenhao from "@/assets/svgs/wenhao.svg";
-
+import privacy from "@/assets/svgs/privacy.svg";
 import useStore from "@/store";
 import ImageUpload from "@/components/ImageUpload/ImageUpload.vue";
 import {getStorageConfigListApi} from "@/api/storage";
@@ -176,6 +196,7 @@ const menuCSSStyle: any = reactive({
   display: 'flex',
   alignItems: 'center',
 });
+
 
 
 onMounted(() => {

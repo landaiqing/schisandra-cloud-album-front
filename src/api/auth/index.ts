@@ -16,3 +16,15 @@ export const checkSecuritySettingApi = () => {
         name: "check-security-setting",
     });
 };
+/**
+ * 退出登录
+ */
+export const userLogoutApi = () => {
+    return service.Post('/api/auth/user/logout', {}, {
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "user-logout",
+    });
+};

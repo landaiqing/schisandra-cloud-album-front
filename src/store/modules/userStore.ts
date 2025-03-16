@@ -3,6 +3,7 @@ import {generateClientId} from "@/api/client";
 import {message} from "ant-design-vue";
 import {useI18n} from "vue-i18n";
 import {getGiteeUrl, getGithubUrl, getQQUrl} from "@/api/oauth";
+import {userLogoutApi} from "@/api/auth";
 
 export const useAuthStore = defineStore(
     'user',
@@ -145,6 +146,19 @@ export const useAuthStore = defineStore(
             user.status = "";
         }
 
+        /**
+         * Logout the user and clear the token and user info
+         */
+        async function logout() {
+            const res: any = await userLogoutApi();
+            if (res && res.code === 200) {
+                localStorage.removeItem('STORE-USER');
+                setTimeout(() => {
+                    router.push('/login');
+                }, 1000);
+            }
+        }
+
 
         return {
             user,
@@ -157,7 +171,8 @@ export const useAuthStore = defineStore(
             openGithubUrl,
             openGiteeUrl,
             openQQUrl,
-            clear
+            clear,
+            logout,
         };
     },
     {

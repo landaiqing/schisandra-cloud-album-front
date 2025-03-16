@@ -3,6 +3,14 @@
     <div class="location-album-header">
       <AButton type="link" size="large" class="location-album-button">地点</AButton>
       <span class="location-album-count">你一共在{{ locationAlbums ? locationAlbums.length : 0 }}个地点留下足迹</span>
+      <ATooltip title="点击查看地图" placement="bottom">
+        <AButton type="text" size="large" shape="default" class="location-album-button" @click="toMap()">
+          <template #icon>
+            <AAvatar shape="square" size="default" :src="map"></AAvatar>
+          </template>
+        </AButton>
+      </ATooltip>
+
     </div>
     <div class="location-album-content" v-if="locationAlbums && locationAlbums.length>0 ">
       <div class="location-album-content-item" v-for="(item, index) in locationAlbums" :key="index">
@@ -35,6 +43,7 @@
 import {queryLocationAlbumApi} from "@/api/storage";
 import useStore from "@/store";
 import empty from "@/assets/svgs/empty.svg";
+import map from "@/assets/svgs/map.svg";
 
 const route = useRoute();
 const router = useRouter();
@@ -51,6 +60,10 @@ async function getLocationAlbums(provider: string, bucket: string) {
   if (res && res.code === 200) {
     locationAlbums.value = res.data.records;
   }
+}
+
+function toMap() {
+  router.push({path: route.path + "/map"});
 }
 
 onMounted(() => {

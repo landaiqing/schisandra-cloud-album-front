@@ -61,19 +61,19 @@
                 </AInput>
               </div>
               <div class="people-album-item-name" v-show="item.face_name">
-                <AButton @click="showAddNameInput(index)" class="people-album-add-name" v-show="!item.showInput"
+                <AButton @click.stop="showAddNameInput(index)" class="people-album-add-name" v-show="!item.showInput"
                          type="link"
                          size="small">
                   {{ item.face_name }}
                 </AButton>
-                <AInput v-model:value="addNameInputValue" autofocus v-show="item.showInput"
+                <AInput v-model:value="addNameInputValue" autofocus @click.stop v-show="item.showInput"
                         @blur="hideAddNameInput(index)" size="small"
                         :maxlength="10"
                         :placeholder="item.face_name"
                         class="people-album-add-input">
                   <template #suffix>
                     <AButton type="link" style="font-size: 12px;" size="small" @mousedown.prevent
-                             @click="modifyFaceName(item.id,index)">完成
+                             @click.stop="modifyFaceName(item.id,index)">完成
                     </AButton>
                   </template>
                 </AInput>

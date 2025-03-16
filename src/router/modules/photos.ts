@@ -1,5 +1,6 @@
 import AllPhoto from "@/views/Photograph/AllPhoto/AllPhoto.vue";
 import RecentUpload from "@/views/Photograph/RecentUpload/RecentUpload.vue";
+import PrivacySpace from "@/views/Photograph/PrivacySpace/PrivacySpace.vue";
 
 export default [
     {
@@ -18,6 +19,15 @@ export default [
         meta: {
             requiresAuth: true,
             title: '最近上传'
+        },
+    },
+    {
+        path: '/main/photo/privacy/space',
+        name: 'privacy',
+        component: PrivacySpace,
+        meta: {
+            requiresAuth: true,
+            title: '隐私空间'
         },
     },
 ];

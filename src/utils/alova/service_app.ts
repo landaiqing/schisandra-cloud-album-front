@@ -68,9 +68,10 @@ export const service = createAlova({
             if (response.data instanceof Blob) {
                 return response;
             }
+            const userStore = useStore().user;
             const {code} = response.data;
             if (code === 403) {
-                localStorage.removeItem('user');
+                await userStore.logout();
                 Modal.warning({
                     title: i18n.global.t('error.loginExpired'),
                     content: i18n.global.t('error.authTokenExpired'),

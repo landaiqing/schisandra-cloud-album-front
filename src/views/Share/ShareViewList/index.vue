@@ -14,14 +14,14 @@
         <div class="share-content-verify"
              v-if="imageList && imageList.length === 0 && !getPassword">
           <AInputPassword size="large" placeholder="请输入访问密码" style="width: 20%"
-                          @pressEnter="(e)=>getShareImages(e.target.value)"/>
+                          @keyup.enter="(e)=>getShareImages(e.target.value)"/>
           <p style="font-size: 12px;color: #999;">回车后可查看图片列表</p>
         </div>
         <div v-else class="share-content-list">
           <ImageWaterfallList :image-list="imageList"/>
         </div>
       </div>
-      <AFloatButton tooltip="评论" :badge="{ count: 5, color: 'green' }"
+      <AFloatButton v-if="imageList && imageList.length > 0" tooltip="评论" :badge="{ count: 0, color: 'green' }"
                     @click="shareStore.setOpenCommentDrawer(true)"
       >
         <template #icon>
@@ -42,6 +42,7 @@ import {queryShareImageApi, queryShareInfoApi} from "@/api/share";
 import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
 import useStore from "@/store";
 import CommentModal from "@/views/Share/ShareViewList/CommentModal.vue";
+import {message} from "ant-design-vue";
 
 const imageList = ref<any[]>([]);
 
@@ -65,6 +66,9 @@ async function getShareImages(password: string) {
     imageList.value = res.data.records;
     shareStore.addPassword(code, password);
     await getShareInfo(code, password);
+  } else {
+    imageList.value = [];
+    message.warning(res.msg);
   }
   imageStore.imageListLoading = false;
 }

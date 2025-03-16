@@ -8,7 +8,6 @@ import {predictLandscapeImageData} from '@/utils/tfjs/landscape_recognition';
 import {cocoSsdPredict} from '@/utils/tfjs/mobilenet';
 import {getCategoryByLabel} from '@/constant/coco_ssd_label_category';
 
-// 初始化TensorFlow后端
 tf.setBackend('webgl').then();
 
 // 定义消息接口
@@ -32,8 +31,6 @@ interface ImageAnalysisResponse {
     topCategory?: string | null;
     error?: string;
 }
-
-// 注意：不再需要将ArrayBuffer转换为张量的函数，因为我们直接使用ImageData对象
 
 // 主要的处理函数
 async function processImage(data: ImageAnalysisRequest): Promise<ImageAnalysisResponse> {

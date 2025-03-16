@@ -10,6 +10,7 @@ import PhoalbumDetail from "@/views/Album/Phoalbum/PhoalbumDetail.vue";
 import PeopleAlbumDetail from "@/views/Album/PeopleAlbum/PeopleAlbumDetail.vue";
 import LocationAlbumDetail from "@/views/Album/LocationAlbum/LocationAlbumDetail.vue";
 import ThingAlbumDetail from "@/views/Album/ThingAlbum/ThingAlbumDetail.vue";
+import LocationCoordinateMap from "@/views/Album/LocationAlbum/Components/LocationCoordinateMap.vue";
 
 export default [
     {
@@ -111,5 +112,14 @@ export default [
                 },
             }
         ]
+    },
+    {
+        path: '/main/album/location/map',
+        component: LocationCoordinateMap,
+        name: 'locationMap',
+        meta: {
+            requiresAuth: true,
+            title: '地点地图'
+        },
     },
 ];

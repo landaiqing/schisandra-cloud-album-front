@@ -24,7 +24,7 @@ export const queryShareImageApi = (invite_code: string, access_password: string)
         access_password: access_password,
     }, {
         cacheFor: {
-            expire: 60 * 60 * 24 * 7,
+            expire: 60 * 5,
             mode: "restore",
         },
         meta: {

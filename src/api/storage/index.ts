@@ -595,3 +595,44 @@ export const getShareStatisticsInfoApi = () => {
         hitSource: ["upload-file", "upload-share-image"],
     });
 };
+/**
+ * 获取私密相册列表
+ * @param provider
+ * @param bucket
+ * @param password
+ */
+export const getPrivateImageListApi = (provider: string, bucket: string, password: string) => {
+    return service.Post('/api/auth/storage/image/private/list', {
+        provider: provider,
+        bucket: bucket,
+        password: password,
+    }, {
+        cacheFor: {
+            expire: 60 * 5,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "get-private-image-list",
+        hitSource: ["upload-file", "delete-images"],
+    });
+};
+/**
+ * 获取坐标列表
+ */
+export const getCoordinateListApi = () => {
+    return service.Post('/api/auth/storage/coordinate/list', {}, {
+        cacheFor: {
+            expire:60 * 60 * 24 * 7,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "get-coordinate-list",
+        hitSource: ["upload-file", "delete-images"],
+    });
+};
