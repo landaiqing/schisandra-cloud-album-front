@@ -1,6 +1,7 @@
 <template>
   <Spin tip="Loading..." :spinning="imageStore.albumListLoading" size="middle">
-    <div class="phoalbum-item-container" v-if="imageStore.albumList">
+    <div class="phoalbum-item-container"
+         v-if="imageStore.albumList && uploadStore.storageSelected?.[0] && uploadStore.storageSelected?.[1]">
       <div class="phoalbum-item"
            v-for="(album, index) in imageStore.albumList"
            :key="album.id"
@@ -125,6 +126,10 @@ async function deleteAlbum(id: number) {
  * @param id
  */
 async function downloadAlbumImage(id: number) {
+  if (!uploadStore.storageSelected?.[0] || !uploadStore.storageSelected?.[1]) {
+    message.error("请选择存储配置");
+    return;
+  }
   if (!id) {
     return;
   }

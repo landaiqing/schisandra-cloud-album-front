@@ -12,7 +12,8 @@
       </ATooltip>
 
     </div>
-    <div class="location-album-content" v-if="locationAlbums && locationAlbums.length>0 ">
+    <div class="location-album-content"
+         v-if="locationAlbums && locationAlbums.length>0 && upload.storageSelected?.[0] && upload.storageSelected?.[1] ">
       <div class="location-album-content-item" v-for="(item, index) in locationAlbums" :key="index">
         <span class="location-album-description">{{ item.location }}</span>
         <div class="location-album-location-list">
@@ -44,6 +45,7 @@ import {queryLocationAlbumApi} from "@/api/storage";
 import useStore from "@/store";
 import empty from "@/assets/svgs/empty.svg";
 import map from "@/assets/svgs/map.svg";
+import {message} from "ant-design-vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -56,6 +58,10 @@ function handleClick(id: number, name: string) {
 const locationAlbums = ref<any[]>([]);
 
 async function getLocationAlbums(provider: string, bucket: string) {
+  if (!upload.storageSelected?.[0] || !upload.storageSelected?.[1]) {
+    message.error("请选择存储配置");
+    return;
+  }
   const res: any = await queryLocationAlbumApi(provider, bucket);
   if (res && res.code === 200) {
     locationAlbums.value = res.data.records;

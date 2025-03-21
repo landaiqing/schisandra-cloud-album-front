@@ -152,18 +152,19 @@ const {uploading, send: submitFile, abort} = useRequest(uploadFile, {
  * @param file
  */
 async function customUploadRequest(file: any) {
+  const formData = new FormData();
+
   const compressedFile = await imageCompression(file.file, upload.options);
-  // 生成缩略图
   const {binaryData, width, height, size} = await generateThumbnail(compressedFile);
   upload.predictResult.thumb_w = width;
   upload.predictResult.thumb_h = height;
   upload.predictResult.thumb_size = size;
-
-  const formData = new FormData();
-  formData.append("file", file.file);
   if (binaryData) {
     formData.append("thumbnail", binaryData);
   }
+
+
+  formData.append("file", file.file);
   formData.append("data", JSON.stringify({
     provider: upload.storageSelected?.[0],
     bucket: upload.storageSelected?.[1],

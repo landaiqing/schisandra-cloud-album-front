@@ -25,18 +25,27 @@
       </div>
 
       <!--  社区按钮 -->
-      <!--      <div class="button-wrapper">-->
-      <!--        <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">-->
-      <!--          <template #icon>-->
-      <!--            <AAvatar size="default" shape="circle" :src="community"/>-->
-      <!--          </template>-->
-      <!--        </AButton>-->
-      <!--      </div>-->
+      <div class="button-wrapper">
+        <ATooltip title="工具箱" color="cyan">
+          <APopover placement="bottom" trigger="click">
+            <template #content>
+              <div class="tool-box-content">
+              </div>
+            </template>
+            <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
+              <template #icon>
+                <AAvatar size="default" shape="circle" :src="toolBox"/>
+              </template>
+            </AButton>
+          </APopover>
+        </ATooltip>
+      </div>
       <!--  上传按钮 -->
 
       <div class="button-wrapper">
         <ATooltip title="隐私空间" color="geekblue">
-          <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
+          <AButton type="text" shape="circle" size="large" class="header-menu-item-btn"
+                   @click="router.push('/main/photo/privacy/space')">
             <template #icon>
               <AAvatar size="default" shape="circle" :src="privacy"/>
             </template>
@@ -176,6 +185,7 @@ import useStore from "@/store";
 import ImageUpload from "@/components/ImageUpload/ImageUpload.vue";
 import {getStorageConfigListApi} from "@/api/storage";
 import {ProviderIcon} from "@/constant/provider_map.ts";
+import toolBox from "@/assets/svgs/tool-box.svg";
 
 const router = useRouter();
 
@@ -196,7 +206,6 @@ const menuCSSStyle: any = reactive({
   display: 'flex',
   alignItems: 'center',
 });
-
 
 
 onMounted(() => {
@@ -358,6 +367,13 @@ onMounted(() => {
     }
   }
 
+}
+.tool-box-content {
+  width: 150px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 

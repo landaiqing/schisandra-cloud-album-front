@@ -18,7 +18,8 @@
     <PeopleAlbumToolbar :face-list="imageStore.faceList"/>
     <div class="people-album-container">
       <Spin :spinning="imageStore.faceListLoading" size="large" indicator="spin-dot">
-        <div class="people-album-content" v-if="imageStore.faceList.length !== 0">
+        <div class="people-album-content"
+             v-if="imageStore.faceList.length !== 0 && upload.storageSelected?.[0] && upload.storageSelected?.[1]">
           <CheckCard
               v-for="(item, index) in imageStore.faceList"
               :key="index"
@@ -106,6 +107,7 @@ import PeopleAlbumToolbar from "@/views/Album/PeopleAlbum/PeopleAlbumToolbar.vue
 const addNameInputValue = ref<string>('');
 
 const imageStore = useStore().image;
+const upload =useStore().upload;
 
 function showAddNameInput(index: number) {
   if (imageStore.faceList[index]) {

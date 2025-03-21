@@ -11,6 +11,7 @@ import {axiosRequestAdapter} from "@alova/adapter-axios";
 import {refreshToken} from "@/api/user";
 import generateKeySecretSignature from "@/utils/signature/signature.ts";
 import {handleErrorCode} from "@/utils/errorCode/errorCodeHandler.ts";
+import localForage from "localforage";
 
 
 const {onAuthRequired, onResponseRefreshToken} = createServerTokenAuthentication<typeof VueHook,
@@ -68,14 +69,14 @@ export const service = createAlova({
             if (response.data instanceof Blob) {
                 return response;
             }
-            const userStore = useStore().user;
             const {code} = response.data;
             if (code === 403) {
-                await userStore.logout();
                 Modal.warning({
                     title: i18n.global.t('error.loginExpired'),
                     content: i18n.global.t('error.authTokenExpired'),
                     onOk() {
+                        localStorage.clear();
+                        localForage.clear();
                         setTimeout(() => {
                             window.location.href = '/login';
                         }, 1000);

@@ -21,3 +21,14 @@ export const getSlideCaptchaDataApi = () => {
     });
 
 };
+/**
+ * 获取文字验证码图片数据
+ */
+export const getTextCaptchaDataApi = () => {
+    return service.Get('/api/captcha/text/generate', {
+        meta: {
+            ignoreToken: false
+        },
+    });
+
+};

@@ -19,16 +19,16 @@
         <div class="main-content">
           <AForm>
             <div style="padding: 1px; margin: 5px 0">
-              <AFormItem v-bind="formUse.validateInfos.username">
+              <AFormItem v-bind="formUse.validateInfos.account">
                 <AInput
-                    v-model:value="formModel.username"
+                    v-model:value="formModel.account"
                     placeholder="请输入账号"
                     size="large"
                     type="text"
                     @pressEnter="doLogin"
                 >
                   <template #prefix>
-                    <UserOutlined :style="formStates.username ? { color: '#c0c0c0' } : {}"/>
+                    <UserOutlined :style="formStates.account ? { color: '#c0c0c0' } : {}"/>
                   </template>
                 </AInput>
               </AFormItem>
@@ -48,12 +48,6 @@
                   </template>
                 </AInput>
               </AFormItem>
-            </div>
-
-            <div style="padding: 0 5px; overflow: hidden">
-              <ACheckbox v-model:checked="formModel.rememberMe">
-                自动登录
-              </ACheckbox>
             </div>
 
             <AFormItem style="margin: 30px 0 0">
@@ -79,27 +73,57 @@
       </div>
     </div>
   </div>
+  <AModal v-model:open="showTextCaptcha" :footer="null" :closable="false" width="375" :centered="true"
+          :maskClosable="false" :bodyStyle="{padding: 0}">
+    <gocaptcha-click
+        :config="{}"
+        :data="{
+        image: captchaData.image,
+        thumb: captchaData.thumb,
+      }"
+        :events="textCaptchaEvent"
+        ref="captcha"
+    />
+  </AModal>
 </template>
 
 <script setup lang="ts">
 import {UserOutlined, LockOutlined} from '@ant-design/icons-vue';
-// import {notification} from 'ant-design-vue';
+import {notification} from 'ant-design-vue';
 import Form from 'ant-design-vue/es/form';
+import {getTextCaptchaDataApi} from "@/api/captcha";
+import {useThrottleFn} from "@vueuse/core";
+import {adminAccountLoginApi} from "@/api/admin";
+import useStore from "@/store";
 
 
 defineOptions({name: 'Login'});
 
 const loading = ref(false);
 // const router = useRouter();
-
+const captcha = ref(null);
+const captchaData = ref<any>({});
+const showTextCaptcha = ref(false);
+const systemStore = useStore().system;
 const formModel = reactive({
-  username: '',
+  account: '',
   password: '',
-  rememberMe: true,
 });
+const textCaptchaEvent: any = {
+  confirm: (dots: any, reset: () => void) => {
+    confirmTextCaptcha(dots, reset);
+  },
+  close: () => {
+    showTextCaptcha.value = false;
+    loading.value = false;
+  },
+  refresh: () => {
+    refreshCaptcha();
+  },
+};
 
 const formRules = reactive({
-  username: [
+  account: [
     {
       required: true,
       message: '请输入用户名',
@@ -114,7 +138,7 @@ const formRules = reactive({
 });
 
 const formStates = reactive({
-  username: computed(() => formUse.validateInfos.username.validateStatus !== 'error'),
+  account: computed(() => formUse.validateInfos.account.validateStatus !== 'error'),
   password: computed(() => formUse.validateInfos.password.validateStatus !== 'error'),
 });
 
@@ -126,41 +150,74 @@ const formUse = Form.useForm(
 const doLogin = async () => {
   try {
     await formUse.validate();
-
-    // const success = (_: any) => {
-    //   notification.success({
-    //     message: '系统提示',
-    //     duration: 0.8,
-    //     description: `欢迎回来`,
-    //     onClose: () => {
-    //       loading.value = false;
-    //       router.push({path: '/'});
-    //     },
-    //   });
-    // };
-    //
-    // const failure = (err: any) => {
-    //   if (err.message) {
-    //     notification.error({
-    //       message: '系统提示',
-    //       duration: 0.8,
-    //       description: err.message,
-    //       onClose: () => {
-    //         loading.value = false;
-    //       },
-    //     });
-    //   }
-    //   setTimeout(() => {
-    //     loading.value = false;
-    //   }, 500);
-    // };
-
+    getTextCaptcha().then(() => {
+      showTextCaptcha.value = true;
+    });
     loading.value = true;
-
   } catch (err) {
-    console.error(err);
+    showTextCaptcha.value = false;
+    loading.value = false;
+    console.warn(err);
   }
 };
+
+async function getTextCaptcha() {
+  const res: any = await getTextCaptchaDataApi();
+  if (res && res.code === 200) {
+    captchaData.value = {
+      key: res.data.key,
+      image: res.data.image,
+      thumb: res.data.thumb,
+    };
+  }
+}
+
+const refreshCaptcha = useThrottleFn(getTextCaptcha, 3000);
+
+async function confirmTextCaptcha(dots: any, reset: () => void) {
+  const dotArr: any[] = [];
+  for (let i = 0; i < dots.length; i++) {
+    const dot: any = dots[i];
+    dotArr.push(dot.x, dot.y);
+  }
+  const params: any = {
+    dots: dotArr.join(','),
+    account: formModel.account,
+    password: formModel.password,
+    key: captchaData.value.key,
+  };
+  const res: any = await adminAccountLoginApi(params);
+  if (res && res.code === 200) {
+    const {uid, access_token, expire_at, username, avatar, nickname, status} = res.data;
+    systemStore.admin.uid = uid;
+    systemStore.admin.username = username;
+    systemStore.admin.avatar = avatar;
+    systemStore.admin.nickname = nickname;
+    systemStore.admin.status = status;
+    systemStore.token.accessToken = access_token;
+    systemStore.token.expire_at = expire_at;
+    notification.success({
+      message: `系统提示`,
+      duration: 2,
+      description: "欢迎回来！",
+      onClose: () => {
+        loading.value = false;
+      },
+    });
+  } else {
+    notification.warning({
+      message: `系统提示`,
+      duration: 2,
+      description: res.msg,
+      onClose: () => {
+        loading.value = false;
+      },
+    });
+    await refreshCaptcha();
+  }
+  reset();
+  showTextCaptcha.value = false;
+}
 </script>
 
 <style lang="less" scoped>

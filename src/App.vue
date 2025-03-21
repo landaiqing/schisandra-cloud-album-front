@@ -4,9 +4,9 @@
       :theme="app.themeConfig"
   >
     <router-view v-slot="{ Component }">
-      <transition name="animation" mode="out-in">
-        <component :is="Component"/>
-      </transition>
+      <!--      <transition name="animation" mode="out-in">-->
+      <component :is="Component"/>
+      <!--      </transition>-->
     </router-view>
   </AConfigProvider>
 </template>

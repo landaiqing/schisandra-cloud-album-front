@@ -62,6 +62,10 @@ const access_password = ref<string>("");
  * 创建分享
  */
 async function createShare() {
+  if (!upload.storageSelected?.[0] || !upload.storageSelected?.[1]) {
+    message.error("请选择存储配置");
+    return;
+  }
   const res: any = await albumShareApi(
       imageStore.albumShareId,
       expire_date.value,

@@ -85,6 +85,10 @@ const upload = useStore().upload;
 
 
 async function getImageList(id: number) {
+  if (!upload.storageSelected?.[0] || !upload.storageSelected?.[1]) {
+    message.error("请选择存储配置");
+    return;
+  }
   imageStore.imageListLoading = true;
   const res: any = await queryAlbumDetailListApi(id, upload.storageSelected?.[0], upload.storageSelected?.[1], parseInt(route.query.type as string));
   if (res && res.code === 200) {

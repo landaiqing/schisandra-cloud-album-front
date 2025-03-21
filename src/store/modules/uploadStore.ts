@@ -112,7 +112,7 @@ export const useUploadStore = defineStore(
         const image = new Image();
         // 压缩图片配置
         const options = reactive({
-            maxSizeMB: 0.4,
+            maxSizeMB: 0.3,
             maxWidthOrHeight: 750,
             maxIteration: 2,
             useWebWorker: true,

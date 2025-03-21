@@ -77,7 +77,7 @@ function handleClick({key}) {
   .personal-center-header {
     width: 100%;
     height: 200px;
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2)), url("@/assets/images/bg.webp");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2)), url("@/assets/images/bg_1.png");
     background-size: cover;
     background-position: center;
     position: relative;

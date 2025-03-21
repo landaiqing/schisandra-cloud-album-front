@@ -34,7 +34,7 @@ export const useSearchStore = defineStore(
                 icon: image
             }
         ]);
-        const searchOption = ref<string>(options[0].value);
+        const searchOption = ref<string[]>([options[0].value]);
         const searchValue = ref<string>('');
 
         const getIconByValue = (value: string) => {

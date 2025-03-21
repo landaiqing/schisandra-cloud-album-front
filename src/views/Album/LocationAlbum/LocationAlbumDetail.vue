@@ -23,6 +23,7 @@ import useStore from "@/store";
 import ImageToolbar from "@/components/ImageToolbar/ImageToolbar.vue";
 
 import ImageWaterfallList from "@/components/ImageWaterfallList/ImageWaterfallList.vue";
+import {message} from "ant-design-vue";
 
 const imageStore = useStore().image;
 const imageList = ref<any[]>([]);
@@ -33,6 +34,10 @@ const upload = useStore().upload;
 
 
 async function getImageList(id: number) {
+  if (!upload.storageSelected?.[0] || !upload.storageSelected?.[1]) {
+    message.error("请选择存储配置");
+    return;
+  }
   imageStore.imageListLoading = true;
   const res: any = await queryLocationDetailListApi(id, upload.storageSelected?.[0], upload.storageSelected?.[1]);
   console.log(res);

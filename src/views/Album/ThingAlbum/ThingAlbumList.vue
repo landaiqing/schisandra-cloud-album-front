@@ -5,7 +5,8 @@
       <AButton type="link" size="large" class="thing-album-button">事物</AButton>
 
     </div>
-    <div class="thing-album-content" v-if="albumList && albumList.length>0">
+    <div class="thing-album-content"
+         v-if="albumList && albumList.length>0 && upload.storageSelected?.[0] && upload.storageSelected?.[1]">
       <div class="thing-album-content-item" v-for="(item, index) in albumList" :key="index">
         <span class="thing-album-title">{{ getZhCategoryNameByEnName(item.category) }}</span>
         <div class="thing-album-wrapper">
@@ -39,12 +40,17 @@ import {queryThingAlbumApi} from "@/api/storage";
 import {getZhCategoryNameByEnName, getZhLabelNameByEnName} from "@/constant/coco_ssd_label_category.ts";
 import useStore from "@/store";
 import empty from "@/assets/svgs/empty.svg";
+import {message} from "ant-design-vue";
 
 
 const albumList = ref<any[]>([]);
 
-async function getAlbumList(provider: string, bucket: string) {
-  const res: any = await queryThingAlbumApi(provider, bucket);
+async function getAlbumList() {
+  if (!upload.storageSelected?.[0] || !upload.storageSelected?.[1]) {
+    message.error("请选择存储配置");
+    return;
+  }
+  const res: any = await queryThingAlbumApi(upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {
     albumList.value = res.data.records;
   }
@@ -65,7 +71,7 @@ function handleClick(id: string, category: string, tag: string) {
 }
 
 onMounted(() => {
-  getAlbumList(upload.storageSelected?.[0], upload.storageSelected?.[1]);
+  getAlbumList();
 });
 
 </script>

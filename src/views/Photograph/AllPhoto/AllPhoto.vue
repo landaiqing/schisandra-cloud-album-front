@@ -84,6 +84,10 @@ const router = useRouter();
  * 获取所有图片
  */
 async function getAllImages(type: string) {
+  if (!upload.storageSelected?.[0] || !upload.storageSelected?.[1]) {
+    message.error("请选择存储配置");
+    return;
+  }
   imageList.value = [];
   imageStore.imageListLoading = true;
   const res: any = await queryAllImagesApi(type, imageStore.switchValue, upload.storageSelected?.[0], upload.storageSelected?.[1]);

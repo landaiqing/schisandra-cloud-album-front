@@ -24,19 +24,25 @@
                          :iconSize="20"
                          :showSelectedEffect="true"
                          :value="item.id">
-                <AImage :src="item.thumbnail"
-                        :alt="item.file_name"
-                        :key="index"
-                        :height="200"
-                        :fallback="cover_image"
-                        style="height: 200px;max-width: 800px;object-fit: cover;"
-                        :preview="{
-                                src: item.url,
+                <div @click="getSingleUrl(item.id)">
+                  <AImage
+                      :alt="item.file_name"
+                      :key="index"
+                      :height="200"
+                      :src="item.thumbnail"
+                      :fallback="cover_image"
+                      style="height: 200px;max-width: 800px;object-fit: cover;"
+                      :preview="{
+                            src: url,
+                            visible,
+                            onVisibleChange: setVisible,
                         }"
-                        loading="lazy">
-                  <template #previewMask>
-                  </template>
-                </AImage>
+                      loading="lazy">
+                    <template #previewMask>
+                      <span>{{ item.file_name }}</span>
+                    </template>
+                  </AImage>
+                </div>
               </CheckCard>
             </div>
           </div>
@@ -64,7 +70,10 @@ import useStore from "@/store";
 import complete from '@/assets/svgs/complete.svg';
 import stop from '@/assets/svgs/stop.svg';
 import greyComplete from '@/assets/svgs/grey-complete.svg';
+import {getPrivateImageSingleUrlApi} from "@/api/storage";
+import Spin from "@/components/MyUI/Spin/Spin.vue";
 import cover_image from "@/assets/svgs/cover_image.svg";
+
 const props = defineProps({
   imageList: {
     type: Array as () => any[],
@@ -74,7 +83,7 @@ const props = defineProps({
 const iconSize = ref(23);
 const imageStore = useStore().image;
 const upload = useStore().upload;
-
+const sysStore = useStore().system;
 const toggleGroup = (group: any) => {
   const currentIds = group.list.map((item: any) => item.id);
   const allSelected = currentIds.every(id =>
@@ -119,6 +128,22 @@ const hasSelected = computed(() => (group: any) => {
       imageStore.selected.includes(item.id)
   );
 });
+
+
+const visible = ref<boolean>(false);
+const setVisible = (value: boolean): void => {
+  if (url.value) {
+    visible.value = value;
+  }
+};
+const url = ref<string>("");
+
+async function getSingleUrl(id: number) {
+  const res: any = await getPrivateImageSingleUrlApi(id, sysStore.privacyPassword, upload.storageSelected?.[0], upload.storageSelected?.[1]);
+  if (res && res.code === 200) {
+    url.value = "data:image/jpeg;base64," + res.data;
+  }
+}
 
 
 </script>

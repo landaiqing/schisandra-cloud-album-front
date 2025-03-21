@@ -55,6 +55,10 @@ const imageList = ref<any[]>([]);
 
 
 const getRecentImages = async () => {
+  if (!upload.storageSelected?.[0] || !upload.storageSelected?.[1]) {
+    message.error("请选择存储配置");
+    return;
+  }
   imageStore.imageListLoading = true;
   const res: any = await queryRecentImagesApi(upload.storageSelected?.[0], upload.storageSelected?.[1]);
   if (res && res.code === 200) {

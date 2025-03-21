@@ -600,12 +600,16 @@ export const getShareStatisticsInfoApi = () => {
  * @param provider
  * @param bucket
  * @param password
+ * @param key
+ * @param dots
  */
-export const getPrivateImageListApi = (provider: string, bucket: string, password: string) => {
+export const getPrivateImageListApi = (provider: string, bucket: string, password: string, key: string, dots: any) => {
     return service.Post('/api/auth/storage/image/private/list', {
         provider: provider,
         bucket: bucket,
         password: password,
+        key: key,
+        dots: dots,
     }, {
         cacheFor: {
             expire: 60 * 5,
@@ -625,7 +629,7 @@ export const getPrivateImageListApi = (provider: string, bucket: string, passwor
 export const getCoordinateListApi = () => {
     return service.Post('/api/auth/storage/coordinate/list', {}, {
         cacheFor: {
-            expire:60 * 60 * 24 * 7,
+            expire: 60 * 60 * 24 * 7,
             mode: "restore",
         },
         meta: {
@@ -634,5 +638,30 @@ export const getCoordinateListApi = () => {
         },
         name: "get-coordinate-list",
         hitSource: ["upload-file", "delete-images"],
+    });
+};
+/**
+ * 获取单个隐私照片url
+ * @param id
+ * @param provider
+ * @param bucket
+ * @param password
+ */
+export const getPrivateImageSingleUrlApi = (id: number,password: string, provider: string, bucket: string, ) => {
+    return service.Post('/api/auth/storage/image/private/url/single', {
+        id: id,
+        provider: provider,
+        bucket: bucket,
+        password: password,
+    }, {
+        cacheFor: {
+            expire: 60 * 60 * 24,
+            mode: "restore",
+        },
+        meta: {
+            ignoreToken: false,
+            signature: false,
+        },
+        name: "get-private-image-single-url",
     });
 };
