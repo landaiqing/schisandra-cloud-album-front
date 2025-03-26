@@ -49,7 +49,7 @@
       </div>
     </div>
     <!--      二维码  -->
-    <div class="canvas-qr">
+    <div class="canvas-qr" v-if="user.settings.enableMobileUpload">
       <AQrcode :bordered="false" color="rgba(126, 126, 135, 0.48)"
                :size="qrcodeSize"
                :value="generateQrCodeUrl()"

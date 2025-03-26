@@ -21,7 +21,7 @@
           <ImageWaterfallList :image-list="imageList"/>
         </div>
       </div>
-      <AFloatButton v-if="imageList && imageList.length > 0" tooltip="评论" :badge="{ count: 0, color: 'green' }"
+      <AFloatButton v-if="imageList && imageList.length > 0 && userStore.settings.enableComment" tooltip="评论" :badge="{ count: 0, color: 'green' }"
                     @click="shareStore.setOpenCommentDrawer(true)"
       >
         <template #icon>
@@ -50,6 +50,7 @@ const route = useRoute();
 
 const imageStore = useStore().image;
 const shareStore = useStore().share;
+const userStore = useStore().user;
 const shareInfo = ref<any>();
 
 

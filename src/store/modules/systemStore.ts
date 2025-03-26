@@ -18,25 +18,11 @@ export const useSystemStore = defineStore(
 
         const privacyPassword = ref<string>('');
 
-        const privacyImageData = reactive<Record<string, string>>({});
-
-        const getPrivacyImage = (key: string): string | undefined => {
-            return privacyImageData[key];
-        };
-
-        // 添加密码（保持相同API）
-        const addPrivacyImage = (key: string, imageData: string) => {
-            privacyImageData[key] = imageData;
-        };
-
         return {
             isCollapsed,
             admin,
             token,
             privacyPassword,
-            privacyImageData,
-            getPrivacyImage,
-            addPrivacyImage,
         };
     },
     {
@@ -45,7 +31,7 @@ export const useSystemStore = defineStore(
             persist: true,
             storage: localForage,
             key: 'STORE-SYSTEM',
-            includePaths: ['isCollapsed', 'admin', "privacyPassword", "privacyImageData"],
+            includePaths: ['isCollapsed', 'admin', "privacyPassword"],
         },
     }
 );

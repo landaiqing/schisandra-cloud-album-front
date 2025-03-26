@@ -29,6 +29,12 @@
         </template>
         <span class="ant-menu-item-title">存储管理</span>
       </AMenuItem>
+      <AMenuItem title="图像备份" key="backup" :style="menuCSSStyle">
+        <template #icon>
+          <AAvatar shape="square" size="small" :src="backup"/>
+        </template>
+        <span class="ant-menu-item-title">图像备份</span>
+      </AMenuItem>
 
     </AMenu>
   </div>
@@ -39,6 +45,7 @@ import useStore from "@/store";
 import home from "@/assets/svgs/home.svg";
 import peopleAlbum from "@/assets/svgs/people-album.svg";
 import storage from "@/assets/svgs/storage.svg";
+import backup from "@/assets/svgs/source-storage.svg";
 
 const menuStore = useStore().menu;
 const menuCSSStyle: any = reactive({

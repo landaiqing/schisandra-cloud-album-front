@@ -383,12 +383,12 @@ const handleUserModalOk = () => {
         }
       } else {
         // 新增用户
-        const newId = Math.max(...userList.value.map(item => item.id)) + 1;
+        const id = Math.max(...userList.value.map(item => item.id)) + 1;
         const roleText = userForm.role === 'admin' ? '管理员' : (userForm.role === 'vip' ? 'VIP用户' : '普通用户');
         const statusText = userForm.status === 'active' ? '正常' : (userForm.status === 'inactive' ? '禁用' : '待审核');
         const now = new Date().toLocaleString();
         userList.value.push({
-          id: newId,
+          id,
           ...userForm,
           roleText,
           statusText,

@@ -4,6 +4,7 @@ import {message} from "ant-design-vue";
 import {useI18n} from "vue-i18n";
 import {getGiteeUrl, getGithubUrl, getQQUrl} from "@/api/oauth";
 import {userLogoutApi} from "@/api/auth";
+import {ref} from "vue";
 
 export const useAuthStore = defineStore(
     'user',
@@ -25,6 +26,38 @@ export const useAuthStore = defineStore(
         const qqRedirectUrl = ref<string>('');
         const router = useRouter();
         const {t} = useI18n();
+        const settings = reactive({
+            enableAI: true,
+            enableMobileUpload: true,
+            publicProfile: true,
+            enableComment: true,
+            saveSearchHistory: true
+        });
+        
+        // 邮箱弹窗状态
+        const emailModalState = reactive({
+            bindEmailVisible: false,
+            updateEmailVisible: false,
+            unbindEmailVisible: false
+        });
+
+        // 手机弹窗状态
+        const phoneModalState = reactive({
+            bindPhoneVisible: false,
+            updatePhoneVisible: false,
+            unbindPhoneVisible: false
+        });
+
+        // 密码弹窗状态
+        const passwordModalState = reactive({
+            setPasswordVisible: false,
+            updatePasswordVisible: false
+        });
+
+        // 第三方登录弹窗状态
+        const thirdPartyModalState = reactive({
+            visible: false
+        });
 
         /**
          * Get the redirect url of Github OAuth
@@ -160,10 +193,100 @@ export const useAuthStore = defineStore(
         }
 
 
+        // 打开绑定邮箱弹窗
+        function openBindEmailModal() {
+            emailModalState.bindEmailVisible = true;
+            emailModalState.updateEmailVisible = false;
+            emailModalState.unbindEmailVisible = false;
+        }
+
+        // 打开修改邮箱弹窗
+        function openUpdateEmailModal() {
+            emailModalState.bindEmailVisible = false;
+            emailModalState.updateEmailVisible = true;
+            emailModalState.unbindEmailVisible = false;
+        }
+
+        // 打开解绑邮箱弹窗
+        function openUnbindEmailModal() {
+            emailModalState.bindEmailVisible = false;
+            emailModalState.updateEmailVisible = false;
+            emailModalState.unbindEmailVisible = true;
+        }
+
+        // 关闭所有邮箱弹窗
+        function closeAllEmailModals() {
+            emailModalState.bindEmailVisible = false;
+            emailModalState.updateEmailVisible = false;
+            emailModalState.unbindEmailVisible = false;
+        }
+
+        // 打开绑定手机弹窗
+        function openBindPhoneModal() {
+            phoneModalState.bindPhoneVisible = true;
+            phoneModalState.updatePhoneVisible = false;
+            phoneModalState.unbindPhoneVisible = false;
+        }
+
+        // 打开修改手机弹窗
+        function openUpdatePhoneModal() {
+            phoneModalState.bindPhoneVisible = false;
+            phoneModalState.updatePhoneVisible = true;
+            phoneModalState.unbindPhoneVisible = false;
+        }
+
+        // 打开解绑手机弹窗
+        function openUnbindPhoneModal() {
+            // 移除解绑手机功能，保留函数但不执行任何操作
+            // 不再设置unbindPhoneVisible为true
+            phoneModalState.bindPhoneVisible = false;
+            phoneModalState.updatePhoneVisible = false;
+        }
+
+        // 关闭所有手机弹窗
+        function closeAllPhoneModals() {
+            phoneModalState.bindPhoneVisible = false;
+            phoneModalState.updatePhoneVisible = false;
+            phoneModalState.unbindPhoneVisible = false;
+        }
+
+        // 打开设置密码弹窗
+        function openSetPasswordModal() {
+            passwordModalState.setPasswordVisible = true;
+            passwordModalState.updatePasswordVisible = false;
+        }
+
+        // 打开修改密码弹窗
+        function openUpdatePasswordModal() {
+            passwordModalState.setPasswordVisible = false;
+            passwordModalState.updatePasswordVisible = true;
+        }
+
+        // 关闭所有密码弹窗
+        function closeAllPasswordModals() {
+            passwordModalState.setPasswordVisible = false;
+            passwordModalState.updatePasswordVisible = false;
+        }
+
+        // 打开第三方登录弹窗
+        function openThirdPartyModal() {
+            thirdPartyModalState.visible = true;
+        }
+
+        // 关闭第三方登录弹窗
+        function closeThirdPartyModal() {
+            thirdPartyModalState.visible = false;
+        }
+
         return {
             user,
             token,
             clientId,
+            settings,
+            emailModalState,
+            phoneModalState,
+            passwordModalState,
+            thirdPartyModalState,
             getGithubRedirectUrl,
             getGiteeRedirectUrl,
             getQQRedirectUrl,
@@ -173,6 +296,19 @@ export const useAuthStore = defineStore(
             openQQUrl,
             clear,
             logout,
+            openBindEmailModal,
+            openUpdateEmailModal,
+            openUnbindEmailModal,
+            closeAllEmailModals,
+            openBindPhoneModal,
+            openUpdatePhoneModal,
+            openUnbindPhoneModal,
+            closeAllPhoneModals,
+            openSetPasswordModal,
+            openUpdatePasswordModal,
+            closeAllPasswordModals,
+            openThirdPartyModal,
+            closeThirdPartyModal
         };
     },
     {
@@ -186,7 +322,7 @@ export const useAuthStore = defineStore(
             persist: true,
             storage: localStorage,
             key: 'STORE-USER',
-            includePaths: ['user', 'token', "clientId"]
+            includePaths: ['user', 'token', "clientId","settings","emailModalState","phoneModalState","passwordModalState","thirdPartyModalState"]
         }
     }
 );

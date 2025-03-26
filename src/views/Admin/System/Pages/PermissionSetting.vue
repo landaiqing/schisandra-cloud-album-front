@@ -332,7 +332,7 @@ const handlePermissionModalOk = () => {
         const statusText = permissionForm.status === 'active' ? '启用' : '禁用';
         const now = new Date().toLocaleString();
         permissionList.value.push({
-          id: newId,
+          newId,
           ...permissionForm,
           statusText,
           createTime: now

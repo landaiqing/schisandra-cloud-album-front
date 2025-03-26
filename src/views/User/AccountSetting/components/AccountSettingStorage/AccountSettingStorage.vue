@@ -1,20 +1,26 @@
 <template>
   <div class="account-setting-storage">
     <div class="account-setting-storage-header">
-      <AButton type="primary" size="middle" shape="default" @click="drawerVisible = true">
-        新增存储
-      </AButton>
-      <AButton type="default" size="middle" shape="circle" @click="getStorageList">
+      <span>存储管理</span>
+      <AButton type="text" size="large" shape="circle" @click="getStorageList">
         <template #icon>
           <RedoOutlined />
         </template>
       </AButton>
     </div>
     <div class="account-setting-storage-body" v-if="storageList && storageList.length>0">
-      <StorageCard v-for="(item, index) in storageList" :key="index" :storage="item"/>
+      <div class="storage-cards-container">
+        <StorageCard v-for="(item, index) in storageList" :key="index" :storage="item"/>
+      </div>
+      <div class="storage-action">
+        <AButton type="primary" size="large" @click="drawerVisible = true">
+          新增存储
+        </AButton>
+      </div>
     </div>
     <div class="account-setting-storage-empty" v-else>
       <AEmpty description="暂无存储策略"/>
+      <AButton type="primary" @click="drawerVisible = true">添加存储</AButton>
     </div>
     <ADrawer v-model:open="drawerVisible" placement="right" width="40%" title="新增存储策略">
       <AForm :model="formState" layout="vertical" @finish="onFinish" :rules="rules" ref="formRef"
@@ -164,46 +170,120 @@ onMounted(() => {
 </script>
 <style scoped lang="scss">
 .account-setting-storage {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
 
   .account-setting-storage-header {
-    width: 100%;
-    height: 50px;
     display: flex;
-    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    justify-content: flex-start;
-    gap: 20px;
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    background-color: var(--white-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+
+    span {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333333;
+      position: relative;
+      padding-left: 12px;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 18px;
+        background: #1890ff;
+        border-radius: 2px;
+      }
+    }
+
+    .ant-btn {
+      border-radius: 8px;
+      height: 40px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
   }
 
   .account-setting-storage-body {
-    width: 100%;
-    height: calc(100vh - 150px);
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    align-content: flex-start;
-    justify-content: flex-start;
-    gap: 20px;
+    background-color: var(--white-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+
+    .storage-cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .storage-action {
+      display: flex;
+      justify-content: center;
+      margin-top: 30px;
+
+      .ant-btn {
+        height: 48px;
+        padding: 0 40px;
+        font-size: 16px;
+        font-weight: 500;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #1890ff, #096dd9);
+        border: none;
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(24, 144, 255, 0.4);
+        }
+      }
+    }
   }
 
   .account-setting-storage-empty {
-    width: 100%;
-    height: calc(100vh - 150px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 60px 20px;
+    background-color: var(--white-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    .ant-btn {
+      margin-top: 20px;
+      height: 40px;
+      border-radius: 20px;
+      padding: 0 24px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+      }
+    }
   }
 }
 
 .two-col-form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 24px;
+
+  .form-item {
+    margin-bottom: 16px;
+  }
 }
-
-
 </style>

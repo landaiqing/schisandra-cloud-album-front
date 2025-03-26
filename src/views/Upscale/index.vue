@@ -33,15 +33,17 @@ const wsOptions = {
 };
 
 onMounted(() => {
-  websocket.initialize(wsOptions);
-  websocket.on("message", async (res: any) => {
-    if (res && res.code === 200) {
-      const {data} = res;
-      img.src = data;
-      await upscale.loadImg(img);
-      upscale.imageData = data;
-    }
-  });
+  if (user.settings.enableMobileUpload) {
+    websocket.initialize(wsOptions);
+    websocket.on("message", async (res: any) => {
+      if (res && res.code === 200) {
+        const {data} = res;
+        img.src = data;
+        await upscale.loadImg(img);
+        upscale.imageData = data;
+      }
+    });
+  }
 });
 watch(
     () => websocket.readyState,

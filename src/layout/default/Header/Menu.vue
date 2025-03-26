@@ -24,12 +24,35 @@
         </APopover>
       </div>
 
-      <!--  社区按钮 -->
+      <div class="button-wrapper">
+        <ATooltip title="图床" color="#f56c6c">
+          <AButton type="text" shape="circle" size="large" class="header-menu-item-btn"
+                   @click="router.push('/main/photo/image-bed')">
+            <template #icon>
+              <AAvatar size="default" shape="circle" :src="imgBed"/>
+            </template>
+          </AButton>
+        </ATooltip>
+      </div>
+
+      <!--  工具箱按钮 -->
       <div class="button-wrapper">
         <ATooltip title="工具箱" color="cyan">
           <APopover placement="bottom" trigger="click">
             <template #content>
               <div class="tool-box-content">
+                <ACard hoverable class="tool-box-card" @click="router.push('/preview/blur-detect')">
+                  <AFlex :vertical="false" align="center" justify="flex-start" gap="small">
+                    <AAvatar size="large" shape="square" :src="blur"/>
+                    <span class="tool-box-card-title">模糊检测</span>
+                  </AFlex>
+                </ACard>
+                <ACard hoverable class="tool-box-card" @click="router.push('/preview/ocr')">
+                  <AFlex :vertical="false" align="center" justify="flex-start" gap="small">
+                    <AAvatar size="large" shape="square" :src="scanIcon"/>
+                    <span class="tool-box-card-title">OCR文字识别</span>
+                  </AFlex>
+                </ACard>
               </div>
             </template>
             <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
@@ -186,7 +209,9 @@ import ImageUpload from "@/components/ImageUpload/ImageUpload.vue";
 import {getStorageConfigListApi} from "@/api/storage";
 import {ProviderIcon} from "@/constant/provider_map.ts";
 import toolBox from "@/assets/svgs/tool-box.svg";
-
+import blur from "@/assets/svgs/blur.svg";
+import scanIcon from "@/assets/svgs/scan.svg";
+import imgBed from "@/assets/svgs/img_bed.svg";
 const router = useRouter();
 
 
@@ -368,12 +393,34 @@ onMounted(() => {
   }
 
 }
+
 .tool-box-content {
-  width: 150px;
-  height: 200px;
+  width: 220px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+
+  .tool-box-card {
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    overflow: hidden;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .tool-box-card-title {
+      font-size: 14px;
+      font-weight: bolder;
+      margin-left: 5px;
+    }
+  }
 }
 
 

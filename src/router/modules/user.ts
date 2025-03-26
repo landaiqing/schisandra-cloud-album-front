@@ -6,6 +6,8 @@ import AccountSettingHome from "@/views/User/AccountSetting/components/AccountSe
 import AccountSettingInfo from "@/views/User/AccountSetting/components/AccountSettingInfo/AccountSettingInfo.vue";
 import AccountSettingStorage
     from "@/views/User/AccountSetting/components/AccountSettingStorage/AccountSettingStorage.vue";
+import AccountSettingBackup
+    from "@/views/User/AccountSetting/components/AccountSettingBackup/AccountSettingBackup.vue";
 
 export default [
     {
@@ -83,6 +85,15 @@ export default [
                 meta: {
                     requiresAuth: true,
                     title: '存储管理'
+                },
+            },
+            {
+                path: '/main/user/setting/backup',
+                name: 'AccountSettingBackup',
+                component: AccountSettingBackup,
+                meta: {
+                    requiresAuth: true,
+                    title: '图像备份'
                 },
             }
         ],

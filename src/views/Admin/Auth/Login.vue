@@ -100,11 +100,12 @@ import useStore from "@/store";
 defineOptions({name: 'Login'});
 
 const loading = ref(false);
-// const router = useRouter();
+const router = useRouter();
 const captcha = ref(null);
 const captchaData = ref<any>({});
 const showTextCaptcha = ref(false);
 const systemStore = useStore().system;
+
 const formModel = reactive({
   account: '',
   password: '',
@@ -196,6 +197,9 @@ async function confirmTextCaptcha(dots: any, reset: () => void) {
     systemStore.admin.status = status;
     systemStore.token.accessToken = access_token;
     systemStore.token.expire_at = expire_at;
+    setTimeout(() => {
+      router.push('/admin/system/index');
+    }, 1000);
     notification.success({
       message: `系统提示`,
       duration: 2,

@@ -275,11 +275,11 @@ const handleRoleModalOk = () => {
         }
       } else {
         // 新增角色
-        const newId = Math.max(...roleList.value.map(item => item.id)) + 1;
+        const id = Math.max(...roleList.value.map(item => item.id)) + 1;
         const statusText = roleForm.status === 'active' ? '启用' : '禁用';
         const now = new Date().toLocaleString();
         roleList.value.push({
-          id: newId,
+          id,
           ...roleForm,
           statusText,
           createTime: now,

@@ -598,6 +598,18 @@ export const useUploadStore = defineStore(
             await initBlurDetect();
         });
 
+        function closeAllUploadSetting() {
+            uploadSetting.nsfw_detection = false;
+            uploadSetting.gps_detection = false;
+            uploadSetting.screenshot_detection = false;
+            uploadSetting.anime_detection = false;
+            uploadSetting.target_detection = false;
+            uploadSetting.landscape_detection = false;
+            uploadSetting.qrcode_detection = false;
+            uploadSetting.blur_detection = false;
+            uploadSetting.encrypt = false;
+        }
+
 
         return {
             openUploadDrawer,
@@ -617,7 +629,8 @@ export const useUploadStore = defineStore(
             rejectFile,
             removeFile,
             blurDetectionControl,
-            beforeUploadWithWebWorker
+            beforeUploadWithWebWorker,
+            closeAllUploadSetting,
         };
     },
     {

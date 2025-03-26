@@ -3,7 +3,7 @@
     <template #extra>
       <AFlex :vertical="false" align="center" gap="large" justify="center">
 
-        <ATooltip title="手机扫码上传">
+        <ATooltip title="手机扫码上传" v-if="user.settings.enableMobileUpload">
           <AButton type="text" shape="default" size="middle" @click="initWebSocket">
             <template #icon>
               <APopover placement="bottom" trigger="click">
@@ -23,7 +23,7 @@
           </AButton>
         </ATooltip>
 
-        <AButton type="text" shape="circle" size="middle">
+        <AButton type="text" shape="circle" size="middle" v-if="user.settings.enableAI">
           <template #icon>
             <APopover placement="bottom" trigger="click">
               <template #content>
@@ -33,6 +33,7 @@
             </APopover>
           </template>
         </AButton>
+
         <ASelect size="middle" style="width: 150px" placeholder="选择上传的相册"
                  :options="albumList"
                  v-model:value="upload.albumSelected"
@@ -129,13 +130,15 @@ watch(
  *  初始化 WebSocket
  */
 function initWebSocket() {
-  websocket.initialize(wsOptions);
-  websocket.on("message", async (res: any) => {
-    if (res && res.code === 200) {
-      const {data} = res;
-      console.log(data);
-    }
-  });
+  if (user.settings.enableMobileUpload) {
+    websocket.initialize(wsOptions);
+    websocket.on("message", async (res: any) => {
+      if (res && res.code === 200) {
+        const {data} = res;
+        console.log(data);
+      }
+    });
+  }
 }
 
 

@@ -3,6 +3,7 @@ import albums from "@/router/modules/albums.ts";
 import recycling_bin from "@/router/modules/recycling_bin.ts";
 import share from "@/router/modules/share.ts";
 import upscale from "@/router/modules/upscale.ts";
+import image_bed from "@/router/modules/image_bed.ts";
 
 export default [
     {
@@ -20,6 +21,7 @@ export default [
             ...recycling_bin,
             ...share,
             ...upscale,
+            ...image_bed,
             {
                 path: '/main/photo/search/list',
                 name: 'photo-search-list',
