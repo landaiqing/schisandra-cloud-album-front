@@ -7,6 +7,7 @@
       :width="500"
       :maskClosable="false"
       @cancel="handleCancel"
+      :footer="null"
     >
       <div class="third-party-container">
         <div class="third-party-item">
@@ -22,18 +23,18 @@
             </div>
           </div>
           <div class="third-party-action">
-            <AButton 
-              type="primary" 
-              size="small" 
+            <AButton
+              type="primary"
+              size="small"
               :disabled="thirdPartyStatus.wechat"
               @click="handleBindThirdParty('wechat')"
             >
               {{ thirdPartyStatus.wechat ? '已绑定' : '绑定' }}
             </AButton>
-            <AButton 
-              v-if="thirdPartyStatus.wechat" 
-              type="link" 
-              danger 
+            <AButton
+              v-if="thirdPartyStatus.wechat"
+              type="link"
+              danger
               size="small"
               @click="handleUnbindThirdParty('wechat')"
             >
@@ -55,18 +56,18 @@
             </div>
           </div>
           <div class="third-party-action">
-            <AButton 
-              type="primary" 
-              size="small" 
+            <AButton
+              type="primary"
+              size="small"
               :disabled="thirdPartyStatus.qq"
               @click="handleBindThirdParty('qq')"
             >
               {{ thirdPartyStatus.qq ? '已绑定' : '绑定' }}
             </AButton>
-            <AButton 
-              v-if="thirdPartyStatus.qq" 
-              type="link" 
-              danger 
+            <AButton
+              v-if="thirdPartyStatus.qq"
+              type="link"
+              danger
               size="small"
               @click="handleUnbindThirdParty('qq')"
             >
@@ -88,18 +89,18 @@
             </div>
           </div>
           <div class="third-party-action">
-            <AButton 
-              type="primary" 
-              size="small" 
+            <AButton
+              type="primary"
+              size="small"
               :disabled="thirdPartyStatus.github"
               @click="handleBindThirdParty('github')"
             >
               {{ thirdPartyStatus.github ? '已绑定' : '绑定' }}
             </AButton>
-            <AButton 
-              v-if="thirdPartyStatus.github" 
-              type="link" 
-              danger 
+            <AButton
+              v-if="thirdPartyStatus.github"
+              type="link"
+              danger
               size="small"
               @click="handleUnbindThirdParty('github')"
             >
@@ -121,18 +122,18 @@
             </div>
           </div>
           <div class="third-party-action">
-            <AButton 
-              type="primary" 
-              size="small" 
+            <AButton
+              type="primary"
+              size="small"
               :disabled="thirdPartyStatus.gitee"
               @click="handleBindThirdParty('gitee')"
             >
               {{ thirdPartyStatus.gitee ? '已绑定' : '绑定' }}
             </AButton>
-            <AButton 
-              v-if="thirdPartyStatus.gitee" 
-              type="link" 
-              danger 
+            <AButton
+              v-if="thirdPartyStatus.gitee"
+              type="link"
+              danger
               size="small"
               @click="handleUnbindThirdParty('gitee')"
             >
@@ -141,10 +142,6 @@
           </div>
         </div>
       </div>
-
-      <template #footer>
-        <AButton key="back" @click="handleCancel">关闭</AButton>
-      </template>
     </AModal>
 
     <!-- 解绑确认模态窗口 -->
@@ -242,7 +239,7 @@ const handleBindThirdParty = (type: string) => {
 // 解绑第三方账号（显示确认窗口）
 const handleUnbindThirdParty = (type: string) => {
   currentUnbindType.value = type;
-  
+
   // 设置平台名称
   switch (type) {
     case 'wechat':
@@ -261,7 +258,7 @@ const handleUnbindThirdParty = (type: string) => {
       currentUnbindPlatform.value = '';
       break;
   }
-  
+
   // 显示确认窗口
   confirmUnbindVisible.value = true;
 };
@@ -276,13 +273,13 @@ const cancelUnbind = () => {
 // 确认解绑
 const confirmUnbind = async () => {
   if (!currentUnbindType.value) return;
-  
+
   try {
     submitLoading.value = true;
     // 这里需要实现解绑第三方账号的API调用，暂时模拟成功
     setTimeout(() => {
       message.success(`${currentUnbindPlatform.value}账号解绑成功`);
-      
+
       // 更新状态
       switch (currentUnbindType.value) {
         case 'wechat':
@@ -300,7 +297,7 @@ const confirmUnbind = async () => {
         default:
           break;
       }
-      
+
       emit('success', `unbind_${currentUnbindType.value}`);
       cancelUnbind();
       submitLoading.value = false;

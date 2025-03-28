@@ -239,7 +239,7 @@ import {
 } from '@ant-design/icons-vue';
 
 // 搜索表单
-const searchForm = reactive({
+const searchForm = reactive<any>({
   timeRange: [],
   userType: undefined,
   registerSource: undefined,

@@ -17,4 +17,13 @@ export default [
             title: 'PreviewOcr',
         }
     },
+    {
+        path: '/preview/qrcode',
+        name: 'PreviewQRCode',
+        component: () => import('@/views/Preview/PreviewQRCode/PreviewQRCode.vue'),
+        meta: {
+            requiresAuth: false,
+            title: 'PreviewQRCode',
+        }
+    },
 ];

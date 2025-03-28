@@ -437,7 +437,7 @@ onMounted(() => {
 
         .image-bed-upload-container {
           width: 100%;
-          padding: 10px;
+          //padding: 10px;
         }
 
         .image-bed-upload-content {

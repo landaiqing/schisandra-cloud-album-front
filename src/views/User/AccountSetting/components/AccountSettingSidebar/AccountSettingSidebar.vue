@@ -35,6 +35,18 @@
         </template>
         <span class="ant-menu-item-title">图像备份</span>
       </AMenuItem>
+      <AMenuItem title="定时任务" key="task" :style="menuCSSStyle">
+        <template #icon>
+          <AAvatar shape="square" size="small" :src="time"/>
+        </template>
+        <span class="ant-menu-item-title">定时任务</span>
+      </AMenuItem>
+      <AMenuItem title="执行记录" key="log" :style="menuCSSStyle">
+        <template #icon>
+          <AAvatar shape="square" size="small" :src="logIcon"/>
+        </template>
+        <span class="ant-menu-item-title">执行记录</span>
+      </AMenuItem>
 
     </AMenu>
   </div>
@@ -46,6 +58,8 @@ import home from "@/assets/svgs/home.svg";
 import peopleAlbum from "@/assets/svgs/people-album.svg";
 import storage from "@/assets/svgs/storage.svg";
 import backup from "@/assets/svgs/source-storage.svg";
+import time from "@/assets/svgs/time.svg";
+import logIcon from "@/assets/svgs/data_analysis.svg";
 
 const menuStore = useStore().menu;
 const menuCSSStyle: any = reactive({

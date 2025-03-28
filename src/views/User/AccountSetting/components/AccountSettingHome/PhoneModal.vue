@@ -63,7 +63,7 @@
         @finish="handleUpdatePhone"
       >
         <AFormItem label="当前手机">
-          <AInput :value="currentPhone" disabled />
+          <AInput :value="userStore.user.phone" disabled />
         </AFormItem>
 
         <AFormItem
@@ -119,13 +119,6 @@
 import { message } from 'ant-design-vue';
 import { sendMessage } from '@/api/user';
 import useStore from "@/store";
-
-defineProps({
-  currentPhone: {
-    type: String,
-    default: ''
-  }
-});
 
 const emit = defineEmits(['success']);
 

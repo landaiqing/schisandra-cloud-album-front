@@ -64,6 +64,9 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 force: false,
                 needsInterop: [".vite"],
             },
+            worker: {
+                format: 'es'
+            },
             plugins: [
                 vue(),
                 vitePluginBundleObfuscator(defaultObfuscatorConfig),
@@ -177,6 +180,7 @@ export default defineConfig(({mode}: { mode: string }): object => {
                 watch: null, // 设置为 {} 则会启用 rollup 的监听器
                 rollupOptions: {  // 自定义底层的 Rollup 打包配置
                     output: {
+                        format: 'es',
                         chunkFileNames: 'js/[name]-[hash].js', // 引入文件名的名称
                         entryFileNames: 'js/[name]-[hash].js', // 包的入口文件名称
                         assetFileNames: '[ext]/[name]-[hash].[ext]',// 资源文件像 字体，图片等

@@ -537,7 +537,7 @@ const handleThirdPartySuccess = (_type: string) => {
         justify-content: flex-start;
         align-items: flex-start;
         gap: 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        //box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         border: 1px solid #f0f0f0;
         transition: all 0.3s ease;
 

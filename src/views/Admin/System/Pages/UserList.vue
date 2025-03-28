@@ -5,7 +5,7 @@
       <div class="user-list-header-right">
         <AButton type="primary" @click="handleAddUser">
           <template #icon>
-            <PlusOutlined />
+            <PlusOutlined/>
           </template>
           新增用户
         </AButton>
@@ -16,10 +16,10 @@
       <div class="table-search-wrapper">
         <AForm layout="inline" :model="searchForm">
           <AFormItem label="用户名">
-            <AInput v-model:value="searchForm.username" placeholder="请输入用户名" allowClear />
+            <AInput v-model:value="searchForm.username" placeholder="请输入用户名" allowClear/>
           </AFormItem>
           <AFormItem label="手机号">
-            <AInput v-model:value="searchForm.phone" placeholder="请输入手机号" allowClear />
+            <AInput v-model:value="searchForm.phone" placeholder="请输入手机号" allowClear/>
           </AFormItem>
           <AFormItem label="状态">
             <ASelect v-model:value="searchForm.status" placeholder="请选择状态" style="width: 120px" allowClear>
@@ -38,13 +38,13 @@
           <AFormItem>
             <AButton type="primary" @click="handleSearch">
               <template #icon>
-                <SearchOutlined />
+                <SearchOutlined/>
               </template>
               搜索
             </AButton>
             <AButton style="margin-left: 8px" @click="resetSearch">
               <template #icon>
-                <ReloadOutlined />
+                <ReloadOutlined/>
               </template>
               重置
             </AButton>
@@ -53,12 +53,12 @@
       </div>
 
       <ATable
-        :columns="columns"
-        :data-source="userList"
-        :loading="loading"
-        :pagination="pagination"
-        @change="handleTableChange"
-        rowKey="id"
+          :columns="columns"
+          :data-source="userList"
+          :loading="loading"
+          :pagination="pagination"
+          @change="handleTableChange"
+          rowKey="id"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'status'">
@@ -71,10 +71,10 @@
               <AButton type="link" size="small" @click="handleEditUser(record)">编辑</AButton>
               <AButton type="link" size="small" @click="handleViewUser(record)">查看</AButton>
               <APopconfirm
-                title="确定要删除此用户吗？"
-                ok-text="确定"
-                cancel-text="取消"
-                @confirm="handleDeleteUser(record)"
+                  title="确定要删除此用户吗？"
+                  ok-text="确定"
+                  cancel-text="取消"
+                  @confirm="handleDeleteUser(record)"
               >
                 <AButton type="link" danger size="small">删除</AButton>
               </APopconfirm>
@@ -86,21 +86,22 @@
 
     <!-- 用户编辑对话框 -->
     <AModal
-      v-model:visible="userModalVisible"
-      :title="modalTitle"
-      @ok="handleUserModalOk"
-      @cancel="handleUserModalCancel"
-      :confirmLoading="modalLoading"
+        v-model:visible="userModalVisible"
+        :title="modalTitle"
+        @ok="handleUserModalOk"
+        @cancel="handleUserModalCancel"
+        :confirmLoading="modalLoading"
     >
-      <AForm :model="userForm" :rules="userFormRules" ref="userFormRef" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
+      <AForm :model="userForm" :rules="userFormRules" ref="userFormRef" :label-col="{ span: 6 }"
+             :wrapper-col="{ span: 16 }">
         <AFormItem label="用户名" name="username">
-          <AInput v-model:value="userForm.username" placeholder="请输入用户名" />
+          <AInput v-model:value="userForm.username" placeholder="请输入用户名"/>
         </AFormItem>
         <AFormItem label="手机号" name="phone">
-          <AInput v-model:value="userForm.phone" placeholder="请输入手机号" />
+          <AInput v-model:value="userForm.phone" placeholder="请输入手机号"/>
         </AFormItem>
         <AFormItem label="邮箱" name="email">
-          <AInput v-model:value="userForm.email" placeholder="请输入邮箱" />
+          <AInput v-model:value="userForm.email" placeholder="请输入邮箱"/>
         </AFormItem>
         <AFormItem label="角色" name="role">
           <ASelect v-model:value="userForm.role" placeholder="请选择角色">
@@ -122,8 +123,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
-import { message } from 'ant-design-vue';
+import {ref, reactive, onMounted} from 'vue';
+import {message} from 'ant-design-vue';
 import {
   PlusOutlined,
   SearchOutlined,
@@ -272,22 +273,22 @@ const userForm = reactive({
 // 表单验证规则
 const userFormRules = {
   username: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    { min: 3, max: 20, message: '用户名长度应为3-20个字符', trigger: 'blur' }
+    {required: true, message: '请输入用户名', trigger: 'blur'},
+    {min: 3, max: 20, message: '用户名长度应为3-20个字符', trigger: 'blur'}
   ],
   phone: [
-    { required: true, message: '请输入手机号', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
+    {required: true, message: '请输入手机号', trigger: 'blur'},
+    {pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur'}
   ],
   email: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
+    {required: true, message: '请输入邮箱', trigger: 'blur'},
+    {type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur'}
   ],
   role: [
-    { required: true, message: '请选择角色', trigger: 'change' }
+    {required: true, message: '请选择角色', trigger: 'change'}
   ],
   status: [
-    { required: true, message: '请选择状态', trigger: 'change' }
+    {required: true, message: '请选择状态', trigger: 'change'}
   ]
 };
 
@@ -383,12 +384,12 @@ const handleUserModalOk = () => {
         }
       } else {
         // 新增用户
-        const id = Math.max(...userList.value.map(item => item.id)) + 1;
+        const id: any = Math.max(...userList.value.map(item => item.id)) + 1;
         const roleText = userForm.role === 'admin' ? '管理员' : (userForm.role === 'vip' ? 'VIP用户' : '普通用户');
         const statusText = userForm.status === 'active' ? '正常' : (userForm.status === 'inactive' ? '禁用' : '待审核');
         const now = new Date().toLocaleString();
+        userForm.id = id;
         userList.value.push({
-          id,
           ...userForm,
           roleText,
           statusText,

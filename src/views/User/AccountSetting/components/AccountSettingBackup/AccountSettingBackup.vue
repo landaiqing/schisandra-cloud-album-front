@@ -19,14 +19,14 @@
             <AForm layout="vertical">
               <AFormItem label="存储商" name="sourceProvider">
                 <ASelect
-                  v-model:value="sourceStorage.provider"
-                  placeholder="请选择源存储商"
-                  @change="handleSourceProviderChange"
+                    v-model:value="sourceStorage.id"
+                    placeholder="请选择源存储商"
+                    @change="handleSourceProviderChange"
                 >
                   <ASelectOption
-                    v-for="item in storageList"
-                    :key="item.provider + '-' + item.bucket"
-                    :value="item.provider + '-' + item.bucket"
+                      v-for="item in storageList"
+                      :key="item.id"
+                      :value="item.id"
                   >
                     <AFlex align="center" gap="small">
                       <AAvatar :size="20" shape="circle" :src="ProviderIcon[item.provider]" />
@@ -41,17 +41,39 @@
                 <AAvatar :size="40" shape="circle" :src="ProviderIcon[selectedSourceStorage.provider]" />
                 <div class="storage-info">
                   <div class="storage-name">{{ selectedSourceStorage.bucket }}</div>
-                  <ATag :color="ProviderColorMap[selectedSourceStorage.provider]">{{ ProviderNameMap[selectedSourceStorage.provider] }}</ATag>
+                  <ATag :color="ProviderColorMap[selectedSourceStorage.provider]">
+                    {{ ProviderNameMap[selectedSourceStorage.provider] }}
+                  </ATag>
                 </div>
               </div>
               <div class="storage-card-content">
                 <div class="storage-detail">
                   <AAvatar size="small" shape="square" :src="bucket" />
-                  <span>{{ selectedSourceStorage.capacity }}GB</span>
+                  <div class="detail-text">
+                    <div class="detail-label">存储容量</div>
+                    <div class="detail-value">{{ selectedSourceStorage.capacity }}GB</div>
+                  </div>
                 </div>
                 <div class="storage-detail">
                   <AAvatar size="small" shape="circle" :src="location" />
-                  <span>{{ AliRegionMap[selectedSourceStorage.region] || selectedSourceStorage.region }}</span>
+                  <div class="detail-text">
+                    <div class="detail-label">存储区域</div>
+                    <div class="detail-value">{{ AliRegionMap[selectedSourceStorage.region] || selectedSourceStorage.region }}</div>
+                  </div>
+                </div>
+                <div class="storage-detail">
+                  <AAvatar size="small" shape="square" :src="endpointIcon" />
+                  <div class="detail-text">
+                    <div class="detail-label">访问端点</div>
+                    <div class="detail-value">{{ selectedSourceStorage.endpoint }}</div>
+                  </div>
+                </div>
+                <div class="storage-detail">
+                  <AAvatar size="small" shape="square" :src="dateIcon" />
+                  <div class="detail-text">
+                    <div class="detail-label">创建时间</div>
+                    <div class="detail-value">{{ formatDate(selectedSourceStorage.created_at) }}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -71,15 +93,15 @@
             <AForm layout="vertical">
               <AFormItem label="存储商" name="targetProvider">
                 <ASelect
-                  v-model:value="targetStorage.provider"
-                  placeholder="请选择目标存储商"
-                  @change="handleTargetProviderChange"
-                  :disabled="!sourceStorage.provider"
+                    v-model:value="targetStorage.id"
+                    placeholder="请选择目标存储商"
+                    @change="handleTargetProviderChange"
+                    :disabled="!sourceStorage.id"
                 >
                   <ASelectOption
-                    v-for="item in availableTargetStorages"
-                    :key="item.provider + '-' + item.bucket"
-                    :value="item.provider + '-' + item.bucket"
+                      v-for="item in availableTargetStorages"
+                      :key="item.id"
+                      :value="item.id"
                   >
                     <AFlex align="center" gap="small">
                       <AAvatar :size="20" shape="circle" :src="ProviderIcon[item.provider]" />
@@ -94,17 +116,39 @@
                 <AAvatar :size="40" shape="circle" :src="ProviderIcon[selectedTargetStorage.provider]" />
                 <div class="storage-info">
                   <div class="storage-name">{{ selectedTargetStorage.bucket }}</div>
-                  <ATag :color="ProviderColorMap[selectedTargetStorage.provider]">{{ ProviderNameMap[selectedTargetStorage.provider] }}</ATag>
+                  <ATag :color="ProviderColorMap[selectedTargetStorage.provider]">
+                    {{ ProviderNameMap[selectedTargetStorage.provider] }}
+                  </ATag>
                 </div>
               </div>
               <div class="storage-card-content">
                 <div class="storage-detail">
                   <AAvatar size="small" shape="square" :src="bucket" />
-                  <span>{{ selectedTargetStorage.capacity }}GB</span>
+                  <div class="detail-text">
+                    <div class="detail-label">存储容量</div>
+                    <div class="detail-value">{{ selectedTargetStorage.capacity }}GB</div>
+                  </div>
                 </div>
                 <div class="storage-detail">
                   <AAvatar size="small" shape="circle" :src="location" />
-                  <span>{{ AliRegionMap[selectedTargetStorage.region] || selectedTargetStorage.region }}</span>
+                  <div class="detail-text">
+                    <div class="detail-label">存储区域</div>
+                    <div class="detail-value">{{ AliRegionMap[selectedTargetStorage.region] || selectedTargetStorage.region }}</div>
+                  </div>
+                </div>
+                <div class="storage-detail">
+                  <AAvatar size="small" shape="square" :src="endpointIcon" />
+                  <div class="detail-text">
+                    <div class="detail-label">访问端点</div>
+                    <div class="detail-value">{{ selectedTargetStorage.endpoint }}</div>
+                  </div>
+                </div>
+                <div class="storage-detail">
+                  <AAvatar size="small" shape="square" :src="dateIcon" />
+                  <div class="detail-text">
+                    <div class="detail-label">创建时间</div>
+                    <div class="detail-value">{{ formatDate(selectedTargetStorage.created_at) }}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -114,11 +158,11 @@
 
       <div class="backup-action">
         <AButton
-          type="primary"
-          size="large"
-          :disabled="!isBackupReady"
-          @click="startBackup"
-          :loading="backupInProgress"
+            type="primary"
+            size="large"
+            :disabled="!isBackupReady"
+            @click="startBackup"
+            :loading="backupInProgress"
         >
           开始备份
         </AButton>
@@ -154,8 +198,8 @@ import targetIcon from "@/assets/svgs/target-storage.svg";
 
 const router = useRouter();
 const storageList = ref<any[]>([]);
-const sourceStorage = ref({ provider: '', bucket: '' });
-const targetStorage = ref({ provider: '', bucket: '' });
+const sourceStorage = ref({ id: null });
+const targetStorage = ref({ id: null });
 const selectedSourceStorage = ref<any>(null);
 const selectedTargetStorage = ref<any>(null);
 const backupModalVisible = ref(false);
@@ -164,14 +208,25 @@ const backupStatus = ref('准备开始备份...');
 const backupInProgress = ref(false);
 const backupTaskId = ref('');
 
+import dateIcon from "@/assets/svgs/time.svg";
+import endpointIcon from "@/assets/svgs/endpoint.svg";
+
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+};
+
 // 获取存储列表
 async function getStorageList() {
   const res: any = await listUserStorageConfigApi();
   if (res && res.code === 200) {
     storageList.value = res.data.records;
     // 重置选择
-    sourceStorage.value = { provider: '', bucket: '' };
-    targetStorage.value = { provider: '', bucket: '' };
+    sourceStorage.value = { id: null };
+    targetStorage.value = { id: null };
     selectedSourceStorage.value = null;
     selectedTargetStorage.value = null;
   }
@@ -179,12 +234,8 @@ async function getStorageList() {
 
 // 计算可用的目标存储（排除已选择的源存储）
 const availableTargetStorages = computed(() => {
-  if (!sourceStorage.value.provider) return [];
-  return storageList.value.filter(item => {
-    const sourceKey = sourceStorage.value.provider;
-    const itemKey = item.provider + '-' + item.bucket;
-    return sourceKey !== itemKey;
-  });
+  if (!sourceStorage.value.id) return [];
+  return storageList.value.filter(item => item.id !== sourceStorage.value.id);
 });
 
 // 判断是否可以开始备份
@@ -199,22 +250,17 @@ function handleSourceProviderChange(value) {
     return;
   }
 
-  const [provider, bucket] = value.split('-');
-  const selected = storageList.value.find(item =>
-    item.provider === provider && item.bucket === bucket
-  );
+  const selected = storageList.value.find(item => item.id === value);
 
   if (selected) {
     selectedSourceStorage.value = selected;
-
     // 如果目标存储与源存储相同，则清空目标存储
-    if (targetStorage.value.provider) {
-      const [targetProvider, targetBucket] = targetStorage.value.provider.split('-');
-      if (targetProvider === provider && targetBucket === bucket) {
-        targetStorage.value.provider = '';
-        selectedTargetStorage.value = null;
-      }
+    if (targetStorage.value.id === value) {
+      targetStorage.value.id = null;
+      selectedTargetStorage.value = null;
     }
+  } else {
+    selectedSourceStorage.value = null;
   }
 }
 
@@ -225,13 +271,12 @@ function handleTargetProviderChange(value) {
     return;
   }
 
-  const [provider, bucket] = value.split('-');
-  const selected = storageList.value.find(item =>
-    item.provider === provider && item.bucket === bucket
-  );
+  const selected = storageList.value.find(item => item.id === value);
 
   if (selected) {
     selectedTargetStorage.value = selected;
+  } else {
+    selectedTargetStorage.value = null;
   }
 }
 
@@ -245,17 +290,9 @@ async function startBackup() {
   backupStatus.value = '正在准备备份...';
 
   try {
-    // 调用备份API
-    const sourceProviderInfo = selectedSourceStorage.value.provider;
-    const sourceBucketInfo = selectedSourceStorage.value.bucket;
-    const targetProviderInfo = selectedTargetStorage.value.provider;
-    const targetBucketInfo = selectedTargetStorage.value.bucket;
-
     const res: any = await backupStorageApi(
-      sourceProviderInfo,
-      sourceBucketInfo,
-      targetProviderInfo,
-      targetBucketInfo
+        selectedSourceStorage.value.id,
+        selectedTargetStorage.value.id
     );
 
     if (res && res.code === 200) {
@@ -343,10 +380,11 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+/* 样式保持不变 */
 .account-setting-backup {
   width: 100%;
-  height: 100%;
-  overflow: auto;
+  //height: 100%;
+  //overflow: auto;
 
   .account-setting-backup-header {
     display: flex;
@@ -459,13 +497,34 @@ onMounted(() => {
             }
 
             .storage-card-content {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 12px;
+              margin-top: 12px;
+
               .storage-detail {
                 display: flex;
                 align-items: center;
                 gap: 10px;
-                margin-bottom: 8px;
-                color: #666;
-                font-size: 14px;
+                padding: 8px;
+                background: rgba(245, 245, 245, 0.5);
+                border-radius: 8px;
+
+                .detail-text {
+                  display: flex;
+                  flex-direction: column;
+
+                  .detail-label {
+                    font-size: 12px;
+                    color: #999;
+                  }
+
+                  .detail-value {
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: #333;
+                  }
+                }
               }
             }
           }

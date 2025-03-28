@@ -13,14 +13,23 @@
                        placeholder="选择存储桶">
             </ACascader>
           </template>
-          <ATooltip title="选择存储桶" color="orange">
-            <AButton type="text" shape="circle" size="large" class="header-menu-item-btn">
-              <template #icon>
-                <AAvatar size="default" shape="circle"
-                         :src="ProviderIcon[uploadStore.storageSelected?.[0]]? ProviderIcon[uploadStore.storageSelected?.[0]] : wenhao"/>
-              </template>
-            </AButton>
-          </ATooltip>
+          <ABadge dot
+                  color="green"
+                  :offset="[-9, 12]">
+            <ATooltip title="选择存储桶" color="orange">
+              <AButton type="text" shape="circle" size="large" class="header-menu-item-btn"
+                       :class="{'breathing': !uploadStore.storageSelected?.length}">
+                <template #icon>
+                  <AAvatar size="default" shape="circle"
+                           :src="ProviderIcon[uploadStore.storageSelected?.[0]] ? ProviderIcon[uploadStore.storageSelected?.[0]] : wenhao"/>
+                </template>
+              </AButton>
+            </ATooltip>
+            <template #count>
+              <ExclamationCircleOutlined style="color: red" v-if="!uploadStore.storageSelected?.length"/>
+            </template>
+          </ABadge>
+
         </APopover>
       </div>
 
@@ -51,6 +60,12 @@
                   <AFlex :vertical="false" align="center" justify="flex-start" gap="small">
                     <AAvatar size="large" shape="square" :src="scanIcon"/>
                     <span class="tool-box-card-title">OCR文字识别</span>
+                  </AFlex>
+                </ACard>
+                <ACard hoverable class="tool-box-card" @click="router.push('/preview/qrcode')">
+                  <AFlex :vertical="false" align="center" justify="flex-start" gap="small">
+                    <AAvatar size="large" shape="square" :src="qr"/>
+                    <span class="tool-box-card-title">二维码识别</span>
                   </AFlex>
                 </ACard>
               </div>
@@ -211,7 +226,9 @@ import {ProviderIcon} from "@/constant/provider_map.ts";
 import toolBox from "@/assets/svgs/tool-box.svg";
 import blur from "@/assets/svgs/blur.svg";
 import scanIcon from "@/assets/svgs/scan.svg";
+import qr from "@/assets/svgs/qr.svg";
 import imgBed from "@/assets/svgs/img_bed.svg";
+
 const router = useRouter();
 
 
@@ -422,6 +439,20 @@ onMounted(() => {
     }
   }
 }
+.breathing {
+  animation: breathing 2s ease-in-out infinite;
+}
 
+@keyframes breathing {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
 </style>

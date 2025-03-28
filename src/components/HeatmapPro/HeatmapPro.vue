@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, onMounted, onBeforeUnmount} from 'vue';
+import {ref, computed, onMounted, onBeforeUnmount, nextTick} from 'vue';
 import {
   format,
   startOfWeek,
@@ -73,7 +73,6 @@ import {
   parseISO,
   getYear
 } from 'date-fns';
-import {debounce} from 'lodash-es';
 import type {PropType} from 'vue';
 import {zhCN} from 'date-fns/locale';
 
@@ -137,16 +136,17 @@ const props = defineProps({
 });
 
 const containerRef = ref<HTMLElement>();
+// 设置固定的初始值，避免从小到大的变化
 const cellSize = ref(12);
 const cellGap = ref(3);
 const weekdays = ['Mon', 'Wed', 'Fri'];
 const visibleWeeks = ref<Array<Array<{ date: Date; count: number }>>>([]);
 
-// 新增响应式变量
+// 响应式变量，用于控制图表宽度
 const chartMaxWidth = ref(0);
 
-// 修改后的updateSize函数
-const updateSize = debounce(() => {
+// 优化updateSize函数，移除debounce，避免延迟导致的动画效果
+const updateSize = () => {
   if (!containerRef.value) return;
 
   const container = containerRef.value;
@@ -156,15 +156,16 @@ const updateSize = debounce(() => {
   // 动态计算最大宽度
   chartMaxWidth.value = containerWidth - 40;
 
-  // 重新计算单元格尺寸
+  // 计算单元格尺寸，确保合理的显示效果
   const maxCellSize = Math.min(
       (containerWidth - 40) / 54, // 更精确的计算
-      containerHeight / 7 - cellGap.value
+      containerHeight / 7 - 3 // 使用固定的间距值，避免循环依赖
   );
 
+  // 设置单元格大小和间距
   cellSize.value = Math.max(8, Math.min(14, maxCellSize));
-  cellGap.value = Math.max(2, cellSize.value * 0.15);
-}, 150);
+  cellGap.value = Math.max(2, Math.min(4, cellSize.value * 0.15));
+};
 
 // 日期有效性检查
 const isValidDate = (date: Date) => {
@@ -260,13 +261,20 @@ const formatTooltip = (date: Date) => {
 
 // 初始化
 onMounted(() => {
+  // 先处理数据，再更新尺寸，避免不必要的重新计算
   visibleWeeks.value = processContributions();
-  updateSize();
 
-  const observer = new ResizeObserver(debounce(() => {
+  // 立即执行一次更新尺寸，确保初始渲染正确
+  nextTick(() => {
     updateSize();
-    visibleWeeks.value = processContributions();
-  }, 200));
+  });
+
+  // 使用ResizeObserver监听容器大小变化
+  const observer = new ResizeObserver(() => {
+    // 直接调用updateSize，不使用debounce，避免动画效果
+    updateSize();
+    // 不需要重新处理贡献数据，因为数据不会因为大小变化而改变
+  });
 
   if (containerRef.value) observer.observe(containerRef.value);
   onBeforeUnmount(() => observer.disconnect());
@@ -279,13 +287,15 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   min-width: 300px;
-  padding: 20px 15px; /* 调整左右padding */
+  padding: 20px 15px;
   box-sizing: border-box;
   overflow-x: auto; /* 允许横向滚动 */
+  /* 防止内容溢出 */
+  overflow-y: hidden;
 }
 
 .legend {
-  position: absolute; /* 粘性定位 */
+  position: absolute;
   top: 10px;
   right: 10px;
   display: flex;
@@ -295,16 +305,15 @@ onMounted(() => {
   padding: 4px 8px;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px; /* 增加底部间距 */
   z-index: 2; /* 确保在图上层级 */
 }
 
 .legend-item {
   display: flex;
+}
 
-  & + & {
-    margin-left: 4px; /* 增加色块间距 */
-  }
+.legend-item + .legend-item {
+  margin-left: 4px; /* 增加色块间距 */
 }
 
 .legend-block {
@@ -317,7 +326,8 @@ onMounted(() => {
   position: relative;
   margin-top: 45px; /* 增加顶部间距 */
   margin-left: 40px;
-  min-width: 520px; /* 最小宽度保证布局 */
+  /* 移除固定最小宽度，使用更灵活的方式 */
+  width: fit-content;
 }
 
 .month-axis {
@@ -382,7 +392,6 @@ onMounted(() => {
   .chart-wrapper {
     margin-top: 35px;
     margin-left: 30px;
-    min-width: 480px;
   }
 }
 
@@ -393,7 +402,7 @@ onMounted(() => {
 
 .day-cell {
   border-radius: 15%;
-  transition: all 0.2s ease;
+  /* 移除过渡效果，避免加载时的动画 */
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -402,5 +411,7 @@ onMounted(() => {
   transform: scale(1.15);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  /* 只在悬停时添加过渡效果 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 </style>

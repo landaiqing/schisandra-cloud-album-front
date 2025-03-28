@@ -528,7 +528,7 @@ const handleRecognize = async () => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .ocr-detection {
   padding: 20px;
 }
@@ -656,7 +656,6 @@ const handleRecognize = async () => {
 }
 
 .result-list {
-  max-height: 350px;
   overflow-y: auto;
 }
 

@@ -1,6 +1,38 @@
 <template>
-  <div class="user-center-dynamic" ref="chartRef">
+  <div class="user-center-dynamic">
+    <div class="section-header">
 
+    </div>
+
+    <div class="chart-container" ref="chartRef">
+      <!-- 图表将在这里渲染 -->
+    </div>
+
+    <div class="stats-summary">
+      <div class="summary-item">
+        <div class="summary-icon visits"></div>
+        <div class="summary-content">
+          <div class="summary-value">{{ totalVisits }}</div>
+          <div class="summary-label">总访问量</div>
+        </div>
+      </div>
+
+      <div class="summary-item">
+        <div class="summary-icon visitors"></div>
+        <div class="summary-content">
+          <div class="summary-value">{{ totalVisitors }}</div>
+          <div class="summary-label">总访客数</div>
+        </div>
+      </div>
+
+      <div class="summary-item">
+        <div class="summary-icon publishes"></div>
+        <div class="summary-content">
+          <div class="summary-value">{{ totalPublishes }}</div>
+          <div class="summary-label">总发布数</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -19,63 +51,122 @@ const dates = ref<string[]>([]);
 const visitCounts = ref<number[]>([]);
 const visitorCounts = ref<number[]>([]);
 const publishCounts = ref<number[]>([]);
+// 移除时间范围选择
+let chartInstance: echarts.ECharts | null = null;
+
+// 计算总访问量、总访客数和总发布数
+const totalVisits = computed(() => {
+  return visitCounts.value.reduce((sum, count) => sum + count, 0);
+});
+
+const totalVisitors = computed(() => {
+  return visitorCounts.value.reduce((sum, count) => sum + count, 0);
+});
+
+const totalPublishes = computed(() => {
+  return publishCounts.value.reduce((sum, count) => sum + count, 0);
+});
 
 async function getData() {
-  const res: any = await getShareStatisticsInfoApi();
-  if (res && res.code === 200) {
-    const data: DataItem[] = res.data.records;
-    dates.value = data.map((item: DataItem) => item.date);
-    visitCounts.value = data.map((item: DataItem) => item.visit_count);
-    visitorCounts.value = data.map((item: DataItem) => item.visitor_count);
-    publishCounts.value = data.map((item: DataItem) => item.publish_count);
+  try {
+    const res: any = await getShareStatisticsInfoApi();
+    if (res && res.code === 200) {
+      const data: DataItem[] = res.data.records;
+      dates.value = data.map((item: DataItem) => item.date);
+      visitCounts.value = data.map((item: DataItem) => item.visit_count);
+      visitorCounts.value = data.map((item: DataItem) => item.visitor_count);
+      publishCounts.value = data.map((item: DataItem) => item.publish_count);
+
+      // 数据加载完成后初始化或更新图表
+      initChart();
+    }
+  } catch (error) {
+    console.error('获取分享统计数据失败:', error);
   }
 }
 
-onMounted(async () => {
-  await nextTick();
-  const chartInstance = echarts.init(chartRef.value);
+// 初始化图表
+function initChart() {
+  if (!chartRef.value) return;
 
-  const colorList = ["#9E87FF", "#73DDFF", "#fe9a8b", "#F56948", "#9E87FF"];
+  // 如果图表实例已存在，销毁它
+  if (chartInstance) {
+    chartInstance.dispose();
+  }
+
+  // 创建新的图表实例
+  chartInstance = echarts.init(chartRef.value);
+
+  // 使用防抖函数处理resize事件
+  const resizeHandler = () => {
+    if (chartInstance) {
+      nextTick(() => {
+        chartInstance.resize();
+      });
+    }
+  };
+
+  // 监听窗口大小变化，调整图表大小
+  window.addEventListener('resize', resizeHandler);
+
+  // 设置图表配置
+  updateChartOption();
+}
+
+// 更新图表配置
+function updateChartOption() {
+  if (!chartInstance) return;
+
+  const colorList = ["#6366f1", "#22c55e", "#f97316"];
+
   const option = {
     backgroundColor: "#fff",
     title: {
-      text: "最近七天分享统计",
-      fontSize: 12,
-      fontWeight: 400,
+      text: "分享统计概览",
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 600,
+        color: '#333'
+      },
       left: "center",
       top: "5%",
     },
     legend: {
       icon: "circle",
-      top: "5%",
-      right: "5%",
-      itemWidth: 6,
+      bottom: "0%",
+      itemWidth: 8,
+      itemHeight: 8,
       itemGap: 20,
-      color: "#556677",
-
+      textStyle: {
+        color: "#333",
+        fontSize: 12
+      }
     },
     tooltip: {
       trigger: "axis",
-      axisPointer: {
-        label: {
-          show: true,
-          backgroundColor: "#fff",
-          color: "#556677",
-          borderColor: "rgba(0,0,0,0)",
-          shadowColor: "rgba(0,0,0,0)",
-          shadowOffsetY: 0,
-        },
-        lineStyle: {
-          width: 0,
-        },
-      },
       backgroundColor: "#fff",
-      color: "#5c6c7c",
-      padding: [10, 10],
-      extraCssText: "box-shadow: 1px 0 2px 0 rgba(163,163,163,0.5)",
+      borderRadius: 4,
+      shadowColor: 'rgba(0, 0, 0, 0.1)',
+      shadowBlur: 10,
+      textStyle: {
+        color: "#333",
+      },
+      padding: [10, 15],
+      axisPointer: {
+        type: 'line',
+        lineStyle: {
+          color: '#6366f1',
+          width: 1,
+          type: 'dashed'
+        }
+      }
     },
     grid: {
       top: "15%",
+      left: "3%",
+      right: "3%",
+      bottom: "12%",
+      containLabel: true
     },
     xAxis: [
       {
@@ -83,7 +174,7 @@ onMounted(async () => {
         data: dates.value,
         axisLine: {
           lineStyle: {
-            color: "#DCE2E8",
+            color: "#e0e0e0",
           },
         },
         axisTick: {
@@ -91,68 +182,10 @@ onMounted(async () => {
         },
         axisLabel: {
           interval: 0,
-          color: "#556677",
-          // 默认x轴字体大小
+          color: "#666",
           fontSize: 12,
-          // margin:文字到x轴的距离
           margin: 15,
-        },
-        axisPointer: {
-          label: {
-            // padding: [11, 5, 7],
-            padding: [0, 0, 10, 0],
-            /*
-      除了padding[0]建议必须是0之外，其他三项可随意设置
-
-      和CSSpadding相同，[上，右，下，左]
-
-      如果需要下边线超出文字，设左右padding即可，注：左右padding最好相同
-
-      padding[2]的10:
-
-      10 = 文字距下边线的距离 + 下边线的宽度
-
-      如：UI图中文字距下边线距离为7 下边线宽度为2
-
-      则padding: [0, 0, 9, 0]
-
-                  */
-            // 这里的margin和axisLabel的margin要一致!
-            margin: 15,
-            // 移入时的字体大小
-            fontSize: 12,
-            backgroundColor: {
-              type: "linear",
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                {
-                  offset: 0,
-                  color: "#fff", // 0% 处的颜色
-                },
-                {
-                  // offset: 0.9,
-                  offset: 0.86,
-                  /*
-  0.86 = （文字 + 文字距下边线的距离）/（文字 + 文字距下边线的距离 + 下边线的宽度）
-
-                          */
-                  color: "#fff", // 0% 处的颜色
-                },
-                {
-                  offset: 0.86,
-                  color: "#33c0cd", // 0% 处的颜色
-                },
-                {
-                  offset: 1,
-                  color: "#33c0cd", // 100% 处的颜色
-                },
-              ],
-              global: false, // 缺省为 false
-            },
-          },
+          rotate: dates.value.length > 10 ? 45 : 0
         },
         boundaryGap: false,
       },
@@ -160,42 +193,33 @@ onMounted(async () => {
     yAxis: [
       {
         type: "value",
+        name: "数量",
+        nameTextStyle: {
+          color: "#666",
+          fontSize: 12,
+          padding: [0, 0, 0, 5]
+        },
         axisTick: {
           show: false,
         },
         axisLine: {
           show: true,
           lineStyle: {
-            color: "#DCE2E8",
+            color: "#e0e0e0",
           },
         },
         axisLabel: {
-          color: "#556677",
+          color: "#666",
+          fontSize: 12
         },
         splitLine: {
-          show: false,
-        },
-      },
-      {
-        type: "value",
-        position: "right",
-        axisTick: {
-          show: false,
-        },
-        axisLabel: {
-          color: "#556677",
-          formatter: "{value}",
-        },
-        axisLine: {
           show: true,
           lineStyle: {
-            color: "#DCE2E8",
-          },
+            color: "#f5f5f5",
+            type: "dashed"
+          }
         },
-        splitLine: {
-          show: false,
-        },
-      },
+      }
     ],
     series: [
       {
@@ -263,7 +287,7 @@ onMounted(async () => {
         type: "line",
         data: publishCounts.value,
         symbolSize: 1,
-        yAxisIndex: 1,
+        yAxisIndex: 0,
         symbol: "circle",
         smooth: true,
         showSymbol: false,
@@ -272,7 +296,7 @@ onMounted(async () => {
           color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
             {
               offset: 0,
-              color: "#fe9a",
+              color: "#fe9a8b",
             },
             {
               offset: 1,
@@ -291,8 +315,7 @@ onMounted(async () => {
     ],
   };
   chartInstance.setOption(option);
-
-});
+}
 
 onBeforeMount(() => {
   getData();
@@ -308,12 +331,115 @@ onBeforeUnmount(() => {
 });
 
 </script>
+
 <style scoped lang="scss">
 .user-center-dynamic {
-  width: calc(100vw - 40px);
-  height: calc(100vh - 290px);
+  width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+  }
+
+  .chart-container {
+    flex: 1;
+    width: 100%;
+    min-height: 350px;
+    margin-bottom: 20px;
+  }
+
+  .stats-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 10px;
+
+    .summary-item {
+      flex: 1;
+      background-color: #f9fafb;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .summary-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+
+        &::before {
+          font-family: "Font Awesome 5 Free";
+          font-weight: 900;
+          font-size: 18px;
+          color: white;
+        }
+
+        &.visits {
+          background-color: #6366f1;
+          &::before { content: '\f201'; } /* chart line icon */
+        }
+
+        &.visitors {
+          background-color: #22c55e;
+          &::before { content: '\f007'; } /* user icon */
+        }
+
+        &.publishes {
+          background-color: #f97316;
+          &::before { content: '\f093'; } /* upload icon */
+        }
+      }
+
+      .summary-content {
+        flex: 1;
+
+        .summary-value {
+          font-size: 20px;
+          font-weight: 700;
+          color: #333;
+          margin-bottom: 4px;
+        }
+
+        .summary-label {
+          font-size: 13px;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stats-summary {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chart-container {
+      min-height: 250px;
+    }
+  }
 }
 </style>

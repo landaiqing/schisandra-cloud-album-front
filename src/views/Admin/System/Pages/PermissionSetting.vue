@@ -331,8 +331,8 @@ const handlePermissionModalOk = () => {
         const newId: any = Math.max(...permissionList.value.map(item => item.id)) + 1;
         const statusText = permissionForm.status === 'active' ? '启用' : '禁用';
         const now = new Date().toLocaleString();
+        permissionForm.id = newId;
         permissionList.value.push({
-          newId,
           ...permissionForm,
           statusText,
           createTime: now

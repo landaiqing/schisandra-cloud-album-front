@@ -5,12 +5,12 @@
         <a-button type="primary" @click="handleAddRole">新增角色</a-button>
       </template>
       <a-table
-        :columns="columns"
-        :data-source="roleList"
-        :loading="loading"
-        :pagination="pagination"
-        @change="handleTableChange"
-        rowKey="id"
+          :columns="columns"
+          :data-source="roleList"
+          :loading="loading"
+          :pagination="pagination"
+          @change="handleTableChange"
+          rowKey="id"
       >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'status'">
@@ -23,10 +23,10 @@
               <a-button type="link" @click="handleEditRole(record)">编辑</a-button>
               <a-button type="link" @click="handleSetPermissions(record)">权限设置</a-button>
               <a-popconfirm
-                title="确定要删除此角色吗？"
-                ok-text="确定"
-                cancel-text="取消"
-                @confirm="handleDeleteRole(record)"
+                  title="确定要删除此角色吗？"
+                  ok-text="确定"
+                  cancel-text="取消"
+                  @confirm="handleDeleteRole(record)"
               >
                 <a-button type="link" danger>删除</a-button>
               </a-popconfirm>
@@ -38,27 +38,27 @@
 
     <!-- 角色表单对话框 -->
     <a-modal
-      v-model:visible="roleModalVisible"
-      :title="modalTitle"
-      :confirm-loading="modalLoading"
-      @ok="handleRoleModalOk"
-      @cancel="handleRoleModalCancel"
+        v-model:visible="roleModalVisible"
+        :title="modalTitle"
+        :confirm-loading="modalLoading"
+        @ok="handleRoleModalOk"
+        @cancel="handleRoleModalCancel"
     >
       <a-form
-        ref="roleFormRef"
-        :model="roleForm"
-        :rules="roleRules"
-        :label-col="{ span: 4 }"
-        :wrapper-col="{ span: 20 }"
+          ref="roleFormRef"
+          :model="roleForm"
+          :rules="roleRules"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 20 }"
       >
         <a-form-item label="角色名称" name="name">
-          <a-input v-model:value="roleForm.name" placeholder="请输入角色名称" />
+          <a-input v-model:value="roleForm.name" placeholder="请输入角色名称"/>
         </a-form-item>
         <a-form-item label="角色编码" name="code">
-          <a-input v-model:value="roleForm.code" placeholder="请输入角色编码" />
+          <a-input v-model:value="roleForm.code" placeholder="请输入角色编码"/>
         </a-form-item>
         <a-form-item label="角色描述" name="description">
-          <a-textarea v-model:value="roleForm.description" placeholder="请输入角色描述" />
+          <a-textarea v-model:value="roleForm.description" placeholder="请输入角色描述"/>
         </a-form-item>
         <a-form-item label="状态" name="status">
           <a-radio-group v-model:value="roleForm.status">
@@ -71,24 +71,24 @@
 
     <!-- 权限设置对话框 -->
     <a-modal
-      v-model:visible="permissionModalVisible"
-      title="权限设置"
-      :confirm-loading="permissionModalLoading"
-      @ok="handlePermissionModalOk"
-      @cancel="handlePermissionModalCancel"
-      width="800px"
+        v-model:visible="permissionModalVisible"
+        title="权限设置"
+        :confirm-loading="permissionModalLoading"
+        @ok="handlePermissionModalOk"
+        @cancel="handlePermissionModalCancel"
+        width="800px"
     >
       <template v-if="currentRole">
         <p>为角色 <strong>{{ currentRole.name }}</strong> 设置权限：</p>
         <a-table
-          :columns="permissionColumns"
-          :data-source="permissionList"
-          :row-selection="{
+            :columns="permissionColumns"
+            :data-source="permissionList"
+            :row-selection="{
             selectedRowKeys: selectedPermissions,
             onChange: onPermissionSelectionChange
           }"
-          rowKey="id"
-          size="small"
+            rowKey="id"
+            size="small"
         ></a-table>
       </template>
     </a-modal>
@@ -96,8 +96,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
-import { message } from 'ant-design-vue';
+import {ref, reactive, onMounted} from 'vue';
+import {message} from 'ant-design-vue';
 
 // 表格列定义
 const columns = [
@@ -182,9 +182,9 @@ const roleForm = reactive({
 });
 
 const roleRules = {
-  name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-  code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
-  status: [{ required: true, message: '请选择状态', trigger: 'change' }],
+  name: [{required: true, message: '请输入角色名称', trigger: 'blur'}],
+  code: [{required: true, message: '请输入角色编码', trigger: 'blur'}],
+  status: [{required: true, message: '请选择状态', trigger: 'change'}],
 };
 
 // 权限设置相关
@@ -275,11 +275,11 @@ const handleRoleModalOk = () => {
         }
       } else {
         // 新增角色
-        const id = Math.max(...roleList.value.map(item => item.id)) + 1;
+        const id: any = Math.max(...roleList.value.map(item => item.id)) + 1;
         const statusText = roleForm.status === 'active' ? '启用' : '禁用';
         const now = new Date().toLocaleString();
+        roleForm.id = id;
         roleList.value.push({
-          id,
           ...roleForm,
           statusText,
           createTime: now,

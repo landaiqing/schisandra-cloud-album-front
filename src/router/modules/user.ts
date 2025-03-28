@@ -95,6 +95,24 @@ export default [
                     requiresAuth: true,
                     title: '图像备份'
                 },
+            },
+            {
+                path: '/main/user/setting/task',
+                name: 'AccountSettingTask',
+                component: () => import('@/views/User/AccountSetting/components/AccountSettingTask/AccountSettingTask.vue'),
+                meta: {
+                    requiresAuth: true,
+                    title: '定时任务'
+                },
+            },
+            {
+                path: '/main/user/setting/log',
+                name: 'AccountSettingLog',
+                component: () => import('@/views/User/AccountSetting/components/AccountSettingLog/AccountSettingLog.vue'),
+                meta: {
+                    requiresAuth: true,
+                    title: '执行记录'
+                },
             }
         ],
     }

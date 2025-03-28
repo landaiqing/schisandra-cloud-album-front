@@ -2,17 +2,14 @@ import {service} from "@/utils/alova/service.ts";
 
 /**
  * 从一个存储桶备份到另一个存储桶
- * @param sourceProvider 源存储商
- * @param sourceBucket 源存储桶
- * @param targetProvider 目标存储商
- * @param targetBucket 目标存储桶
+ * @param sourceStorage 源存储商
+ * @param targetStorage 目标存储商
  */
-export const backupStorageApi = (sourceProvider: string, sourceBucket: string, targetProvider: string, targetBucket: string) => {
+export const backupStorageApi = (sourceStorage: string,  targetStorage: string) => {
     return service.Post('/api/auth/storage/backup', {
-        source_provider: sourceProvider,
-        source_bucket: sourceBucket,
-        target_provider: targetProvider,
-        target_bucket: targetBucket,
+        source_storage: sourceStorage,
+        target_storage: targetStorage,
+
     }, {
         meta: {
             ignoreToken: false,
